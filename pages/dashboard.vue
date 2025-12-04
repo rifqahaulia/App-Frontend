@@ -1,71 +1,57 @@
 <script setup lang="ts">
-const { getProfile, accessToken } = useAuth()
-const profile = ref<any>(null)
+const { getProfile, accessToken, profile } = useAuth()
 
+// Cek token di client side saja untuk menghindari SSR issues
 onMounted(async () => {
+  console.log('Dashboard mounted, token exists:', !!accessToken.value)
+  
   if (!accessToken.value) {
-    navigateTo('/login')
+    console.log('No token, redirecting to home')
+    navigateTo('/')
     return
   }
   
-  try {
-    const result = await getProfile()
-    profile.value = result
-  } catch (err) {
-    console.error('Failed to get profile:', err)
-    navigateTo('/login')
+  // Fetch profile jika belum ada
+  if (!profile.value) {
+    try {
+      console.log('Fetching profile...')
+      await getProfile()
+      console.log('Profile loaded:', profile.value)
+    } catch (err) {
+      console.error('Failed to get profile:', err)
+      // Tetap stay di dashboard meskipun profile gagal
+    }
   }
 })
 </script>
 
 <template>
-  <div class="flex h-screen overflow-hidden">
-    <TheSidebar />
+  <div class="flex flex-col h-screen overflow-hidden bg-white">
+    <LayoutTheNavbar />
     
-    <div class="flex-1 flex flex-col overflow-hidden">
-      <TheNavbar />
+    <div class="flex flex-1 overflow-hidden">
+      <LayoutTheSidebar />
       
-      <main class="flex-1 overflow-y-auto bg-gray-50 p-6">
-        <div class="max-w-7xl mx-auto">
-          <div class="bg-white rounded-2xl shadow-sm p-8">
-            <div class="text-center">
-              <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
-                <Icon name="lucide:check-circle" class="w-8 h-8 text-green-600" />
-              </div>
-              
-              <h1 class="text-3xl font-bold text-gray-800 mb-2">
-                Selamat Datang! 🎉
-              </h1>
-              
-              <p class="text-lg text-gray-600 mb-6">
-                Halo, <span class="font-semibold text-blue-600">{{ profile?.data?.name || profile?.data?.username }}</span>
-              </p>
-              
-              <div class="inline-block bg-green-50 border border-green-200 rounded-lg px-6 py-3">
-                <p class="text-green-700 font-medium">
-                  ✓ Anda berhasil login ke sistem
-                </p>
-              </div>
+      <main class="flex-1 overflow-y-auto bg-gray-50">
+        <div class="flex items-center justify-center min-h-full p-8">
+          <div class="text-center max-w-2xl">
+            <div class="inline-flex items-center justify-center w-32 h-32 bg-blue-50 rounded-full mb-8">
+              <Icon name="lucide:network" class="w-16 h-16 text-blue-500" />
             </div>
             
-            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white">
-                <Icon name="lucide:users" class="w-8 h-8 mb-3" />
-                <h3 class="text-lg font-semibold mb-1">Total Users</h3>
-                <p class="text-3xl font-bold">1,234</p>
-              </div>
-              
-              <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white">
-                <Icon name="lucide:file-text" class="w-8 h-8 mb-3" />
-                <h3 class="text-lg font-semibold mb-1">Documents</h3>
-                <p class="text-3xl font-bold">567</p>
-              </div>
-              
-              <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white">
-                <Icon name="lucide:activity" class="w-8 h-8 mb-3" />
-                <h3 class="text-lg font-semibold mb-1">Active Tasks</h3>
-                <p class="text-3xl font-bold">89</p>
-              </div>
+            <h1 class="text-5xl font-bold text-gray-900 mb-6">
+              Selamat Datang di Dashboard
+            </h1>
+            
+            <p class="text-xl text-gray-600 mb-8">
+              Halo, <span class="font-semibold text-blue-600">{{ profile?.data?.name || 'User' }}</span>
+            </p>
+            
+            <div class="inline-flex items-center gap-3 bg-green-50 border-2 border-green-200 rounded-2xl px-8 py-4">
+              <Icon name="lucide:check-circle" class="w-7 h-7 text-green-600" />
+              <p class="text-green-700 font-semibold text-lg">
+                Anda berhasil login ke sistem
+              </p>
             </div>
           </div>
         </div>

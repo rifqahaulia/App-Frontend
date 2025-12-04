@@ -1,9 +1,19 @@
-export default defineNuxtRouteMiddleware(async (to) => {
-  const accessToken = useCookie<string | null>('app_accessToken')
+export default defineNuxtRouteMiddleware((to) => {
+  // Skip middleware di server side untuk menghindari issues
+  if (process.server) return
+
+  // Gunakan useCookie untuk membaca token yang sama dengan useAuth
+  const accessToken = useCookie<string | null>('app_accessToken', {
+    maxAge: 60 * 60 * 24 * 7,
+    sameSite: 'lax',
+    secure: false,
+    path: '/',
+  })
+  
   console.log('Auth middleware - Route:', to.path, 'Token exists:', !!accessToken.value)
 
   // Routes yang tidak memerlukan authentication
-  const publicRoutes = ['/', '/login', '/auth']
+  const publicRoutes = ['/login', '/auth']
 
   // Cek apakah route adalah public atau processing token dari SSO
   const isPublicRoute = publicRoutes.includes(to.path)
@@ -14,18 +24,15 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return
   }
 
-  // Jika tidak ada token dan bukan public route, redirect ke login
-  if (!accessToken.value && !isPublicRoute) {
-    console.log('Akses protected route tanpa token, redirect ke login')
-    return navigateTo('/login')
+  // Jika tidak ada token dan bukan public route (termasuk homepage), redirect ke homepage
+  if (!accessToken.value && !isPublicRoute && to.path !== '/') {
+    console.log('Akses protected route tanpa token, redirect ke homepage')
+    return navigateTo('/')
   }
 
-  // Jika sudah ada token dan mencoba akses login, redirect ke dashboard
-  if (to.path === '/login' && accessToken.value) {
-    console.log('Sudah login, redirect dari login ke dashboard')
+  // Jika sudah ada token dan mencoba akses homepage atau login, redirect ke dashboard
+  if ((to.path === '/' || to.path === '/login') && accessToken.value) {
+    console.log('Sudah login, redirect ke dashboard')
     return navigateTo('/dashboard')
   }
-
-  // Homepage (/) tetap bisa diakses meskipun sudah login
-  // User bisa memilih untuk klik "Start" lagi atau langsung ke dashboard
 })

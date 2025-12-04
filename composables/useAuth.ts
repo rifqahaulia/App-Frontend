@@ -1,6 +1,9 @@
 export const useAuth = () => {
   const accessToken = useCookie<string | null>('app_accessToken', {
     maxAge: 60 * 60 * 24 * 7, // 7 days
+    sameSite: 'lax',
+    secure: false, // set true jika production dengan HTTPS
+    path: '/',
   })
   const profile = useState<any>('profile', () => null)
 
@@ -21,7 +24,9 @@ export const useAuth = () => {
   }
 
   const setTokens = (access: string) => {
+    console.log('Setting token, length:', access?.length)
     accessToken.value = access
+    console.log('Token set, cookie value exists:', !!accessToken.value)
   }
 
   const clearTokens = () => {
@@ -47,7 +52,8 @@ export const useAuth = () => {
       return response
     } catch (error) {
       console.error('Failed to get profile:', error)
-      clearTokens()
+      // Jangan clear token kalau API profile gagal
+      // clearTokens()
       throw error
     }
   }

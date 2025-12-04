@@ -28,24 +28,24 @@ onMounted(async () => {
 
       console.log("Verify response:", res);
 
-      if (res?.status === "success") {
+      if (res?.status === "success" || res?.validToken === true) {
         console.log("Token valid, menyimpan dan redirect");
         setTokens(token);
         // Tunggu sebentar untuk memastikan cookie tersimpan
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 200));
         console.log("Redirecting to dashboard...");
-        router.push("/dashboard");
+        await navigateTo("/dashboard", { replace: true });
       } else {
         console.error("Token tidak valid dari server");
-        router.push("/login?error=invalid_token");
+        await navigateTo("/login?error=invalid_token", { replace: true });
       }
     } catch (err) {
       console.error("Verifikasi gagal:", err);
-      router.push("/login?error=server_error");
+      await navigateTo("/login?error=server_error", { replace: true });
     }
   } else {
     console.error("Tidak ada token di params");
-    router.push("/login?error=no_token");
+    await navigateTo("/login?error=no_token", { replace: true });
   }
 });
 </script>
