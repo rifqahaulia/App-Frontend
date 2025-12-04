@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+
 const { setTokens } = useAuth();
 const route = useRoute();
+const router = useRouter();
 
 definePageMeta({
   layout: false,
@@ -10,11 +12,7 @@ definePageMeta({
 
 onMounted(async () => {
   const token = route.params.token as string;
-
-  console.log(
-    "Token handler mounted dengan token:",
-    token?.substring(0, 20) + "..."
-  );
+  console.log("Token handler mounted dengan token:", token?.substring(0, 20) + "...");
 
   if (token) {
     try {
@@ -32,18 +30,22 @@ onMounted(async () => {
 
       if (res?.status === "success") {
         console.log("Token valid, menyimpan dan redirect");
-        await setTokens(token, "");
+        setTokens(token);
+        // Tunggu sebentar untuk memastikan cookie tersimpan
+        await new Promise(resolve => setTimeout(resolve, 100));
+        console.log("Redirecting to dashboard...");
+        router.push("/dashboard");
       } else {
         console.error("Token tidak valid dari server");
-        await navigateTo("/login?error=invalid_token", { replace: true });
+        router.push("/login?error=invalid_token");
       }
     } catch (err) {
       console.error("Verifikasi gagal:", err);
-      await navigateTo("/login?error=server_error", { replace: true });
+      router.push("/login?error=server_error");
     }
   } else {
     console.error("Tidak ada token di params");
-    await navigateTo("/login?error=no_token", { replace: true });
+    router.push("/login?error=no_token");
   }
 });
 </script>

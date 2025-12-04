@@ -5,7 +5,7 @@ const route = useRoute()
 onMounted(() => {
   const token = route.fullPath.split('/auth/')[1]
   if (token) {
-    setTokens(token, '')
+    setTokens(token)
     navigateTo('/dashboard')
   } else {
     navigateTo('/')

@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(async (to) => {
-  const accessToken = useCookie<string | null>('accessToken')
+  const accessToken = useCookie<string | null>('app_accessToken')
   console.log('Auth middleware - Route:', to.path, 'Token exists:', !!accessToken.value)
 
   // Routes yang tidak memerlukan authentication
@@ -7,29 +7,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   // Cek apakah route adalah public atau processing token dari SSO
   const isPublicRoute = publicRoutes.includes(to.path)
-  const isProcessingToken = to.path.startsWith('/login/') && to.path.length > 20
+  const isProcessingToken = to.path.startsWith('/login/')
 
   if (isProcessingToken) {
     console.log('Sedang memproses token dari SSO, skip middleware')
     return
-  }
-
-  // Jika ada token, verifikasi validitasnya untuk route protected
-  if (accessToken.value && !isPublicRoute) {
-    try {
-      const { verifyToken } = useAuth()
-      const isValid = await verifyToken(accessToken.value)
-
-      if (!isValid) {
-        console.log('Token tidak valid, hapus dan redirect ke login')
-        accessToken.value = null
-        return navigateTo('/login?error=invalid_token')
-      }
-    } catch (error) {
-      console.error('Error verifying token:', error)
-      accessToken.value = null
-      return navigateTo('/login?error=server_error')
-    }
   }
 
   // Jika tidak ada token dan bukan public route, redirect ke login

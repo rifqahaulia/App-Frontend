@@ -1,5 +1,5 @@
 export const useAuth = () => {
-  const accessToken = useCookie<string | null>('accessToken', {
+  const accessToken = useCookie<string | null>('app_accessToken', {
     maxAge: 60 * 60 * 24 * 7, // 7 days
   })
   const profile = useState<any>('profile', () => null)
@@ -20,7 +20,7 @@ export const useAuth = () => {
     }
   }
 
-  const setTokens = (access: string, refresh: string) => {
+  const setTokens = (access: string) => {
     accessToken.value = access
   }
 

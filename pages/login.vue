@@ -7,13 +7,13 @@ definePageMeta({ ssr: false })
 const isProcessingToken = ref(false)
 const errorMessage = ref('')
 
-const callbackUrl = 'http://localhost:3001/login'
+const callbackUrl = 'http://localhost:3000/login'
 const redirectUri = btoa(callbackUrl)
 const ssoUrl = `https://auth.airnavindonesia.co.id/?redirect_uri=${redirectUri}`
 
 const extractTokenFromPath = () => {
   const pathParts = route.path.split('/')
-  if (pathParts.length === 3 && pathParts[1] === 'login' && pathParts[2].length > 10) {
+  if (pathParts.length === 3 && pathParts[1] === 'login' && pathParts[2] && pathParts[2].length > 10) {
     return pathParts[2]
   }
   return null
@@ -33,7 +33,7 @@ const processToken = async (token: string) => {
     )
 
     if (res?.validToken === true || res?.status === 'success') {
-      await setTokens(token, '')
+      setTokens(token)
       navigateTo('/dashboard')
     } else {
       errorMessage.value = 'Token tidak valid atau expired'
@@ -68,7 +68,7 @@ const goToSSO = () => {
   window.location.href = ssoUrl
 }
 
-const getStarStyle = (index: number) => {
+const getStarStyle = (_index: number) => {
   return {
     left: `${Math.random() * 100}%`,
     top: `${Math.random() * 100}%`,
@@ -77,7 +77,7 @@ const getStarStyle = (index: number) => {
   }
 }
 
-const getCloudStyle = (index: number) => {
+const getCloudStyle = (_index: number) => {
   return {
     top: `${Math.random() * 90}%`,
     animationDelay: `${Math.random() * 15}s`,

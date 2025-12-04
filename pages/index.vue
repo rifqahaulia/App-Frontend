@@ -1,15 +1,26 @@
 <script setup lang="ts">
 const { accessToken } = useAuth()
 
-const handleStart = () => {
-  if (accessToken.value) {
-    navigateTo('/dashboard')
-  } else {
-    navigateTo('/login')
+const router = useRouter()
+
+const handleStart = async () => {
+  console.log('=== TOMBOL MULAI DIKLIK ===')
+  console.log('Token exists:', !!accessToken.value)
+  
+  try {
+    if (accessToken.value) {
+      console.log('Redirecting to dashboard...')
+      await router.push('/dashboard')
+    } else {
+      console.log('Redirecting to login...')
+      await router.push('/login')
+    }
+  } catch (error) {
+    console.error('Navigation error:', error)
   }
 }
 
-const getStarStyle = (index: number) => {
+const getStarStyle = (_index: number) => {
   return {
     left: `${Math.random() * 100}%`,
     top: `${Math.random() * 100}%`,
@@ -18,7 +29,7 @@ const getStarStyle = (index: number) => {
   }
 }
 
-const getCloudStyle = (index: number) => {
+const getCloudStyle = (_index: number) => {
   return {
     top: `${Math.random() * 90}%`,
     animationDelay: `${Math.random() * 15}s`,
