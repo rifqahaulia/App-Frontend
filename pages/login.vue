@@ -7,7 +7,7 @@ definePageMeta({ ssr: false })
 const isProcessingToken = ref(false)
 const errorMessage = ref('')
 
-const callbackUrl = 'http://localhost:3000/login'
+const callbackUrl = 'http://localhost:3001/login'
 const redirectUri = btoa(callbackUrl)
 const ssoUrl = `https://auth.airnavindonesia.co.id/?redirect_uri=${redirectUri}`
 
