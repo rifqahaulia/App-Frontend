@@ -59,6 +59,7 @@ export const useAuth = () => {
   }
 
   const logout = async () => {
+    console.log('Logging out...')
     try {
       // Logout dari SSO AirNav
       if (accessToken.value) {
@@ -68,12 +69,22 @@ export const useAuth = () => {
             Authorization: `Bearer ${accessToken.value}`,
           },
         })
+        console.log('SSO logout successful')
       }
     } catch (error) {
       console.error('Logout error:', error)
+      // Tetap lanjut clear tokens meskipun SSO logout gagal
     } finally {
+      // Clear tokens dan profile
       clearTokens()
-      navigateTo('/')
+      console.log('Tokens cleared, redirecting to home')
+      
+      // Redirect ke homepage dengan external navigation untuk force reload
+      if (import.meta.client) {
+        window.location.href = '/'
+      } else {
+        await navigateTo('/', { replace: true, external: true })
+      }
     }
   }
 

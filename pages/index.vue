@@ -15,10 +15,14 @@ const redirectUri = btoa(callbackUrl)
 const ssoUrl = `https://auth.airnavindonesia.co.id/?redirect_uri=${redirectUri}`
 
 const handleStart = () => {
+  console.log('Start button clicked')
   showLoginScreen.value = true
 }
 
 const handleLogin = () => {
+  console.log('Login button clicked')
+  console.log('SSO URL:', ssoUrl)
+  console.log('Redirecting to AirNav Auth...')
   window.location.href = ssoUrl
 }
 </script>
