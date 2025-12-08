@@ -8,17 +8,19 @@ interface TreeNodeData {
 interface Props {
   node: TreeNodeData
   level?: number
+  selectedId?: string | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  level: 0
+  level: 0,
+  selectedId: null
 })
 
 const emit = defineEmits<{
   select: [node: TreeNodeData]
 }>()
 
-const isExpanded = ref(false)
+const isExpanded = ref(props.level === 0)
 
 const toggleExpand = () => {
   if (props.node.children && props.node.children.length > 0) {
@@ -29,13 +31,20 @@ const toggleExpand = () => {
 const handleSelect = () => {
   emit('select', props.node)
 }
+
+const isSelected = computed(() => props.selectedId === props.node.id)
 </script>
 
 <template>
   <div class="tree-node">
     <div 
       @click="handleSelect"
-      class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-gray-50 rounded transition-colors"
+      :class="[
+        'flex items-center gap-2 px-3 py-2 cursor-pointer rounded transition-colors',
+        isSelected 
+          ? 'bg-blue-500 text-white' 
+          : 'hover:bg-gray-50 text-gray-700'
+      ]"
       :style="{ paddingLeft: `${level * 20 + 12}px` }"
     >
       <!-- Expand/Collapse Icon -->
@@ -46,20 +55,28 @@ const handleSelect = () => {
       >
         <Icon 
           name="lucide:chevron-right" 
-          class="w-4 h-4 transition-transform duration-200 text-gray-500"
-          :class="{ 'rotate-90': isExpanded }"
+          :class="[
+            'w-4 h-4 transition-transform duration-200',
+            isSelected ? 'text-white' : 'text-gray-500',
+            { 'rotate-90': isExpanded }
+          ]"
         />
       </button>
       <span v-else class="w-4"></span>
 
       <!-- Node Icon -->
       <Icon 
-        name="lucide:building-2" 
-        class="w-4 h-4 flex-shrink-0 text-gray-600"
+        :name="node.children && node.children.length > 0 ? 'lucide:building-2' : 'lucide:home'"
+        :class="[
+          'w-4 h-4 flex-shrink-0',
+          isSelected ? 'text-white' : 'text-gray-600'
+        ]"
       />
 
       <!-- Node Label -->
-      <span class="text-sm flex-1 text-gray-700">{{ node.label }}</span>
+      <span :class="['text-sm flex-1', isSelected ? 'text-white' : 'text-gray-700']">
+        {{ node.label }}
+      </span>
     </div>
 
     <!-- Children -->
@@ -69,6 +86,7 @@ const handleSelect = () => {
         :key="child.id"
         :node="child"
         :level="level + 1"
+        :selectedId="selectedId"
         @select="emit('select', $event)"
       />
     </div>

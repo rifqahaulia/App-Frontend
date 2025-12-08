@@ -1,6 +1,6 @@
 export default defineNuxtRouteMiddleware((to) => {
   // Skip middleware di server side untuk menghindari issues
-  if (process.server) return
+  if (import.meta.server) return
 
   // Gunakan useCookie untuk membaca token yang sama dengan useAuth
   const accessToken = useCookie<string | null>('app_accessToken', {
