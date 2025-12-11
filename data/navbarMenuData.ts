@@ -1,3 +1,4 @@
+
 export interface NavbarMenuItem {
   label: string
   path?: string
@@ -30,8 +31,8 @@ export const navbarMenus: PageNavbarMenu = {
     { 
       label: 'Activity',
       children: [
-        { label: 'Struktur Organisasi', path: '/pengelolaan-organisasi/struktur' },
-        { label: 'Job Katalog', path: '/pengelolaan-organisasi/job-katalog' },
+        { label: 'Struktur Organisasi', path: '/pengelolaan-organisasi' },
+        { label: 'Job Katalog', path: '/pengelolaan-organisasi/job-katalog' },        
         { label: 'Jabatan Kosong', path: '/pengelolaan-organisasi/jabatan-kosong' },
       ]
     },

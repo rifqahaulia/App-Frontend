@@ -7,9 +7,9 @@ const route = useRoute()
 const showUserMenu = ref(false)
 const openDropdown = ref<string | null>(null)
 
-// Get menu items for current page
-const currentMenuItems = computed(() => {
-  return navbarMenus[route.path] || navbarMenus['/dashboard'] || []
+  const currentMenuItems = computed(() => {
+  const parentPath = '/' + route.path.split('/')[1]   // ambil parent
+  return navbarMenus[parentPath] || navbarMenus['/dashboard'] || []
 })
 
 // Close dropdown when clicking outside

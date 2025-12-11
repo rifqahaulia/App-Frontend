@@ -4,7 +4,7 @@ import { organizationTreeData } from '~/data/organizationTreeData'
 const { profile } = useAuth()
 
 const breadcrumbItems = [
-  { label: 'Organisasi', path: '/pengelolaan-organisasi' },
+  { label: 'Organisasi', path: '/index' },
   { label: 'Struktur Organisasi' },
 ]
 
