@@ -19,7 +19,10 @@
     
     const searchQuery = ref('')
     const currentPage = ref(1)
-    const itemsPerPage = 10
+    const itemsPerPage = ref(10)
+    
+    // Options untuk items per page
+    const itemsPerPageOptions = [5, 10, 15, 20, 25, 50]
     
     // ✅ DATA DUMMY - akan dipakai kalau props.data kosong
     const dummyData: JobKatalog[] = [
@@ -184,12 +187,12 @@
     
     // Pagination
     const totalPages = computed(() => 
-      Math.ceil(filteredData.value.length / itemsPerPage)
+      Math.ceil(filteredData.value.length / itemsPerPage.value)
     )
     
     const paginatedData = computed(() => {
-      const start = (currentPage.value - 1) * itemsPerPage
-      const end = start + itemsPerPage
+      const start = (currentPage.value - 1) * itemsPerPage.value
+      const end = start + itemsPerPage.value
       return filteredData.value.slice(start, end)
     })
     
@@ -203,12 +206,17 @@
     watch(searchQuery, () => {
       currentPage.value = 1
     })
+    
+    // Reset to page 1 when items per page changes
+    watch(itemsPerPage, () => {
+      currentPage.value = 1
+    })
     </script>
     
     <template>
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
         <!-- Search Bar -->
-        <div class="p-4 border-b border-gray-200">
+        <div class="px-6 py-4 bg-white rounded-t-2xl">
           <div class="relative max-w-xs">
             <Icon 
               name="lucide:search" 
@@ -218,61 +226,62 @@
               v-model="searchQuery"
               type="text"
               placeholder="Search..."
-              class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              class="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
             />
           </div>
         </div>
     
         <!-- Table -->
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto px-6 pb-4">
           <table class="w-full">
-            <thead class="bg-blue-50 border-b border-gray-200">
+            <thead class="bg-blue-100/60 rounded-t-xl">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide first:rounded-tl-xl">
                   ID JOB
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
                   TITELATUR
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
                   DESCRIPTION
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
                   START
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide last:rounded-tr-xl">
                   VALID TO
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody class="bg-white">
               <tr 
                 v-for="(item, index) in paginatedData" 
                 :key="index"
-                class="hover:bg-gray-50 transition-colors"
+                class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/30 transition-colors"
               >
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
                   {{ item.idJob }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                   {{ item.titelatur }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
                   {{ item.description }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                   {{ item.start }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                   {{ item.validTo }}
                 </td>
               </tr>
               
               <!-- Empty State -->
               <tr v-if="paginatedData.length === 0">
-                <td colspan="5" class="px-6 py-12 text-center text-gray-500">
-                  <Icon name="lucide:inbox" class="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                  <p class="text-sm">Tidak ada data yang ditemukan</p>
+                <td colspan="5" class="px-6 py-16 text-center">
+                  <Icon name="lucide:inbox" class="w-14 h-14 mx-auto mb-4 text-gray-300" />
+                  <p class="text-sm font-medium text-gray-600">Tidak ada data yang ditemukan</p>
+                  <p class="text-xs text-gray-500 mt-1">Coba ubah kata kunci pencarian Anda</p>
                 </td>
               </tr>
             </tbody>
@@ -280,8 +289,8 @@
         </div>
     
         <!-- Pagination -->
-        <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-          <div class="text-sm text-gray-600">
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+          <div class="text-sm text-gray-600 font-medium">
             Menampilkan {{ paginatedData.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0 }} - 
             {{ Math.min(currentPage * itemsPerPage, filteredData.length) }} 
             dari {{ filteredData.length }} data
@@ -291,7 +300,7 @@
             <button
               @click="goToPage(currentPage - 1)"
               :disabled="currentPage === 1"
-              class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               Previous
             </button>
@@ -302,10 +311,10 @@
                 :key="page"
                 @click="goToPage(page)"
                 :class="[
-                  'px-3 py-1 border rounded text-sm transition-colors',
+                  'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
                   currentPage === page 
-                    ? 'bg-blue-500 text-white border-blue-500' 
-                    : 'border-gray-300 hover:bg-gray-50'
+                    ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
+                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                 ]"
               >
                 {{ page }}
@@ -316,41 +325,41 @@
               <button
                 @click="goToPage(1)"
                 :class="[
-                  'px-3 py-1 border rounded text-sm transition-colors',
+                  'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
                   currentPage === 1 
-                    ? 'bg-blue-500 text-white border-blue-500' 
-                    : 'border-gray-300 hover:bg-gray-50'
+                    ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
+                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                 ]"
               >
                 1
               </button>
               
-              <span v-if="currentPage > 3" class="px-2">...</span>
+              <span v-if="currentPage > 3" class="px-2 text-gray-500">...</span>
               
               <template v-for="page in totalPages" :key="page">
                 <button
                   v-if="page > 1 && page < totalPages && Math.abs(page - currentPage) <= 1"
                   @click="goToPage(page)"
                   :class="[
-                    'px-3 py-1 border rounded text-sm transition-colors',
+                    'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
                     currentPage === page 
-                      ? 'bg-blue-500 text-white border-blue-500' 
-                      : 'border-gray-300 hover:bg-gray-50'
+                      ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
+                      : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                   ]"
                 >
                   {{ page }}
                 </button>
               </template>
               
-              <span v-if="currentPage < totalPages - 2" class="px-2">...</span>
+              <span v-if="currentPage < totalPages - 2" class="px-2 text-gray-500">...</span>
               
               <button
                 @click="goToPage(totalPages)"
                 :class="[
-                  'px-3 py-1 border rounded text-sm transition-colors',
+                  'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
                   currentPage === totalPages 
-                    ? 'bg-blue-500 text-white border-blue-500' 
-                    : 'border-gray-300 hover:bg-gray-50'
+                    ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
+                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                 ]"
               >
                 {{ totalPages }}
@@ -360,7 +369,7 @@
             <button
               @click="goToPage(currentPage + 1)"
               :disabled="currentPage === totalPages"
-              class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               Next
             </button>
