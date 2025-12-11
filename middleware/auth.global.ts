@@ -1,8 +1,6 @@
-export default defineNuxtRouteMiddleware((to) => {
-  // Skip middleware di server side untuk menghindari issues
+export default defineNuxtRouteMiddleware(async (to) => {
   if (import.meta.server) return
 
-  // Gunakan useCookie untuk membaca token yang sama dengan useAuth
   const accessToken = useCookie<string | null>('app_accessToken', {
     maxAge: 60 * 60 * 24 * 7,
     sameSite: 'lax',
@@ -12,27 +10,41 @@ export default defineNuxtRouteMiddleware((to) => {
   
   console.log('Auth middleware - Route:', to.path, 'Token exists:', !!accessToken.value)
 
-  // Routes yang tidak memerlukan authentication
-  const publicRoutes = ['/login', '/auth']
+  const publicRoutes = ['/', '/login', '/auth']
 
-  // Cek apakah route adalah public atau processing token dari SSO
-  const isPublicRoute = publicRoutes.includes(to.path)
-  const isProcessingToken = to.path.startsWith('/login/')
+  const isPublicRoute = publicRoutes.some(route => to.path.startsWith(route))
+  const isProcessingToken = to.path.startsWith('/login/') || to.path.startsWith('/auth/')
 
   if (isProcessingToken) {
     console.log('Sedang memproses token dari SSO, skip middleware')
     return
   }
 
-  // Jika tidak ada token dan bukan public route (termasuk homepage), redirect ke homepage
-  if (!accessToken.value && !isPublicRoute && to.path !== '/') {
-    console.log('Akses protected route tanpa token, redirect ke homepage')
-    return navigateTo('/')
+  if (accessToken.value && !isPublicRoute) {
+    const { validateSession } = useAuth()
+    
+    try {
+      const isValid = await validateSession()
+      
+      if (!isValid) {
+        console.log('Token invalid, redirect ke homepage')
+        return navigateTo('/', { replace: true })
+      }
+      
+      console.log('Token valid, akses diberikan')
+    } catch (error) {
+      console.error('Validation error:', error)
+      return navigateTo('/', { replace: true })
+    }
   }
 
-  // Jika sudah ada token dan mencoba akses homepage atau login, redirect ke dashboard
-  if ((to.path === '/' || to.path === '/login') && accessToken.value) {
+  if (!accessToken.value && !isPublicRoute) {
+    console.log('Tidak ada token, redirect ke homepage')
+    return navigateTo('/', { replace: true })
+  }
+
+  if (to.path === '/' && accessToken.value) {
     console.log('Sudah login, redirect ke dashboard')
-    return navigateTo('/dashboard')
+    return navigateTo('/dashboard', { replace: true })
   }
 })
