@@ -24,7 +24,7 @@
     // Options untuk items per page
     const itemsPerPageOptions = [5, 10, 15, 20, 25, 50]
     
-    // ✅ DATA DUMMY - akan dipakai kalau props.data kosong
+    // DATA DUMMY 
     const dummyData: JabatanKosong[] = [
       {
         idJob: '40010000',
