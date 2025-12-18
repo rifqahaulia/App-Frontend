@@ -1,61 +1,129 @@
-// lib/api.ts
 import axios from 'axios'
 
-// Base URL backend - sesuaikan dengan URL backend Anda
-const BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000/api'
-
-// Create axios instance untuk Organization Management
-export const apiOm = axios.create({
-  baseURL: BASE_URL,
+// OM Service API (Organization Management)
+const apiOm = axios.create({
+  baseURL: 'http://localhost:5002/api',
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10 seconds
 })
 
-// Request interceptor - untuk menambahkan token autentikasi
+// PA Service API (Personnel Administration)
+const apiPa = axios.create({
+  baseURL: 'http://localhost:5000/api',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})
+
+// OM Service Interceptor
 apiOm.interceptors.request.use(
   (config) => {
-    // Ambil token dari localStorage atau cookie (hanya di client-side)
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('auth_token')
-      
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`
-      }
+    // Get token from cookie
+    const tokenCookie = useCookie('app_accessToken')
+    const token = tokenCookie.value
+    
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
     }
     
-    console.log('📤 API Request:', config.method?.toUpperCase(), config.url)
+    console.log('📤 [OM API] Request:', config.method?.toUpperCase(), config.url, config.params || config.data)
     return config
   },
   (error) => {
-    console.error('❌ Request Error:', error)
+    console.error('❌ [OM API] Request Error:', error)
     return Promise.reject(error)
   }
 )
 
-// Response interceptor - untuk handle response dan error
+// PA Service Interceptor
+apiPa.interceptors.request.use(
+  (config) => {
+    // Get token from cookie
+    const tokenCookie = useCookie('app_accessToken')
+    const token = tokenCookie.value
+    
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    
+    console.log('📤 [PA API] Request:', config.method?.toUpperCase(), config.url, config.params || config.data)
+    return config
+  },
+  (error) => {
+    console.error('❌ [PA API] Request Error:', error)
+    return Promise.reject(error)
+  }
+)
+
+// OM Service Response Interceptor
 apiOm.interceptors.response.use(
   (response) => {
-    console.log('✅ API Response:', response.config.url, response.status)
+    console.log('📥 [OM API] Response:', response.config.url, response.data)
     return response
   },
   (error) => {
-    console.error('❌ Response Error:', error.response?.status, error.message)
+    console.error('❌ [OM API] Response Error:', error.response?.status, error.response?.data)
     
-    // Handle specific error codes
+    // Handle 401 Unauthorized
     if (error.response?.status === 401) {
-      // Unauthorized - redirect to login
-      console.warn('⚠️ Unauthorized - Please login')
-      // window.location.href = '/login'
+      console.warn('⚠️ [OM API] Unauthorized - clearing session')
+      
+      if (import.meta.client) {
+        const tokenCookie = useCookie('app_accessToken')
+        tokenCookie.value = null
+        window.location.href = '/'
+      }
     }
     
+    // Handle 404 Not Found
     if (error.response?.status === 404) {
-      console.warn('⚠️ Resource not found')
+      console.warn('⚠️ [OM API] Resource not found')
+    }
+    
+    // Handle 403 Forbidden
+    if (error.response?.status === 403) {
+      console.warn('⚠️ [OM API] Forbidden - insufficient permissions')
     }
     
     return Promise.reject(error)
   }
 )
 
-export default apiOm
+// PA Service Response Interceptor
+apiPa.interceptors.response.use(
+  (response) => {
+    console.log('📥 [PA API] Response:', response.config.url, response.data)
+    return response
+  },
+  (error) => {
+    console.error('❌ [PA API] Response Error:', error.response?.status, error.response?.data)
+    
+    // Handle 401 Unauthorized
+    if (error.response?.status === 401) {
+      console.warn('⚠️ [PA API] Unauthorized - clearing session')
+      
+      if (import.meta.client) {
+        const tokenCookie = useCookie('app_accessToken')
+        tokenCookie.value = null
+        window.location.href = '/'
+      }
+    }
+    
+    // Handle 404 Not Found
+    if (error.response?.status === 404) {
+      console.warn('⚠️ [PA API] Resource not found')
+    }
+    
+    // Handle 403 Forbidden
+    if (error.response?.status === 403) {
+      console.warn('⚠️ [PA API] Forbidden - insufficient permissions')
+    }
+    
+    return Promise.reject(error)
+  }
+)
+
+export { apiOm, apiPa }
