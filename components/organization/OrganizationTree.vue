@@ -10,7 +10,11 @@
   })
   
   const emit = defineEmits<{
-    select: [node: TreeItem]
+    select: [node: any]
+    edit: [node: any]
+    delete: [node: any]
+    addChild: [node: any]
+    viewDetails: [node: any]
   }>()
   
   const omStore = useOmStore()
@@ -55,11 +59,27 @@
     isExpanded.value = !isExpanded.value
   }
   
-  const handleSelect = (node: TreeItem) => {
+  const handleSelect = (node: any) => {
     selectedNodeId.value = node.id
     omStore.selectNode(node)
     emit('select', node)
     console.log('Selected node:', node)
+  }
+  
+  const handleEdit = (node: any) => {
+    emit('edit', node)
+  }
+  
+  const handleDelete = (node: any) => {
+    emit('delete', node)
+  }
+  
+  const handleAddChild = (node: any) => {
+    emit('addChild', node)
+  }
+  
+  const handleViewDetails = (node: any) => {
+    emit('viewDetails', node)
   }
   
   const handleYearFilter = async () => {
@@ -174,13 +194,17 @@
           <!-- Tree -->
           <div v-else class="p-2 max-h-[600px] overflow-y-auto">
             <template v-if="displayTreeData.length > 0">
-              <TreeNode
+              <OrganizationTreeNode
                 v-for="node in displayTreeData"
                 :key="node.id"
-                :node="node"
+                :node="node.data"
                 :level="0"
-                :selectedId="selectedNodeId?.toString()"
-                @select="handleSelect(node.data)"
+                :selectedId="selectedNodeId"
+                @select="handleSelect"
+                @edit="handleEdit"
+                @delete="handleDelete"
+                @addChild="handleAddChild"
+                @viewDetails="handleViewDetails"
               />
             </template>
             <div v-else class="p-6 text-center text-gray-500 text-sm">

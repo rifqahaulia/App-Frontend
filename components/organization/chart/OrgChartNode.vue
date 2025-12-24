@@ -41,17 +41,17 @@
     const getBackgroundColor = computed(() => {
       switch (props.node.object_type) {
         case 'O':
-          return 'bg-blue-50 border-blue-200'
+          return 'bg-blue-50 border-blue-200 hover:bg-blue-100'
         case 'S':
-          return 'bg-purple-50 border-purple-200'
+          return 'bg-purple-50 border-purple-200 hover:bg-purple-100'
         case 'P':
-          return 'bg-green-50 border-green-200'
+          return 'bg-green-50 border-green-200 hover:bg-green-100'
         case 'C':
-          return 'bg-yellow-50 border-yellow-200'
+          return 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100'
         case 'K':
-          return 'bg-orange-50 border-orange-200'
+          return 'bg-orange-50 border-orange-200 hover:bg-orange-100'
         default:
-          return 'bg-gray-50 border-gray-200'
+          return 'bg-gray-50 border-gray-200 hover:bg-gray-100'
       }
     })
     
@@ -71,6 +71,23 @@
           return 'text-gray-700'
       }
     })
+
+    const getIconColor = computed(() => {
+      switch (props.node.object_type) {
+        case 'O':
+          return 'text-blue-600'
+        case 'S':
+          return 'text-purple-600'
+        case 'P':
+          return 'text-green-600'
+        case 'C':
+          return 'text-yellow-600'
+        case 'K':
+          return 'text-orange-600'
+        default:
+          return 'text-gray-600'
+      }
+    })
     </script>
     
     <template>
@@ -79,7 +96,7 @@
         <div 
           :class="[
             'relative border-2 rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer',
-            'min-w-[240px] max-w-[280px]',
+            'min-w-[260px] max-w-[300px]',
             getBackgroundColor
           ]"
           @click="toggleExpand"
@@ -87,7 +104,7 @@
           <!-- Chief Crown -->
           <div 
             v-if="node.chief" 
-            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-400 rounded-full p-1.5 shadow-md"
+            class="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full p-1.5 shadow-md border-2 border-white"
           >
             <Icon name="lucide:crown" class="w-4 h-4 text-white" />
           </div>
@@ -95,31 +112,47 @@
           <div class="p-4">
             <!-- Header with Icon -->
             <div class="flex items-start gap-3 mb-3">
-              <div :class="['p-2 rounded-lg', node.object_type === 'P' ? 'bg-white' : 'bg-white/50']">
+              <div class="p-2.5 rounded-lg bg-white shadow-sm border">
                 <Icon 
                   :name="getIcon"
-                  :class="['w-5 h-5', getTextColor]"
+                  :class="['w-6 h-6', getIconColor]"
                 />
               </div>
               <div class="flex-1 min-w-0">
                 <h3 :class="['font-semibold text-sm leading-tight mb-1', getTextColor]">
                   {{ node.long_text || node.short_text || node.object_id }}
                 </h3>
-                <p class="text-xs text-gray-500">
-                  {{ node.object_id }} ({{ node.object_type }})
+                <p class="text-xs text-gray-500 font-mono">
+                  {{ node.object_id }}
                 </p>
+                <div class="flex items-center gap-1 mt-1">
+                  <span :class="['text-xs px-2 py-0.5 rounded-full font-medium', 
+                    node.object_type === 'O' ? 'bg-blue-100 text-blue-700' :
+                    node.object_type === 'S' ? 'bg-purple-100 text-purple-700' :
+                    node.object_type === 'P' ? 'bg-green-100 text-green-700' :
+                    node.object_type === 'C' ? 'bg-yellow-100 text-yellow-700' :
+                    node.object_type === 'K' ? 'bg-orange-100 text-orange-700' :
+                    'bg-gray-100 text-gray-700'
+                  ]">
+                    {{ node.object_type }}
+                  </span>
+                </div>
               </div>
             </div>
     
             <!-- Details -->
-            <div class="space-y-1 text-xs">
-              <div v-if="node.short_text" class="flex items-center gap-1 text-gray-600">
-                <Icon name="lucide:tag" class="w-3 h-3" />
+            <div class="space-y-2 text-xs">
+              <div v-if="node.short_text && node.short_text !== node.long_text" class="flex items-center gap-2 text-gray-600 bg-white/50 px-2 py-1 rounded">
+                <Icon name="lucide:tag" class="w-3 h-3 flex-shrink-0" />
                 <span class="truncate">{{ node.short_text }}</span>
               </div>
-              <div v-if="node.abbreviation" class="flex items-center gap-1 text-gray-600">
-                <Icon name="lucide:file-text" class="w-3 h-3" />
-                <span>{{ node.abbreviation }}</span>
+              <div v-if="node.abbreviation" class="flex items-center gap-2 text-gray-600 bg-white/50 px-2 py-1 rounded">
+                <Icon name="lucide:file-text" class="w-3 h-3 flex-shrink-0" />
+                <span class="font-medium">{{ node.abbreviation }}</span>
+              </div>
+              <div class="flex items-center gap-2 text-gray-500 bg-white/30 px-2 py-1 rounded">
+                <Icon name="lucide:layers" class="w-3 h-3 flex-shrink-0" />
+                <span>Level {{ node.depth || 0 }}</span>
               </div>
             </div>
           </div>
@@ -127,17 +160,25 @@
           <!-- Expand/Collapse Button -->
           <button
             v-if="hasChildren"
-            class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white border-2 border-gray-300 rounded-full p-1 shadow-md hover:bg-gray-50 transition-colors"
+            class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-white border-2 border-gray-300 rounded-full p-1.5 shadow-md hover:bg-gray-50 hover:border-gray-400 transition-all"
             @click.stop="toggleExpand"
           >
             <Icon 
               name="lucide:chevron-down"
               :class="[
-                'w-4 h-4 text-gray-600 transition-transform',
+                'w-4 h-4 text-gray-600 transition-transform duration-200',
                 { 'rotate-180': !isExpanded }
               ]"
             />
           </button>
+
+          <!-- Children Count Badge -->
+          <div 
+            v-if="hasChildren" 
+            class="absolute -top-2 -right-2 bg-blue-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-md"
+          >
+            {{ node.children?.length || 0 }}
+          </div>
         </div>
     
         <!-- Connection Line -->
@@ -149,21 +190,21 @@
         <!-- Children Container -->
         <Transition
           enter-active-class="transition-all duration-300 ease-out"
-          enter-from-class="opacity-0 scale-95"
-          enter-to-class="opacity-100 scale-100"
+          enter-from-class="opacity-0 scale-95 -translate-y-4"
+          enter-to-class="opacity-100 scale-100 translate-y-0"
           leave-active-class="transition-all duration-300 ease-in"
-          leave-from-class="opacity-100 scale-100"
-          leave-to-class="opacity-0 scale-95"
+          leave-from-class="opacity-100 scale-100 translate-y-0"
+          leave-to-class="opacity-0 scale-95 -translate-y-4"
         >
-          <div v-if="hasChildren && isExpanded" class="flex gap-6 relative">
+          <div v-if="hasChildren && isExpanded" class="flex gap-8 relative">
             <!-- Horizontal Line -->
             <div 
               v-if="node.children && node.children.length > 1"
-              class="absolute top-0 left-0 right-0 h-0.5 bg-gray-300"
+              class="absolute top-0 h-0.5 bg-gray-300"
               :style="{ 
-                left: '50%', 
-                right: '50%',
-                width: `calc(100% - ${240 / 2}px)`,
+                left: `calc(50% - ${(node.children.length - 1) * 150}px)`,
+                right: `calc(50% - ${(node.children.length - 1) * 150}px)`,
+                width: `${(node.children.length - 1) * 300}px`,
                 transform: 'translateX(-50%)'
               }"
             ></div>

@@ -31,7 +31,8 @@
       </div>
       <div v-else class="p-12 text-center text-gray-500">
         <Icon name="lucide:sitemap" class="w-16 h-16 mx-auto mb-4 text-gray-300" />
-        <p>Pilih organisasi untuk melihat struktur</p>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Pilih Organisasi</h3>
+        <p class="text-gray-500">Pilih organisasi untuk melihat struktur chart</p>
       </div>
     </template>
     
@@ -39,5 +40,7 @@
     .org-chart-container {
       min-height: 400px;
       background: linear-gradient(to bottom, #f9fafb 0%, #ffffff 100%);
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
     }
     </style>
