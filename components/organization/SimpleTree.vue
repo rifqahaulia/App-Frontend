@@ -169,7 +169,7 @@ const props = defineProps({
 
 const emit = defineEmits(['select', 'action'])
 
-const isExpanded = ref(true)
+const isExpanded = ref(false)
 const showMenu = ref(false)
 
 const isSelected = computed(() => props.selectedId === props.node.id)

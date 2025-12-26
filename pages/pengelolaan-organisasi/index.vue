@@ -14,7 +14,7 @@
         <!-- Content Container - Sama persis dengan mockup -->
         <div class="flex-1 flex flex-col gap-4 p-4 overflow-hidden">
           <!-- Structure Section - Top Half (sama dengan mockup) -->
-          <div class="h-1/2 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col overflow-hidden">
+          <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col overflow-hidden">
             <!-- Structure Header - Background biru seperti mockup -->
             <div class="px-4 py-3 bg-blue-500 text-white flex items-center gap-2 flex-shrink-0 rounded-t-lg">
               <Icon name="lucide:chevron-down" class="w-4 h-4" />
@@ -70,25 +70,13 @@
               </div>
             </div>
 
-            <!-- Tree Content -->
-            <div class="flex-1 overflow-auto">
-              <div v-if="omStore.isLoading" class="p-8 text-center">
+            <!-- Tree Content - Only show if there's data -->
+            <div v-if="displayData.length > 0" class="flex-1 overflow-auto">
+              <div v-if="omStore.isLoading" class="p-4 text-center">
                 <Icon name="lucide:loader-2" class="w-6 h-6 animate-spin mx-auto text-blue-500 mb-2" />
                 <p class="text-sm text-gray-500">Memuat data...</p>
               </div>
-              
-              <div v-else-if="omStore.isError" class="p-8 text-center">
-                <Icon name="lucide:alert-circle" class="w-6 h-6 mx-auto text-red-500 mb-2" />
-                <p class="text-sm text-red-600">{{ omStore.errorMessage || 'Data tidak ditemukan' }}</p>
-                <button
-                  @click="omStore.fetchOrgStructure()"
-                  class="mt-3 px-4 py-2 text-sm bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Coba Lagi
-                </button>
-              </div>
-
-              <div v-else-if="displayData.length > 0" class="overflow-auto">
+              <div v-else class="overflow-auto">
                 <SimpleTree
                   v-for="item in displayData"
                   :key="item.id"
@@ -99,15 +87,11 @@
                   @action="handleTreeAction"
                 />
               </div>
-              
-              <div v-else class="p-8 text-center text-gray-500 text-sm">
-                {{ searchQuery ? 'Tidak ada hasil pencarian' : 'Tidak ada data organisasi' }}
-              </div>
             </div>
           </div>
 
           <!-- Details Section - Bottom Half (sama dengan mockup) -->
-          <div class="h-1/2 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col overflow-hidden">
+          <div class="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col overflow-hidden">
             <!-- Detail Header - Background abu-abu seperti mockup -->
             <div class="px-4 py-3 border-b bg-gray-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 flex-shrink-0 rounded-t-lg">
               <h2 class="text-lg font-semibold text-gray-800">Detail</h2>
@@ -275,6 +259,7 @@ const selectedNodeId = ref(null)
 const searchQuery = ref('')
 const selectedYear = ref('')
 const viewMode = ref('chart')
+const isStructureExpanded = ref(false) // Default tertutup
 
 // Filter function
 const filterTree = (items, query) => {
@@ -305,6 +290,14 @@ const filterTree = (items, query) => {
 const displayData = computed(() => {
   return searchQuery.value ? filterTree(omStore.items, searchQuery.value) : omStore.items
 })
+
+// Watch for data changes and auto-select first node
+watch(() => omStore.items, (newItems) => {
+  if (newItems.length > 0 && !selectedNode.value) {
+    const firstNode = newItems[0]
+    handleSelect(firstNode)
+  }
+}, { immediate: true })
 
 const handleSelect = (nodeData) => {
   console.log('🟢 Main handler - Node selected:', nodeData.object_id)
@@ -381,6 +374,10 @@ const clearYearFilter = async () => {
   await omStore.fetchOrgStructure()
 }
 
+const toggleStructure = () => {
+  isStructureExpanded.value = !isStructureExpanded.value
+}
+
 // Format date helper
 const formatDate = (dateStr) => {
   if (!dateStr || dateStr === '9999-12-31') return 'Tidak terbatas'
@@ -396,5 +393,11 @@ const formatDate = (dateStr) => {
 // Fetch data on mount
 onMounted(async () => {
   await omStore.fetchOrgStructure()
+  
+  // Auto-select first node if available
+  if (omStore.items.length > 0 && !selectedNode.value) {
+    const firstNode = omStore.items[0]
+    handleSelect(firstNode)
+  }
 })
 </script>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
-    import type { TreeItem } from '~/stores/om/useOmStore'
+    import { ref, computed } from 'vue'
+    import type { TreeItem } from '@/types/om'
     
     interface Props {
       data: TreeItem | null
