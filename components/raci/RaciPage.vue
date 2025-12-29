@@ -1,233 +1,438 @@
 <template>
-  <div class="p-6">
-    <!-- Tabs -->
-    <div class="mb-6">
-      <div class="flex gap-1">
-        <div
-          v-for="tab in tabs"
-          :key="tab.id"
-          @click="activeTab = tab.id"
-          :class="[
-            'px-4 py-2 text-sm font-medium cursor-pointer flex items-center gap-2 border',
-            activeTab === tab.id 
-              ? 'text-blue-600 border-blue-300 bg-blue-50 rounded-t-lg border-b-white' 
-              : 'text-gray-600 border-gray-300 bg-white hover:bg-gray-50 rounded-t-lg'
-          ]"
-        >
-          {{ tab.name }}
-          <Icon name="lucide:copy" class="w-4 h-4" />
-        </div>
-        <div class="px-4 py-2 text-blue-600 text-sm font-medium cursor-pointer border border-gray-300 bg-white hover:bg-gray-50 flex items-center rounded-t-lg">
-          +
-        </div>
-      </div>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="mb-6 flex gap-3">
-      <button class="px-4 py-2 bg-blue-500 text-white rounded text-sm font-medium hover:bg-blue-600 transition-colors flex items-center gap-2">
-        <Icon name="lucide:plus" class="w-4 h-4" />
-        Add Row
-      </button>
-      <button class="px-4 py-2 bg-blue-500 text-white rounded text-sm font-medium hover:bg-blue-600 transition-colors flex items-center gap-2">
-        <Icon name="lucide:plus" class="w-4 h-4" />
-        Add Column
-      </button>
-      <div class="flex gap-3 ml-auto">
-        <button class="px-4 py-2 bg-white text-gray-700 rounded text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2 border border-gray-300">
-          <Icon name="lucide:download" class="w-4 h-4" />
-          Download Template
-        </button>
-        <button class="px-4 py-2 bg-white text-gray-700 rounded text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2 border border-gray-300">
-          <Icon name="lucide:upload" class="w-4 h-4" />
-          Import
-        </button>
-      </div>
-    </div>
-
-    <!-- RACI Table -->
-    <div class="bg-white border border-gray-300 overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <!-- Header -->
-          <thead>
-            <tr class="bg-blue-50">
-              <th class="px-4 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider border-r border-gray-300">
-                PROSES BISNIS
-              </th>
-              <th class="px-4 py-3 text-center text-xs font-bold text-gray-900 uppercase tracking-wider border-r border-gray-300">
-                GROUP
-              </th>
-              <th v-for="role in roles" :key="role.id" class="px-3 py-3 text-center text-xs font-bold text-gray-900 uppercase tracking-wider border-r border-gray-300 min-w-[120px]">
-                <div class="flex flex-col items-center">
-                  <div class="font-bold text-gray-900 text-xs mb-1">{{ role.title }}</div>
-                  <div class="text-xs font-medium text-gray-800 normal-case leading-tight">{{ role.subtitle }}</div>
-                </div>
-              </th>
-            </tr>
-          </thead>
-          
-          <!-- Body -->
-          <tbody class="bg-white">
-            <tr v-for="(process, index) in processes" :key="process.id" class="border-b border-gray-300">
-              <td class="px-4 py-3 border-r border-gray-300">
-                <div class="flex items-center gap-2">
-                  <button 
-                    v-if="process.children"
-                    @click="toggleProcess(process.id)"
-                    class="text-gray-400 hover:text-gray-600 transition-colors"
-                  >
-                    <Icon 
-                      name="lucide:chevron-right"
-                      class="w-4 h-4 transition-transform duration-200"
-                      :class="{ 'rotate-90': expandedProcesses.includes(process.id) }"
-                    />
-                  </button>
-                  <span class="text-sm text-gray-900 font-medium" :class="{ 'ml-6': !process.children }">
-                    {{ process.name }}
-                  </span>
-                </div>
-              </td>
-              <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-600">
-                {{ process.group }}
-              </td>
-              <td v-for="role in roles" :key="role.id" class="px-3 py-3 text-center border-r border-gray-300">
-                <div class="flex justify-center">
-                  <span 
-                    v-if="process.assignments && process.assignments[role.id]"
-                    :class="getRaciClass(process.assignments[role.id])"
-                    class="inline-flex items-center justify-center w-7 h-7 rounded text-sm font-bold"
-                  >
-                    {{ process.assignments[role.id] }}
-                  </span>
-                </div>
-              </td>
-            </tr>
-            
-            <!-- Child processes -->
-            <template v-for="process in processes" :key="`children-${process.id}`">
-              <tr 
-                v-for="child in process.children" 
-                :key="child.id"
-                v-show="expandedProcesses.includes(process.id)"
-                class="border-b border-gray-300"
-              >
-                <td class="px-4 py-3 border-r border-gray-300">
-                  <div class="flex items-center gap-2 ml-6">
-                    <button 
-                      v-if="child.children"
-                      @click="toggleProcess(child.id)"
-                      class="text-gray-400 hover:text-gray-600 transition-colors"
-                    >
-                      <Icon 
-                        name="lucide:chevron-right"
-                        class="w-4 h-4 transition-transform duration-200"
-                        :class="{ 'rotate-90': expandedProcesses.includes(child.id) }"
-                      />
-                    </button>
-                    <span class="text-sm text-gray-900" :class="{ 'ml-6': !child.children }">
-                      {{ child.name }}
-                    </span>
-                  </div>
-                </td>
-                <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-600">
-                  {{ child.group }}
-                </td>
-                <td v-for="role in roles" :key="role.id" class="px-3 py-3 text-center border-r border-gray-300">
-                  <div class="flex justify-center">
-                    <span 
-                      v-if="child.assignments && child.assignments[role.id]"
-                      :class="getRaciClass(child.assignments[role.id])"
-                      class="inline-flex items-center justify-center w-7 h-7 rounded text-sm font-bold"
-                    >
-                      {{ child.assignments[role.id] }}
-                    </span>
-                  </div>
-                </td>
-              </tr>
-              
-              <!-- Sub-child processes -->
-              <template v-for="child in process.children" :key="`subchildren-${child.id}`">
-                <tr 
-                  v-for="subchild in child.children" 
-                  :key="subchild.id"
-                  v-show="expandedProcesses.includes(process.id) && expandedProcesses.includes(child.id)"
-                  class="border-b border-gray-300"
-                >
-                  <td class="px-4 py-3 border-r border-gray-300">
-                    <div class="flex items-center gap-2 ml-12">
-                      <span class="text-sm text-gray-900">{{ subchild.name }}</span>
-                    </div>
-                  </td>
-                  <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-600">
-                    {{ subchild.group }}
-                  </td>
-                  <td v-for="role in roles" :key="role.id" class="px-3 py-3 text-center border-r border-gray-300">
-                    <div class="flex justify-center">
-                      <span 
-                        v-if="subchild.assignments && subchild.assignments[role.id]"
-                        :class="getRaciClass(subchild.assignments[role.id])"
-                        class="inline-flex items-center justify-center w-7 h-7 rounded text-sm font-bold"
-                      >
-                        {{ subchild.assignments[role.id] }}
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              </template>
-            </template>
-          </tbody>
-        </table>
-      </div>
+  <div class="h-screen bg-gray-50 flex flex-col overflow-hidden">
+    <LayoutTheNavbar />
+    
+    <div class="flex flex-1 overflow-hidden">
+      <LayoutTheSidebar />
       
-      <!-- Pagination -->
-      <div class="px-4 py-3 border-t border-gray-300 bg-gray-50 flex items-center justify-between">
-        <div class="flex items-center gap-2 text-sm text-gray-600">
-          <span>Items per page:</span>
-          <select v-model="itemsPerPage" class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
+      <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b bg-white flex-shrink-0">
+          <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-gray-900">RACI</h1>
+            <!-- Breadcrumb -->
+            <div class="flex items-center text-sm text-gray-500">
+              <span>Organisasi</span>
+              <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
+              <span>Report</span>
+              <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
+              <span class="text-gray-900 font-medium">RACI</span>
+            </div>
+          </div>
         </div>
-        <div class="flex items-center gap-1">
-          <button 
-            @click="currentPage = Math.max(1, currentPage - 1)"
-            class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed bg-white" 
-            :disabled="currentPage === 1"
-          >
-            ‹
-          </button>
-          <button 
-            v-for="page in visiblePages" 
-            :key="page"
-            @click="currentPage = page"
-            :class="[
-              'px-3 py-1 border border-gray-300 rounded text-sm transition-colors',
-              currentPage === page ? 'bg-blue-500 text-white border-blue-500' : 'bg-white hover:bg-gray-100'
-            ]"
-          >
-            {{ page }}
-          </button>
-          <button 
-            @click="currentPage = Math.min(totalPages, currentPage + 1)"
-            class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed bg-white" 
-            :disabled="currentPage === totalPages"
-          >
-            ›
-          </button>
+
+        <!-- Content Container -->
+        <div class="flex-1 overflow-y-auto bg-white relative">
+          <div class="p-6">
+            <!-- Tabs -->
+            <div class="mb-6">
+              <div class="flex gap-1">
+                <button
+                  v-for="tab in tabs"
+                  :key="tab.id"
+                  @click="activeTab = tab.id"
+                  :class="[
+                    'px-4 py-2 text-sm font-medium flex items-center gap-2 border rounded-t-lg transition-colors',
+                    activeTab === tab.id 
+                      ? 'text-blue-600 bg-blue-50 border-blue-300 border-b-white shadow-sm' 
+                      : 'text-gray-600 bg-white border-gray-300 hover:bg-gray-50'
+                  ]"
+                >
+                  {{ tab.name }}
+                  <Icon name="lucide:copy" class="w-4 h-4 text-gray-400" />
+                </button>
+                <button class="px-3 py-2 text-blue-600 text-sm font-medium hover:bg-blue-50 transition-colors border border-gray-300 bg-white rounded-t-lg shadow-sm">
+                  <Icon name="lucide:plus" class="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mb-6 flex items-center justify-between">
+              <div class="flex gap-3">
+                <button class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm">
+                  <Icon name="lucide:plus" class="w-4 h-4" />
+                  Add Row
+                </button>
+                <button class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm">
+                  <Icon name="lucide:plus" class="w-4 h-4" />
+                  Add Column
+                </button>
+              </div>
+              <div class="flex gap-3">
+                <button class="px-4 py-2 bg-white text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2 border border-gray-300 shadow-sm">
+                  <Icon name="lucide:download" class="w-4 h-4" />
+                  Download Template
+                </button>
+                <button class="px-4 py-2 bg-white text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2 border border-gray-300 shadow-sm">
+                  <Icon name="lucide:upload" class="w-4 h-4" />
+                  Import
+                </button>
+              </div>
+            </div>
+
+            <!-- RACI Table -->
+            <div class="border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+              <div class="overflow-x-auto">
+                <table class="w-full border-collapse bg-white">
+                  <!-- Header -->
+                  <thead>
+                    <tr class="bg-blue-50">
+                      <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300">
+                        PROSES BISNIS
+                      </th>
+                      <th class="px-4 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300">
+                        GROUP
+                      </th>
+                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300 min-w-[120px]">
+                        <div class="flex flex-col items-center">
+                          <div class="font-semibold text-gray-800 text-xs mb-1">KEPALA</div>
+                          <div class="font-semibold text-gray-800 text-xs mb-1">BIRO</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Hukum</div>
+                        </div>
+                      </th>
+                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300 min-w-[120px]">
+                        <div class="flex flex-col items-center">
+                          <div class="font-semibold text-gray-800 text-xs mb-1">MANAGER</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Bantuan</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Hukum</div>
+                        </div>
+                      </th>
+                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300 min-w-[120px]">
+                        <div class="flex flex-col items-center">
+                          <div class="font-semibold text-gray-800 text-xs mb-1">KEPALA</div>
+                          <div class="font-semibold text-gray-800 text-xs mb-1">BIRO</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Hukum</div>
+                        </div>
+                      </th>
+                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300 min-w-[120px]">
+                        <div class="flex flex-col items-center">
+                          <div class="font-semibold text-gray-800 text-xs mb-1">JUNIOR</div>
+                          <div class="font-semibold text-gray-800 text-xs mb-1">MANAGER</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Bantuan Hukum</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Non Litigasi</div>
+                        </div>
+                      </th>
+                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300 min-w-[120px]">
+                        <div class="flex flex-col items-center">
+                          <div class="font-semibold text-gray-800 text-xs mb-1">MANAGER</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Pertimbangan</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Hukum</div>
+                        </div>
+                      </th>
+                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300 min-w-[140px]">
+                        <div class="flex flex-col items-center">
+                          <div class="font-semibold text-gray-800 text-xs mb-1">JUNIOR MANAGER</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Pertimbangan Hukum</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Bidang Produk</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Internal</div>
+                        </div>
+                      </th>
+                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider min-w-[140px]">
+                        <div class="flex flex-col items-center">
+                          <div class="font-semibold text-gray-800 text-xs mb-1">JUNIOR MANAGER</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Pertimbangan Hukum</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Bidang Produk</div>
+                          <div class="text-xs text-gray-600 normal-case font-normal">Eksternal</div>
+                        </div>
+                      </th>
+                    </tr>
+                  </thead>
+                  
+                  <!-- Body -->
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <!-- Mengelola Hukum -->
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-4 py-3 border-r border-gray-300">
+                        <div class="flex items-center gap-2">
+                          <Icon name="lucide:chevron-down" class="w-4 h-4 text-gray-600" />
+                          <span class="text-sm text-gray-900 font-medium">Mengelola Hukum</span>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <span class="text-sm font-medium text-gray-900">A/C</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <button @click="openEditModal" class="text-blue-500 hover:text-blue-700 transition-colors">
+                            <Icon name="lucide:edit" class="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <div class="w-4 h-4 border-2 border-blue-600 rounded-sm"></div>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center"></td>
+                    </tr>
+                    
+                    <!-- Mengelola kepatuhan peraturan perundang-undangan -->
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-4 py-3 border-r border-gray-300">
+                        <div class="flex items-center gap-2 ml-6">
+                          <span class="text-sm text-gray-900">Mengelola kepatuhan peraturan perundang-undangan</span>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <span class="text-sm font-medium text-gray-900">A/C</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <button @click="openEditModal" class="text-blue-500 hover:text-blue-700 transition-colors">
+                            <Icon name="lucide:edit" class="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <div class="w-4 h-4 border-2 border-blue-600 rounded-sm"></div>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <span class="text-sm font-medium text-gray-900">A</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center"></td>
+                    </tr>
+                    
+                    <!-- Mengelola legal environment -->
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-4 py-3 border-r border-gray-300">
+                        <div class="flex items-center gap-2 ml-12">
+                          <Icon name="lucide:chevron-down" class="w-4 h-4 text-gray-600" />
+                          <span class="text-sm text-gray-900">Mengelola legal environment</span>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <span class="text-sm font-medium text-gray-900">A/C</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <button @click="openEditModal" class="text-blue-500 hover:text-blue-700 transition-colors">
+                            <Icon name="lucide:edit" class="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <div class="w-4 h-4 border-2 border-blue-600 rounded-sm"></div>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <span class="text-sm font-medium text-gray-900">C/R</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center">
+                        <div class="flex justify-center">
+                          <span class="text-sm font-medium text-gray-900">C/R</span>
+                        </div>
+                      </td>
+                    </tr>
+                    
+                    <!-- Sub processes -->
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-4 py-3 border-r border-gray-300">
+                        <div class="flex items-center gap-2 pl-16">
+                          <span class="text-sm text-gray-900">Melakukan identifikasi sumber, isu hukum dan peraturan yang dapat mempengaruhi bisnis perusahaan</span>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center"></td>
+                    </tr>
+                    
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-4 py-3 border-r border-gray-300">
+                        <div class="flex items-center gap-2 pl-16">
+                          <span class="text-sm text-gray-900">Membuat sistem identifikasi sumber, isu hukum dan peraturan</span>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center"></td>
+                    </tr>
+                    
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-4 py-3 border-r border-gray-300">
+                        <div class="flex items-center gap-2 pl-16">
+                          <span class="text-sm text-gray-900">Melakukan pengumpulan dan screening data terkait dengan peraturan yang dapat mempengaruhi bisnis perusahaan</span>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center"></td>
+                    </tr>
+                    
+                    <!-- Mengelola dokumen legal dan perizinan -->
+                    <tr class="hover:bg-gray-50 transition-colors">
+                      <td class="px-4 py-3 border-r border-gray-300">
+                        <div class="flex items-center gap-2 ml-12">
+                          <Icon name="lucide:chevron-right" class="w-4 h-4 text-gray-600" />
+                          <span class="text-sm text-gray-900">Mengelola dokumen legal dan perizinan</span>
+                        </div>
+                      </td>
+                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <span class="text-sm font-medium text-gray-900">A/C</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300">
+                        <div class="flex justify-center">
+                          <button @click="openEditModal" class="text-blue-500 hover:text-blue-700 transition-colors">
+                            <Icon name="lucide:edit" class="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                      <td class="px-3 py-3 text-center"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- Pagination -->
+              <div class="px-4 py-3 border-t border-gray-300 bg-gray-50 flex items-center justify-between">
+                <div class="flex items-center gap-2 text-sm text-gray-600">
+                  <span>Items per page:</span>
+                  <select class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                    <option value="10">10</option>
+                  </select>
+                </div>
+                <div class="flex items-center gap-1">
+                  <button class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 bg-white disabled:opacity-50">‹</button>
+                  <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">1</button>
+                  <button class="px-3 py-1 border border-blue-500 rounded text-sm bg-blue-500 text-white font-medium">2</button>
+                  <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">3</button>
+                  <span class="px-2 text-sm text-gray-500">...</span>
+                  <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">8</button>
+                  <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">9</button>
+                  <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">10</button>
+                  <button class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 bg-white">›</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Input Value Modal - Positioned over the table -->
+          <div v-if="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-2xl w-96 max-w-md mx-4 border border-gray-200">
+              <!-- Modal Header -->
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+                <h3 class="text-lg font-semibold text-gray-900">Input Value</h3>
+                <button @click="closeEditModal" class="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100">
+                  <Icon name="lucide:x" class="w-5 h-5" />
+                </button>
+              </div>
+              
+              <!-- Modal Body -->
+              <div class="p-6 space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Select Option</label>
+                  <select v-model="selectedOption" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white">
+                    <option value="">Option</option>
+                    <option value="R">R - Responsible</option>
+                    <option value="A">A - Accountable</option>
+                    <option value="C">C - Consulted</option>
+                    <option value="I">I - Informed</option>
+                    <option value="A/C">A/C</option>
+                    <option value="C/R">C/R</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Option Reason</label>
+                  <textarea 
+                    v-model="optionReason" 
+                    placeholder="Reason"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none bg-white"
+                    rows="4"
+                  ></textarea>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">History:</label>
+                  <div class="flex items-center gap-3 text-sm text-gray-600 bg-gray-50 p-3 rounded-md border">
+                    <div class="flex items-center gap-1">
+                      <Icon name="lucide:user" class="w-4 h-4 text-blue-500" />
+                      <span class="text-xs">User</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <Icon name="lucide:clock" class="w-4 h-4 text-green-500" />
+                      <span class="text-xs">Time</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                      <Icon name="lucide:info" class="w-4 h-4 text-orange-500" />
+                      <span class="text-xs">Info</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Modal Footer -->
+              <div class="flex justify-end gap-3 p-4 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+                <button @click="closeEditModal" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors border border-gray-300 rounded-md hover:bg-gray-100">
+                  Cancel
+                </button>
+                <button @click="saveValue" class="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md hover:bg-blue-600 transition-colors shadow-sm">
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   </div>
 </template>
 
 <script setup>
+definePageMeta({
+  layout: 'default'
+})
+
 // Reactive data
 const activeTab = ref('unit-hukum')
-const expandedProcesses = ref([1, 2, 3]) // Pre-expand processes to match mockup
-const currentPage = ref(2) // Set to page 2 as shown in mockup
-const itemsPerPage = ref(10)
+const showEditModal = ref(false)
+const selectedOption = ref('')
+const optionReason = ref('')
 
 // Tabs data
 const tabs = ref([
@@ -236,112 +441,22 @@ const tabs = ref([
   { id: 'corporate-strategy', name: 'Corporate Strategy' }
 ])
 
-// Roles data
-const roles = ref([
-  { id: 'kepala-biro-hukum', title: 'Kepala Biro', subtitle: 'Hukum' },
-  { id: 'manager-bantuan-hukum', title: 'Manager', subtitle: 'Bantuan Hukum' },
-  { id: 'kepala-biro-hukum-2', title: 'Kepala Biro', subtitle: 'Hukum' },
-  { id: 'junior-manager-bantuan-hukum', title: 'Junior Manager', subtitle: 'Bantuan Hukum Non Litigasi' },
-  { id: 'manager-pertimbangan-hukum', title: 'Manager', subtitle: 'Pertimbangan Hukum' },
-  { id: 'junior-manager-pertimbangan-hukum-bidang', title: 'Junior Manager', subtitle: 'Pertimbangan Hukum Bidang Produk Internal' },
-  { id: 'junior-manager-pertimbangan-hukum-eksternal', title: 'Junior Manager', subtitle: 'Pertimbangan Hukum Bidang Produk Eksternal' }
-])
-
-// Processes data with dummy RACI assignments
-const processes = ref([
-  {
-    id: 1,
-    name: 'Mengelola Hukum',
-    group: '15',
-    assignments: {
-      'kepala-biro-hukum': 'A',
-      'manager-bantuan-hukum': 'C'
-    },
-    children: [
-      {
-        id: 2,
-        name: 'Mengelola kepatuhan peraturan perundang-undangan',
-        group: '15',
-        assignments: {
-          'kepala-biro-hukum': 'A',
-          'manager-bantuan-hukum': 'C',
-          'junior-manager-bantuan-hukum': 'A'
-        },
-        children: [
-          {
-            id: 3,
-            name: 'Mengelola legal environment',
-            group: '15',
-            assignments: {
-              'kepala-biro-hukum': 'A',
-              'manager-bantuan-hukum': 'C',
-              'junior-manager-pertimbangan-hukum-bidang': 'C',
-              'junior-manager-pertimbangan-hukum-eksternal': 'R'
-            },
-            children: [
-              {
-                id: 4,
-                name: 'Melakukan identifikasi sumber, isu hukum dan peraturan yang dapat mempengaruhi bisnis perusahaan',
-                group: '15',
-                assignments: {}
-              },
-              {
-                id: 5,
-                name: 'Membuat sistem identifikasi sumber, isu hukum dan peraturan',
-                group: '15',
-                assignments: {}
-              },
-              {
-                id: 6,
-                name: 'Melakukan pengumpulan dan screening data terkait dengan peraturan yang dapat mempengaruhi bisnis perusahaan',
-                group: '15',
-                assignments: {}
-              }
-            ]
-          },
-          {
-            id: 7,
-            name: 'Mengelola dokumen legal dan perizinan',
-            group: '15',
-            assignments: {
-              'kepala-biro-hukum': 'A',
-              'manager-bantuan-hukum': 'C'
-            }
-          }
-        ]
-      }
-    ]
-  }
-])
-
-// Computed
-const totalPages = computed(() => 10) // Fixed for demo to match mockup
-const visiblePages = computed(() => {
-  return [1, 2, 3, 8, 9, 10] // Exact pages shown in mockup
-})
-
 // Methods
-const toggleProcess = (processId) => {
-  const index = expandedProcesses.value.indexOf(processId)
-  if (index > -1) {
-    expandedProcesses.value.splice(index, 1)
-  } else {
-    expandedProcesses.value.push(processId)
-  }
+const openEditModal = () => {
+  showEditModal.value = true
 }
 
-const getRaciClass = (assignment) => {
-  switch (assignment) {
-    case 'R':
-      return 'bg-green-500 text-white'
-    case 'A':
-      return 'bg-blue-500 text-white'
-    case 'C':
-      return 'bg-yellow-500 text-white'
-    case 'I':
-      return 'bg-purple-500 text-white'
-    default:
-      return 'bg-gray-300 text-gray-700'
-  }
+const closeEditModal = () => {
+  showEditModal.value = false
+  selectedOption.value = ''
+  optionReason.value = ''
+}
+
+const saveValue = () => {
+  console.log('Saving value:', {
+    option: selectedOption.value,
+    reason: optionReason.value
+  })
+  closeEditModal()
 }
 </script>

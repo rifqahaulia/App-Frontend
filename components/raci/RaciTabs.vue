@@ -23,16 +23,16 @@
 </template>
 
 <script setup>
-interface Tab {
-  id: string
-  name: string
-}
+const props = defineProps({
+  tabs: {
+    type: Array,
+    required: true
+  },
+  activeTab: {
+    type: String,
+    required: true
+  }
+})
 
-interface Props {
-  tabs: Tab[]
-  activeTab: string
-}
-
-defineProps<Props>()
 defineEmits(['update:activeTab'])
 </script>
