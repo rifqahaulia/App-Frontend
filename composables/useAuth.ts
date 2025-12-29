@@ -29,10 +29,15 @@ export const useAuth = () => {
       }
       
       return isValid
-    } catch (error) {
+    } catch (error: any) {
       console.error('Session validation failed:', error)
-      clearTokens()
-      return false
+      // Hanya clear jika benar-benar unauthorized
+      if (error?.statusCode === 401 || error?.statusCode === 403) {
+        clearTokens()
+        return false
+      }
+      // Untuk error lain (network, server), anggap token masih valid
+      return true
     }
   }
 
@@ -63,7 +68,7 @@ export const useAuth = () => {
     profile.value = null
   }
 
-  // ✅ FIX: Tambah error handling yang lebih baik
+  // FIX: Tambah error handling yang lebih baik
   const getProfile = async () => {
     if (!accessToken.value) {
       throw new Error('No access token')
@@ -83,7 +88,7 @@ export const useAuth = () => {
     } catch (error: any) {
       console.error('Failed to get profile:', error)
       
-      // ✅ PENTING: Jika 404/401/403, token sudah ga valid
+      // PENTING: Jika 404/401/403, token sudah ga valid
       if (error?.statusCode === 404 || error?.statusCode === 401 || error?.statusCode === 403) {
         console.log('Token expired or invalid, clearing session')
         clearTokens()

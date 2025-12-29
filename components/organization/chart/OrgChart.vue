@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { ref, computed } from 'vue'
+    import { computed } from 'vue'
     import type { TreeItem } from '@/types/om'
     
     interface Props {
@@ -7,8 +7,6 @@
     }
     
     const props = defineProps<Props>()
-    
-    const chartContainer = ref<HTMLElement | null>(null)
     
     // Render the org chart recursively
     const renderNode = (node: TreeItem, level: number = 0): any => {
@@ -26,22 +24,55 @@
     
     <template>
       <div v-if="chartData" class="org-chart-container">
-        <div class="flex justify-center items-start p-8 overflow-x-auto">
+        <div class="chart-content">
           <OrgChartNode :node="chartData" />
         </div>
       </div>
-      <div v-else class="p-12 text-center text-gray-500">
-        <Icon name="lucide:sitemap" class="w-16 h-16 mx-auto mb-4 text-gray-300" />
-        <h3 class="text-lg font-medium text-gray-900 mb-2">Pilih Organisasi</h3>
-        <p class="text-gray-500">Pilih organisasi untuk melihat struktur chart</p>
+      <div v-else class="empty-state">
+        <div class="text-center">
+          <Icon name="lucide:sitemap" class="w-16 h-16 mx-auto mb-4 text-gray-300" />
+          <h3 class="text-lg font-medium text-gray-900 mb-2">Pilih Organisasi</h3>
+          <p class="text-gray-500">Pilih organisasi untuk melihat struktur chart</p>
+        </div>
       </div>
     </template>
     
     <style scoped>
     .org-chart-container {
-      min-height: 400px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: linear-gradient(to bottom, #f9fafb 0%, #ffffff 100%);
-      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .chart-content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 1rem;
+      overflow: auto;
+      min-height: 0;
+      height: 100%;
+    }
+    
+    .empty-state {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      background: linear-gradient(to bottom, #f9fafb 0%, #ffffff 100%);
       border-radius: 0.5rem;
     }
     </style>

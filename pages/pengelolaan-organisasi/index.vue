@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col">
+  <div class="h-screen bg-gray-50 flex flex-col overflow-hidden">
     <LayoutTheNavbar />
     
     <div class="flex flex-1 overflow-hidden">
@@ -121,14 +121,14 @@
             </div>
 
             <!-- Detail Content -->
-            <div class="flex-1 overflow-auto">
+            <div class="flex-1 overflow-hidden">
               <!-- Chart View -->
-              <div v-if="viewMode === 'chart'" class="h-full">
+              <div v-if="viewMode === 'chart'" class="h-full relative">
                 <OrganizationChartOrgChart 
                   v-if="selectedNode"
                   :data="selectedNode" 
                 />
-                <div v-else class="flex items-center justify-center h-full p-8">
+                <div v-else class="absolute inset-0 flex items-center justify-center p-8">
                   <div class="text-center">
                     <Icon name="lucide:sitemap" class="w-16 h-16 mx-auto text-gray-300 mb-4" />
                     <h3 class="text-lg font-medium mb-2">Pilih Organisasi</h3>

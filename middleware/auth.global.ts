@@ -11,40 +11,31 @@ export default defineNuxtRouteMiddleware(async (to) => {
   console.log('Auth middleware - Route:', to.path, 'Token exists:', !!accessToken.value)
 
   const publicRoutes = ['/', '/login', '/auth']
-
   const isPublicRoute = publicRoutes.some(route => to.path.startsWith(route))
   const isProcessingToken = to.path.startsWith('/login/') || to.path.startsWith('/auth/')
 
+  // Skip middleware untuk route yang sedang memproses token
   if (isProcessingToken) {
     console.log('Sedang memproses token dari SSO, skip middleware')
     return
   }
 
-  if (accessToken.value && !isPublicRoute) {
-    const { validateSession } = useAuth()
-    
-    try {
-      const isValid = await validateSession()
-      
-      if (!isValid) {
-        console.log('Token invalid, redirect ke homepage')
-        return navigateTo('/', { replace: true })
-      }
-      
-      console.log('Token valid, akses diberikan')
-    } catch (error) {
-      console.error('Validation error:', error)
-      return navigateTo('/', { replace: true })
-    }
-  }
-
+  // Jika tidak ada token dan bukan public route, redirect ke homepage
   if (!accessToken.value && !isPublicRoute) {
     console.log('Tidak ada token, redirect ke homepage')
     return navigateTo('/', { replace: true })
   }
 
+  // Jika di homepage dan sudah ada token, redirect ke dashboard tanpa validasi ulang
   if (to.path === '/' && accessToken.value) {
-    console.log('Sudah login, redirect ke dashboard')
+    console.log('Sudah ada token, redirect ke dashboard')
     return navigateTo('/dashboard', { replace: true })
+  }
+
+  // Untuk protected routes, hanya lakukan validasi jika diperlukan
+  // Tidak perlu validasi setiap kali refresh jika token ada
+  if (accessToken.value && !isPublicRoute) {
+    console.log('Token ada, akses diberikan ke:', to.path)
+    // Biarkan request berlanjut tanpa validasi yang berat
   }
 })

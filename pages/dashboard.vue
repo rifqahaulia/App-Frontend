@@ -5,14 +5,8 @@ const { getProfile, accessToken, profile } = useAuth()
 onMounted(async () => {
   console.log('Dashboard mounted, token exists:', !!accessToken.value)
   
-  if (!accessToken.value) {
-    console.log('No token, redirecting to home')
-    navigateTo('/')
-    return
-  }
-  
-  // Fetch profile jika belum ada
-  if (!profile.value) {
+  // Fetch profile jika ada token dan belum ada profile
+  if (accessToken.value && !profile.value) {
     try {
       console.log('Fetching profile...')
       await getProfile()
@@ -28,33 +22,31 @@ onMounted(async () => {
 <template>
   <div>
     <ClientOnly>
-      <div class="min-h-screen bg-white">
+      <div class="h-screen bg-white flex flex-col overflow-hidden">
         <LayoutTheNavbar />
         
-        <div class="flex">
+        <div class="flex flex-1 overflow-hidden">
           <LayoutTheSidebar />
           
-          <main class="flex-1 bg-gray-50 p-8">
-            <div class="max-w-4xl mx-auto">
-              <div class="text-center">
-                <div class="inline-flex items-center justify-center w-32 h-32 bg-blue-50 rounded-full mb-8">
-                  <Icon name="lucide:network" class="w-16 h-16 text-blue-500" />
-                </div>
-                
-                <h1 class="text-5xl font-bold text-gray-900 mb-6">
-                  Selamat Datang di Dashboard
-                </h1>
-                
-                <p class="text-xl text-gray-600 mb-8">
-                  Halo, <span class="font-semibold text-blue-600">{{ profile?.data?.name || 'User' }}</span>
+          <main class="flex-1 bg-gray-50 flex items-center justify-center">
+            <div class="max-w-4xl mx-auto text-center">
+              <div class="inline-flex items-center justify-center w-32 h-32 bg-blue-50 rounded-full mb-8">
+                <Icon name="lucide:network" class="w-16 h-16 text-blue-500" />
+              </div>
+              
+              <h1 class="text-5xl font-bold text-gray-900 mb-6">
+                Selamat Datang di Dashboard
+              </h1>
+              
+              <p class="text-xl text-gray-600 mb-8">
+                Halo, <span class="font-semibold text-blue-600">{{ profile?.data?.name || 'User' }}</span>
+              </p>
+              
+              <div class="inline-flex items-center gap-3 bg-green-50 border-2 border-green-200 rounded-2xl px-8 py-4">
+                <Icon name="lucide:check-circle" class="w-7 h-7 text-green-600" />
+                <p class="text-green-700 font-semibold text-lg">
+                  Anda berhasil login ke sistem
                 </p>
-                
-                <div class="inline-flex items-center gap-3 bg-green-50 border-2 border-green-200 rounded-2xl px-8 py-4">
-                  <Icon name="lucide:check-circle" class="w-7 h-7 text-green-600" />
-                  <p class="text-green-700 font-semibold text-lg">
-                    Anda berhasil login ke sistem
-                  </p>
-                </div>
               </div>
             </div>
           </main>

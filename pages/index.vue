@@ -14,13 +14,15 @@
         
         if (isValid) {
           console.log('Token valid, redirecting to dashboard')
-          navigateTo('/dashboard')
+          await navigateTo('/dashboard', { replace: true })
         } else {
           console.log('Token invalid, cleared. Staying on welcome page.')
+          showLoginScreen.value = false // Reset to splash screen
         }
       } catch (error) {
         console.error('Validation error on welcome page:', error)
         clearTokens()
+        showLoginScreen.value = false // Reset to splash screen
       }
     }
   })
