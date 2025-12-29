@@ -11,155 +11,126 @@
           <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Struktur Organisasi</h1>
         </div>
 
-        <!-- Content Container - Sama persis dengan mockup -->
-        <div class="flex-1 flex flex-col gap-4 p-4 overflow-hidden">
-          <!-- Structure Section - Top Half (sama dengan mockup) -->
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col overflow-hidden">
-            <!-- Structure Header - Background biru seperti mockup -->
-            <div class="px-4 py-3 bg-blue-500 text-white flex items-center gap-2 flex-shrink-0 rounded-t-lg">
-              <Icon name="lucide:chevron-down" class="w-4 h-4" />
-              <span class="font-medium text-sm">Struktur</span>
-            </div>
-            
-            <!-- Year Filter -->
-            <div class="px-4 py-3 border-b bg-gray-50 flex-shrink-0">
-              <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                <span class="text-sm text-gray-600 whitespace-nowrap">Filter Tahun:</span>
-                <div class="flex gap-2 w-full sm:w-auto">
-                  <input
-                    v-model="selectedYear"
-                    type="number"
-                    placeholder="2024"
-                    min="2000"
-                    max="2100"
-                    class="flex-1 sm:flex-none px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    title="Masukkan tahun untuk melihat struktur organisasi"
-                  />
-                  <button
-                    @click="handleYearFilter"
-                    :disabled="!selectedYear || omStore.isLoading"
-                    class="px-4 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap flex items-center gap-2"
-                    title="Filter berdasarkan tahun"
-                  >
-                    <Icon name="lucide:eye" class="w-4 h-4" />
-                    View
-                  </button>
-                  <button
-                    v-if="selectedYear"
-                    @click="clearYearFilter"
-                    class="px-3 py-2 bg-gray-500 text-white rounded text-sm hover:bg-gray-600 whitespace-nowrap"
-                    title="Reset filter"
-                  >
-                    Reset
-                  </button>
-                </div>
-              </div>
-              <p class="text-xs text-gray-500 mt-2">Tampilkan struktur organisasi yang aktif pada tahun tertentu</p>
-            </div>
-
-            <!-- Search -->
-            <div class="px-4 py-3 border-b flex-shrink-0">
-              <div class="relative">
-                <Icon name="lucide:search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  v-model="searchQuery"
-                  type="text"
-                  placeholder="Cari organisasi..."
-                  class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-
-            <!-- Tree Content - Only show if there's data -->
-            <div v-if="displayData.length > 0" class="flex-1 overflow-auto">
-              <div v-if="omStore.isLoading" class="p-4 text-center">
-                <Icon name="lucide:loader-2" class="w-6 h-6 animate-spin mx-auto text-blue-500 mb-2" />
-                <p class="text-sm text-gray-500">Memuat data...</p>
-              </div>
-              <div v-else class="overflow-auto">
-                <SimpleTree
-                  v-for="item in displayData"
-                  :key="item.id"
-                  :node="item"
-                  :level="0"
-                  :selectedId="selectedNodeId"
-                  @select="handleSelect"
-                  @action="handleTreeAction"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- Details Section - Bottom Half (sama dengan mockup) -->
-          <div class="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col overflow-hidden">
-            <!-- Detail Header - Background abu-abu seperti mockup -->
-            <div class="px-4 py-3 border-b bg-gray-50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 flex-shrink-0 rounded-t-lg">
-              <h2 class="text-lg font-semibold text-gray-800">Detail</h2>
-              <div class="flex gap-1 bg-white p-1 rounded-lg border shadow-sm">
-                <button
-                  @click="viewMode = 'chart'"
-                  class="px-3 py-2 rounded text-sm font-medium transition-colors"
-                  :class="viewMode === 'chart' ? 'bg-blue-500 text-white shadow' : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'"
+        <!-- Content Container - Scrollable area -->
+        <div class="flex-1 overflow-y-auto">
+          <div class="flex flex-col gap-4 p-4">
+            <!-- Structure Section -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
+              <!-- Structure Header - Clickable -->
+              <button 
+                @click="toggleStructure"
+                :class="[
+                  'px-4 py-3 flex items-center gap-2 flex-shrink-0 transition-colors w-full text-left',
+                  isStructureExpanded 
+                    ? 'bg-blue-500 text-white hover:bg-blue-600 rounded-t-lg' 
+                    : 'bg-white text-gray-700 hover:bg-gray-50 border-b rounded-lg'
+                ]"
+              >
+                <svg 
+                  class="w-4 h-4 transition-transform duration-200"
+                  :class="{ 'rotate-90': isStructureExpanded }"
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
                 >
-                  Chart
-                </button>
-                <button
-                  @click="viewMode = 'table'"
-                  class="px-3 py-2 rounded text-sm font-medium transition-colors"
-                  :class="viewMode === 'table' ? 'bg-blue-500 text-white shadow' : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'"
-                >
-                  Table
-                </button>
-                <button
-                  @click="viewMode = 'details'"
-                  class="px-3 py-2 rounded text-sm font-medium transition-colors"
-                  :class="viewMode === 'details' ? 'bg-blue-500 text-white shadow' : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'"
-                >
-                  Details
-                </button>
-              </div>
-            </div>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                <span class="font-medium text-sm">Struktur</span>
+              </button>
+              
+              <!-- Collapsible Content -->
+              <Transition
+                enter-active-class="transition-all duration-300 ease-out"
+                enter-from-class="opacity-0 max-h-0"
+                enter-to-class="opacity-100 max-h-[1000px]"
+                leave-active-class="transition-all duration-300 ease-in"
+                leave-from-class="opacity-100 max-h-[1000px]"
+                leave-to-class="opacity-0 max-h-0"
+              >
+                <div v-if="isStructureExpanded" class="overflow-hidden">
+                  <!-- Year Filter -->
+                  <div class="px-4 py-3 border-b bg-gray-50 flex-shrink-0">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                      <span class="text-sm text-gray-600 whitespace-nowrap">Filter Tahun:</span>
+                      <div class="flex gap-2 w-full sm:w-auto">
+                        <input
+                          v-model="selectedYear"
+                          type="number"
+                          placeholder="2024"
+                          min="2000"
+                          max="2100"
+                          class="flex-1 sm:flex-none px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          title="Masukkan tahun untuk melihat struktur organisasi"
+                        />
+                        <button
+                          @click="handleYearFilter"
+                          :disabled="!selectedYear || omStore.isLoading"
+                          class="px-4 py-2 bg-blue-500 text-white rounded text-sm hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap flex items-center gap-2"
+                          title="Filter berdasarkan tahun"
+                        >
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                          </svg>
+                          View
+                        </button>
+                        <button
+                          v-if="selectedYear"
+                          @click="clearYearFilter"
+                          class="px-3 py-2 bg-gray-500 text-white rounded text-sm hover:bg-gray-600 whitespace-nowrap"
+                          title="Reset filter"
+                        >
+                          Reset
+                        </button>
+                      </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-2">Tampilkan struktur organisasi yang aktif pada tahun tertentu</p>
+                  </div>
 
-            <!-- Detail Content -->
-            <div class="flex-1 overflow-hidden">
-              <!-- Chart View -->
-              <div v-if="viewMode === 'chart'" class="h-full relative">
-                <OrganizationChartOrgChart 
-                  v-if="selectedNode"
-                  :data="selectedNode" 
-                />
-                <div v-else class="absolute inset-0 flex items-center justify-center p-8">
-                  <div class="text-center">
-                    <Icon name="lucide:sitemap" class="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                    <h3 class="text-lg font-medium mb-2">Pilih Organisasi</h3>
-                    <p class="text-gray-500">Pilih organisasi untuk melihat chart</p>
+                  <!-- Search -->
+                  <div class="px-4 py-3 border-b flex-shrink-0">
+                    <div class="relative">
+                      <Icon name="lucide:search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                      <input
+                        v-model="searchQuery"
+                        type="text"
+                        placeholder="Cari organisasi..."
+                        class="w-full pl-9 pr-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <!-- Tree Content -->
+                  <div v-if="displayData.length > 0" class="p-4">
+                    <div v-if="omStore.isLoading" class="text-center py-8">
+                      <Icon name="lucide:loader-2" class="w-6 h-6 animate-spin mx-auto text-blue-500 mb-2" />
+                      <p class="text-sm text-gray-500">Memuat data...</p>
+                    </div>
+                    <div v-else>
+                      <SimpleTree
+                        v-for="item in displayData"
+                        :key="item.id"
+                        :node="item"
+                        :level="0"
+                        :selectedId="selectedNodeId"
+                        @select="handleSelect"
+                        @action="handleTreeAction"
+                      />
+                    </div>
                   </div>
                 </div>
+              </Transition>
+            </div>
+
+            <!-- Details Section -->
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex flex-col">
+              <!-- Detail Header -->
+              <div class="px-4 py-3 border-b bg-gray-50 flex-shrink-0 rounded-t-lg">
+                <h2 class="text-lg font-semibold text-gray-800">Detail</h2>
               </div>
 
-              <!-- Table View -->
-              <div v-else-if="viewMode === 'table'" class="h-full">
-                <OrganizationTableOrganizationTable 
-                  v-if="selectedNode && selectedNode.children"
-                  :data="selectedNode.children"
-                  :isLoading="omStore.isLoading"
-                  :selectedId="selectedNodeId"
-                  @select="handleSelect"
-                  @edit="handleEdit"
-                  @delete="handleDelete"
-                  @addChild="handleAddChild"
-                />
-                <div v-else class="flex items-center justify-center h-full p-8">
-                  <div class="text-center">
-                    <Icon name="lucide:table" class="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                    <h3 class="text-lg font-medium mb-2">Pilih Organisasi</h3>
-                    <p class="text-gray-500">Pilih organisasi untuk melihat tabel</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Details View -->
-              <div v-else class="p-6 h-full overflow-auto">
+              <!-- Detail Content -->
+              <div class="p-4">
                 <div v-if="selectedNode" class="space-y-6">
                   <!-- Basic Info -->
                   <div class="bg-gray-50 rounded-lg p-4 border">
@@ -227,7 +198,7 @@
                   </div>
                 </div>
                 
-                <div v-else class="flex items-center justify-center h-full">
+                <div v-else class="flex items-center justify-center py-16">
                   <div class="text-center">
                     <Icon name="lucide:folder-search" class="w-16 h-16 mx-auto text-gray-300 mb-4" />
                     <h3 class="text-lg font-medium mb-2 text-gray-700">Pilih Organisasi</h3>
@@ -258,7 +229,6 @@ const selectedNode = computed(() => omStore.selectedObject)
 const selectedNodeId = ref(null)
 const searchQuery = ref('')
 const selectedYear = ref('')
-const viewMode = ref('chart')
 const isStructureExpanded = ref(false) // Default tertutup
 
 // Filter function

@@ -84,11 +84,15 @@ const handleLogout = async (event: Event) => {
               class="text-white hover:text-blue-100 transition-colors text-sm font-medium flex items-center gap-1"
             >
               {{ item.label }}
-              <Icon 
-                name="lucide:chevron-down" 
+              <svg 
                 class="w-3.5 h-3.5 transition-transform duration-200"
                 :class="{ 'rotate-180': openDropdown === item.label }"
-              />
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
             </button>
             
             <!-- Dropdown Menu -->
