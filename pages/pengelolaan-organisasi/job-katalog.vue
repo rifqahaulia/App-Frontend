@@ -33,7 +33,7 @@
             <div class="flex-1 overflow-y-auto bg-gray-50">
               <div class="p-4 md:p-6">
                 <!-- Content - Panggil Component -->
-                <OrganizationJobKatalogTable :data="jobKatalogData" />
+                <OrganizationTableJobKatalogTable :data="jobKatalogData" />
               </div>
             </div>
           </main>

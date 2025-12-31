@@ -33,16 +33,16 @@
                     :key="tab.id"
                     @click="activeTab = tab.id"
                     :class="[
-                      'px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm font-medium flex items-center gap-2 transition-colors whitespace-nowrap flex-shrink-0 border-b-2 -mb-px',
+                      'px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm font-medium flex items-center gap-2 transition-all duration-200 whitespace-nowrap flex-shrink-0 border-b-2 -mb-px rounded-t-lg',
                       activeTab === tab.id 
-                        ? 'text-blue-600 border-blue-600 bg-blue-50' 
-                        : 'text-gray-600 border-transparent hover:text-gray-800 hover:border-gray-300'
+                        ? 'text-blue-600 border-blue-600 bg-blue-100 shadow-sm' 
+                        : 'text-gray-600 border-transparent hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
                     ]"
                   >
                     {{ tab.name }}
                     <Icon name="lucide:copy" class="w-3 h-3 md:w-4 md:h-4" />
                   </button>
-                  <button class="px-2 md:px-3 py-2 md:py-3 text-blue-600 text-xs md:text-sm font-medium hover:text-blue-800 transition-colors flex-shrink-0 border-b-2 border-transparent -mb-px">
+                  <button class="px-2 md:px-3 py-2 md:py-3 text-blue-600 text-xs md:text-sm font-medium hover:text-blue-800 transition-all duration-200 flex-shrink-0 border-b-2 border-transparent -mb-px rounded-t-lg hover:bg-blue-50">
                     <Icon name="lucide:plus" class="w-3 h-3 md:w-4 md:h-4" />
                   </button>
                 </div>
@@ -466,3 +466,15 @@ const saveValue = () => {
   closeEditModal()
 }
 </script>
+
+<style scoped>
+/* Hide scrollbar for mobile tabs */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+</style>
