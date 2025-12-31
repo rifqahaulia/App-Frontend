@@ -1,8 +1,8 @@
 <template>
-  <div class="h-screen bg-gray-50 flex flex-col">
+  <div class="h-screen bg-gray-50 flex flex-col overflow-hidden">
     <LayoutTheNavbar />
     
-    <div class="flex flex-1">
+    <div class="flex flex-1 overflow-hidden">
       <LayoutTheSidebar />
       
       <main class="flex-1 flex flex-col overflow-hidden">
@@ -21,7 +21,7 @@
           </div>
         </div>
 
-        <!-- Content Container -->
+        <!-- Content Container - Scrollable area -->
         <div class="flex-1 overflow-y-auto bg-white relative">
           <div class="p-4 md:p-6">
             <!-- Tabs -->
