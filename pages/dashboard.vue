@@ -22,13 +22,13 @@ onMounted(async () => {
 <template>
   <div>
     <ClientOnly>
-      <div class="h-screen bg-white flex flex-col overflow-hidden">
+      <div class="h-screen bg-white flex flex-col">
         <LayoutTheNavbar />
         
-        <div class="flex flex-1 overflow-hidden">
+        <div class="flex flex-1">
           <LayoutTheSidebar />
           
-          <main class="flex-1 bg-gray-50 flex items-center justify-center px-4 md:px-6 lg:px-8">
+          <main class="flex-1 bg-gray-50 flex items-center justify-center px-4 md:px-6 lg:px-8 overflow-hidden">
             <div class="max-w-4xl mx-auto text-center">
               <div class="inline-flex items-center justify-center w-32 h-32 bg-blue-50 rounded-full mb-8">
                 <Icon name="lucide:network" class="w-16 h-16 text-blue-500" />

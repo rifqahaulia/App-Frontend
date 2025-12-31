@@ -4,6 +4,10 @@ import { sidebarMenuItems } from '~/data/menuData'
 const route = useRoute()
 
 const isActive = (path: string) => {
+  // Handle nested routes for pengelolaan-organisasi
+  if (path === '/pengelolaan-organisasi') {
+    return route.path.startsWith('/pengelolaan-organisasi')
+  }
   return route.path === path
 }
 
@@ -29,13 +33,63 @@ onMounted(() => {
 })
 </script>
 
+<style scoped>
+/* Sidebar item hover effect */
+.sidebar-item {
+  position: relative;
+}
+
+/* Tooltip styling */
+.sidebar-item .tooltip {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #1f2937;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease-in-out;
+  z-index: 9999;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Arrow for tooltip */
+.sidebar-item .tooltip::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+  border-right-color: #1f2937;
+}
+
+/* Show tooltip on hover */
+.sidebar-item:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(4px);
+}
+
+/* Ensure sidebar doesn't clip tooltips */
+aside {
+  overflow: visible !important;
+}
+</style>
+
 <template>
-  <aside class="w-16 md:w-20 bg-white border-r border-gray-200 flex flex-col items-center py-4 h-full overflow-y-auto overflow-x-visible flex-shrink-0">
+  <aside class="w-16 md:w-20 bg-white border-r border-gray-200 flex flex-col items-center py-4 h-full overflow-y-auto flex-shrink-0">
     <div class="flex flex-col gap-3 w-full items-center">
       <div
         v-for="(item, index) in sidebarMenuItems"
-        :key="item.path"
-        class="relative w-full flex justify-center group"
+        :key="`${item.path}-${index}`"
+        class="sidebar-item relative w-full flex justify-center"
       >
         <NuxtLink
           :to="item.path"
@@ -45,7 +99,6 @@ onMounted(() => {
               ? 'bg-blue-500 shadow-lg scale-105' 
               : 'bg-gray-50 hover:bg-blue-500 hover:scale-110 shadow-sm border border-gray-200 hover:border-blue-500'
           ]"
-          :title="item.label"
         >
           <!-- Custom Image Icon -->
           <img 
@@ -54,7 +107,7 @@ onMounted(() => {
             :alt="item.label"
             :class="[
               'w-4 h-4 md:w-5 md:h-5 object-contain transition-all duration-300',
-              isActive(item.path) ? 'brightness-0 invert' : 'group-hover:brightness-0 group-hover:invert'
+              isActive(item.path) ? 'brightness-0 invert' : 'hover:brightness-0 hover:invert'
             ]"
           />
           <!-- Fallback to Lucide Icon -->
@@ -63,18 +116,13 @@ onMounted(() => {
             :name="item.icon" 
             :class="[
               'w-4 h-4 md:w-5 md:h-5 transition-all duration-300',
-              isActive(item.path) ? 'text-white' : 'text-gray-700 group-hover:text-white group-hover:scale-110'
+              isActive(item.path) ? 'text-white' : 'text-gray-700 hover:text-white hover:scale-110'
             ]"
           />
         </NuxtLink>
         
-        <!-- Tooltip - Fixed positioning to avoid overflow issues -->
-        <div class="fixed left-16 md:left-20 px-3 py-2 bg-gray-900 text-white text-xs font-medium rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap transition-all duration-300 z-[9999] shadow-xl group-hover:translate-x-1" 
-             :style="{ top: `${88 + (index * 48)}px` }">
-          {{ item.label }}
-          <!-- Arrow -->
-          <div class="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900"></div>
-        </div>
+        <!-- Simple Tooltip -->
+        <span class="tooltip">{{ item.label }}</span>
       </div>
     </div>
   </aside>

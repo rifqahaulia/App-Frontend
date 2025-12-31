@@ -7,10 +7,10 @@
     </script>
     
     <template>
-      <div class="h-screen bg-gray-50 flex flex-col overflow-hidden">
+      <div class="h-screen bg-gray-50 flex flex-col">
         <LayoutTheNavbar />
         
-        <div class="flex flex-1 overflow-hidden">
+        <div class="flex flex-1">
           <LayoutTheSidebar />
           
           <main class="flex-1 flex flex-col overflow-hidden">
