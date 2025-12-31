@@ -28,7 +28,7 @@ onMounted(async () => {
         <div class="flex flex-1 overflow-hidden">
           <LayoutTheSidebar />
           
-          <main class="flex-1 bg-gray-50 flex items-center justify-center">
+          <main class="flex-1 bg-gray-50 flex items-center justify-center px-4 md:px-6 lg:px-8">
             <div class="max-w-4xl mx-auto text-center">
               <div class="inline-flex items-center justify-center w-32 h-32 bg-blue-50 rounded-full mb-8">
                 <Icon name="lucide:network" class="w-16 h-16 text-blue-500" />

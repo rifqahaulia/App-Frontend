@@ -7,11 +7,11 @@
       
       <main class="flex-1 flex flex-col overflow-hidden">
         <!-- Header -->
-        <div class="px-6 py-4 border-b bg-white flex-shrink-0">
+        <div class="px-4 md:px-6 py-4 border-b bg-white flex-shrink-0">
           <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold text-gray-900">RACI</h1>
+            <h1 class="text-xl md:text-2xl font-bold text-gray-900">RACI</h1>
             <!-- Breadcrumb -->
-            <div class="flex items-center text-sm text-gray-500">
+            <div class="hidden md:flex items-center text-sm text-gray-500">
               <span>Organisasi</span>
               <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
               <span>Report</span>
@@ -23,50 +23,56 @@
 
         <!-- Content Container -->
         <div class="flex-1 overflow-y-auto bg-white relative">
-          <div class="p-6">
+          <div class="p-4 md:p-6">
             <!-- Tabs -->
-            <div class="mb-6">
-              <div class="flex gap-1">
-                <button
-                  v-for="tab in tabs"
-                  :key="tab.id"
-                  @click="activeTab = tab.id"
-                  :class="[
-                    'px-4 py-2 text-sm font-medium flex items-center gap-2 border rounded-t-lg transition-colors',
-                    activeTab === tab.id 
-                      ? 'text-blue-600 bg-blue-50 border-blue-300 border-b-white shadow-sm' 
-                      : 'text-gray-600 bg-white border-gray-300 hover:bg-gray-50'
-                  ]"
-                >
-                  {{ tab.name }}
-                  <Icon name="lucide:copy" class="w-4 h-4 text-gray-400" />
-                </button>
-                <button class="px-3 py-2 text-blue-600 text-sm font-medium hover:bg-blue-50 transition-colors border border-gray-300 bg-white rounded-t-lg shadow-sm">
-                  <Icon name="lucide:plus" class="w-4 h-4" />
-                </button>
+            <div class="mb-4 md:mb-6">
+              <div class="border-b border-gray-200">
+                <div class="flex gap-1 overflow-x-auto pb-0 md:pb-0 scrollbar-hide">
+                  <button
+                    v-for="tab in tabs"
+                    :key="tab.id"
+                    @click="activeTab = tab.id"
+                    :class="[
+                      'px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm font-medium flex items-center gap-2 transition-colors whitespace-nowrap flex-shrink-0 border-b-2 -mb-px',
+                      activeTab === tab.id 
+                        ? 'text-blue-600 border-blue-600 bg-blue-50' 
+                        : 'text-gray-600 border-transparent hover:text-gray-800 hover:border-gray-300'
+                    ]"
+                  >
+                    {{ tab.name }}
+                    <Icon name="lucide:copy" class="w-3 h-3 md:w-4 md:h-4" />
+                  </button>
+                  <button class="px-2 md:px-3 py-2 md:py-3 text-blue-600 text-xs md:text-sm font-medium hover:text-blue-800 transition-colors flex-shrink-0 border-b-2 border-transparent -mb-px">
+                    <Icon name="lucide:plus" class="w-3 h-3 md:w-4 md:h-4" />
+                  </button>
+                </div>
               </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="mb-6 flex items-center justify-between">
-              <div class="flex gap-3">
-                <button class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm">
-                  <Icon name="lucide:plus" class="w-4 h-4" />
-                  Add Row
+            <div class="mb-4 md:mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div class="flex flex-wrap gap-2 md:gap-3">
+                <button class="px-3 md:px-4 py-2 bg-blue-600 text-white rounded-md text-xs md:text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm">
+                  <Icon name="lucide:plus" class="w-3 h-3 md:w-4 md:h-4" />
+                  <span class="hidden sm:inline">Add Row</span>
+                  <span class="sm:hidden">Row</span>
                 </button>
-                <button class="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm">
-                  <Icon name="lucide:plus" class="w-4 h-4" />
-                  Add Column
+                <button class="px-3 md:px-4 py-2 bg-blue-600 text-white rounded-md text-xs md:text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm">
+                  <Icon name="lucide:plus" class="w-3 h-3 md:w-4 md:h-4" />
+                  <span class="hidden sm:inline">Add Column</span>
+                  <span class="sm:hidden">Column</span>
                 </button>
               </div>
-              <div class="flex gap-3">
-                <button class="px-4 py-2 bg-white text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2 border border-gray-300 shadow-sm">
-                  <Icon name="lucide:download" class="w-4 h-4" />
-                  Download Template
+              <div class="flex flex-wrap gap-2 md:gap-3">
+                <button class="px-3 md:px-4 py-2 bg-white text-gray-700 rounded-md text-xs md:text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2 border border-gray-300 shadow-sm">
+                  <Icon name="lucide:download" class="w-3 h-3 md:w-4 md:h-4" />
+                  <span class="hidden sm:inline">Download Template</span>
+                  <span class="sm:hidden">Download</span>
                 </button>
-                <button class="px-4 py-2 bg-white text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2 border border-gray-300 shadow-sm">
-                  <Icon name="lucide:upload" class="w-4 h-4" />
-                  Import
+                <button class="px-3 md:px-4 py-2 bg-white text-gray-700 rounded-md text-xs md:text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-2 border border-gray-300 shadow-sm">
+                  <Icon name="lucide:upload" class="w-3 h-3 md:w-4 md:h-4" />
+                  <span class="hidden sm:inline">Import</span>
+                  <span class="sm:hidden">Import</span>
                 </button>
               </div>
             </div>

@@ -7,30 +7,34 @@
     </script>
     
     <template>
-      <div class="min-h-screen bg-white">
+      <div class="h-screen bg-gray-50 flex flex-col overflow-hidden">
         <LayoutTheNavbar />
         
-        <div class="flex">
+        <div class="flex flex-1 overflow-hidden">
           <LayoutTheSidebar />
           
-          <main class="flex-1 bg-gray-50">
-            <div class="p-6">
-              <!-- Page Header with Breadcrumb -->
-              <div class="flex items-center justify-between mb-6">
-                <h1 class="text-xl font-semibold text-gray-900">
-                  Jabatan Kosong
-                </h1>
-                <div class="flex items-center gap-2 text-sm text-gray-600">
+          <main class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header - Fixed -->
+            <div class="px-4 md:px-6 py-4 border-b bg-white flex-shrink-0">
+              <div class="flex items-center justify-between">
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900">Jabatan Kosong</h1>
+                <!-- Breadcrumb -->
+                <div class="hidden md:flex items-center text-sm text-gray-500">
                   <span>Organisasi</span>
-                  <Icon name="lucide:chevron-right" class="w-4 h-4" />
+                  <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
                   <span>Report</span>
-                  <Icon name="lucide:chevron-right" class="w-4 h-4" />
-                  <span class="font-semibold text-gray-900">Jabatan Kosong</span>
+                  <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
+                  <span class="text-gray-900 font-medium">Jabatan Kosong</span>
                 </div>
               </div>
-    
-              <!-- Content - Panggil Component -->
-              <OrganizationJabatanKosongTable :data="jabatanKosongData" />
+            </div>
+
+            <!-- Content - Scrollable -->
+            <div class="flex-1 overflow-y-auto bg-gray-50">
+              <div class="p-4 md:p-6">
+                <!-- Content - Panggil Component -->
+                <OrganizationJabatanKosongTable :data="jabatanKosongData" />
+              </div>
             </div>
           </main>
         </div>
