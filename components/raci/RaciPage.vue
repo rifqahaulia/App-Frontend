@@ -153,7 +153,7 @@
                       </td>
                       <td class="px-3 py-3 text-center border-r border-gray-300">
                         <div class="flex justify-center">
-                          <button @click="openEditModal" class="text-blue-500 hover:text-blue-700 transition-colors">
+                          <button @click="openEditModal" class="text-[#65BEFF] hover:text-[#189EFF] transition-colors">
                             <Icon name="lucide:edit" class="w-4 h-4" />
                           </button>
                         </div>
@@ -187,7 +187,7 @@
                       </td>
                       <td class="px-3 py-3 text-center border-r border-gray-300">
                         <div class="flex justify-center">
-                          <button @click="openEditModal" class="text-blue-500 hover:text-blue-700 transition-colors">
+                          <button @click="openEditModal" class="text-[#65BEFF] hover:text-[#189EFF] transition-colors">
                             <Icon name="lucide:edit" class="w-4 h-4" />
                           </button>
                         </div>
@@ -234,7 +234,7 @@
                       </td>
                       <td class="px-3 py-3 text-center border-r border-gray-300">
                         <div class="flex justify-center">
-                          <button @click="openEditModal" class="text-blue-500 hover:text-blue-700 transition-colors">
+                          <button @click="openEditModal" class="text-[#65BEFF] hover:text-[#189EFF] transition-colors">
                             <Icon name="lucide:edit" class="w-4 h-4" />
                           </button>
                         </div>
@@ -344,7 +344,7 @@
                       </td>
                       <td class="px-3 py-3 text-center border-r border-gray-300">
                         <div class="flex justify-center">
-                          <button @click="openEditModal" class="text-blue-500 hover:text-blue-700 transition-colors">
+                          <button @click="openEditModal" class="text-[#65BEFF] hover:text-[#189EFF] transition-colors">
                             <Icon name="lucide:edit" class="w-4 h-4" />
                           </button>
                         </div>
