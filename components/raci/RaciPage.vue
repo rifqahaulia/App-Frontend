@@ -25,39 +25,21 @@
         <div class="flex-1 overflow-y-auto bg-white relative">
           <div class="p-4 md:p-6">
             <!-- Tabs -->
-            <div class="mb-4 md:mb-6">
-              <div class="border-b border-gray-200">
-                <div class="flex gap-1 overflow-x-auto pb-0 md:pb-0 scrollbar-hide">
-                  <button
-                    v-for="tab in tabs"
-                    :key="tab.id"
-                    @click="activeTab = tab.id"
-                    :class="[
-                      'px-3 md:px-4 py-2 md:py-3 text-xs md:text-sm font-medium flex items-center gap-2 transition-all duration-200 whitespace-nowrap flex-shrink-0 border-b-2 -mb-px rounded-t-lg',
-                      activeTab === tab.id 
-                        ? 'text-blue-600 border-blue-600 bg-blue-100 shadow-sm' 
-                        : 'text-gray-600 border-transparent hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
-                    ]"
-                  >
-                    {{ tab.name }}
-                    <Icon name="lucide:copy" class="w-3 h-3 md:w-4 md:h-4" />
-                  </button>
-                  <button class="px-2 md:px-3 py-2 md:py-3 text-blue-600 text-xs md:text-sm font-medium hover:text-blue-800 transition-all duration-200 flex-shrink-0 border-b-2 border-transparent -mb-px rounded-t-lg hover:bg-blue-50">
-                    <Icon name="lucide:plus" class="w-3 h-3 md:w-4 md:h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <RaciTabs 
+              :tabs="tabs" 
+              :activeTab="activeTab" 
+              @update:activeTab="activeTab = $event" 
+            />
 
             <!-- Action Buttons -->
             <div class="mb-4 md:mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div class="flex flex-wrap gap-2 md:gap-3">
-                <button class="px-3 md:px-4 py-2 bg-blue-600 text-white rounded-md text-xs md:text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm">
+                <button class="px-3 md:px-4 py-2 bg-[#65BEFF] text-white rounded-md text-xs md:text-sm font-medium hover:bg-[#189EFF] transition-colors flex items-center gap-2 shadow-sm">
                   <Icon name="lucide:plus" class="w-3 h-3 md:w-4 md:h-4" />
                   <span class="hidden sm:inline">Add Row</span>
                   <span class="sm:hidden">Row</span>
                 </button>
-                <button class="px-3 md:px-4 py-2 bg-blue-600 text-white rounded-md text-xs md:text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm">
+                <button class="px-3 md:px-4 py-2 bg-[#65BEFF] text-white rounded-md text-xs md:text-sm font-medium hover:bg-[#189EFF] transition-colors flex items-center gap-2 shadow-sm">
                   <Icon name="lucide:plus" class="w-3 h-3 md:w-4 md:h-4" />
                   <span class="hidden sm:inline">Add Column</span>
                   <span class="sm:hidden">Column</span>

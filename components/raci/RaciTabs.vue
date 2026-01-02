@@ -2,50 +2,56 @@
   <div class="mb-6">
     <!-- Mobile: Scrollable horizontal tabs -->
     <div class="md:hidden">
-      <div class="border-b border-gray-200">
-        <div class="flex gap-1 overflow-x-auto pb-0 scrollbar-hide">
-          <button
+      <div class="relative border-b border-gray-300">
+        <div class="flex gap-0 overflow-x-auto pb-0 scrollbar-hide">
+          <div
             v-for="tab in tabs"
             :key="tab.id"
-            @click="$emit('update:activeTab', tab.id)"
             :class="[
-              'px-3 py-2 text-xs font-medium transition-all duration-200 flex items-center gap-1 whitespace-nowrap flex-shrink-0 border-b-2 -mb-px rounded-t-lg',
+              'relative flex items-center gap-2 px-3 py-2 text-xs font-medium transition-all duration-300 whitespace-nowrap flex-shrink-0 cursor-pointer tab-container',
               activeTab === tab.id 
-                ? 'text-blue-600 border-blue-600 bg-blue-100 shadow-sm' 
-                : 'text-gray-600 border-transparent hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
+                ? 'text-[#65BEFF] bg-[#E8F4FD] tab-active' 
+                : 'text-gray-600 bg-white tab-inactive'
             ]"
+            @click="$emit('update:activeTab', tab.id)"
           >
-            {{ tab.name }}
+            <span>{{ tab.name }}</span>
             <Icon name="lucide:edit-3" class="w-3 h-3" />
-          </button>
-          <button class="px-3 py-2 text-blue-600 text-xs font-medium hover:text-blue-800 transition-all duration-200 flex-shrink-0 border-b-2 border-transparent -mb-px rounded-t-lg hover:bg-blue-50">
+            <Icon name="lucide:trash-2" class="w-3 h-3" />
+          </div>
+          
+          <!-- Add button -->
+          <div class="relative flex items-center justify-center px-3 py-2 text-[#65BEFF] hover:text-[#189EFF] transition-all duration-300 bg-white hover:bg-blue-50 cursor-pointer tab-container tab-add">
             <Icon name="lucide:plus" class="w-3 h-3" />
-          </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Tablet & Desktop: Tab layout with border -->
+    <!-- Tablet & Desktop: Tab layout -->
     <div class="hidden md:block">
-      <div class="border-b border-gray-200">
-        <div class="flex gap-1">
-          <button
+      <div class="relative border-b border-gray-300">
+        <div class="flex gap-0 items-end">
+          <div
             v-for="tab in tabs"
             :key="tab.id"
-            @click="$emit('update:activeTab', tab.id)"
             :class="[
-              'px-4 py-3 text-sm font-medium transition-all duration-200 flex items-center gap-2 border-b-2 -mb-px whitespace-nowrap rounded-t-lg',
+              'relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all duration-300 whitespace-nowrap cursor-pointer tab-container',
               activeTab === tab.id 
-                ? 'text-blue-600 border-blue-600 bg-blue-100 shadow-sm' 
-                : 'text-gray-600 border-transparent hover:text-gray-800 hover:border-gray-300 hover:bg-gray-50'
+                ? 'text-[#65BEFF] bg-[#E8F4FD] tab-active' 
+                : 'text-gray-600 bg-white tab-inactive'
             ]"
+            @click="$emit('update:activeTab', tab.id)"
           >
             <span class="truncate">{{ tab.name }}</span>
             <Icon name="lucide:edit-3" class="w-4 h-4 flex-shrink-0" />
-          </button>
-          <button class="px-4 py-3 text-blue-600 text-sm font-medium hover:text-blue-800 transition-all duration-200 border-b-2 border-transparent -mb-px rounded-t-lg hover:bg-blue-50">
+            <Icon name="lucide:trash-2" class="w-4 h-4 flex-shrink-0" />
+          </div>
+          
+          <!-- Add button -->
+          <div class="relative flex items-center justify-center px-4 py-3 text-[#65BEFF] hover:text-[#189EFF] transition-all duration-300 bg-white hover:bg-blue-50 cursor-pointer tab-container tab-add">
             <Icon name="lucide:plus" class="w-4 h-4" />
-          </button>
+          </div>
         </div>
       </div>
     </div>
@@ -76,6 +82,43 @@ defineEmits(['update:activeTab'])
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* Tab container styling */
+.tab-container {
+  position: relative;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  border: 1px solid;
+  border-bottom: none;
+  margin-right: -1px;
+}
+
+.tab-active {
+  border-color: #65BEFF;
+  z-index: 10;
+}
+
+.tab-inactive {
+  border-color: #d1d5db;
+  z-index: 5;
+}
+
+.tab-add {
+  border-color: #d1d5db;
+  z-index: 5;
+}
+
+/* Menghilangkan garis bawah untuk tab aktif */
+.tab-active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: -1px;
+  right: -1px;
+  height: 2px;
+  background: #E8F4FD;
+  z-index: 15;
 }
 
 /* Ensure smooth scrolling on mobile */

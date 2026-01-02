@@ -1,26 +1,308 @@
+<script setup lang="ts">
+// components/organization/table/JobKatalogTable.vue
+
+interface JobKatalog {
+  idJob: string
+  titelatur: string
+  description: string
+  start: string
+  validTo: string
+}
+
+interface Props {
+  data?: JobKatalog[]
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  data: () => []
+})
+
+const searchQuery = ref('')
+const currentPage = ref(1)
+const itemsPerPage = ref(10)
+
+// DATA DUMMY untuk Job Katalog
+const dummyData: JobKatalog[] = [
+  {
+    idJob: '50010001',
+    titelatur: 'Direktur Utama',
+    description: 'DIREKTUR UTAMA',
+    start: '01 Januari 2024',
+    validTo: '31 Desember 2024'
+  },
+  {
+    idJob: '50010002',
+    titelatur: 'Direktur Keuangan',
+    description: 'DIREKTUR KEUANGAN',
+    start: '01 Januari 2024',
+    validTo: '31 Desember 2024'
+  },
+  {
+    idJob: '50010003',
+    titelatur: 'Direktur Operasional',
+    description: 'DIREKTUR OPERASIONAL',
+    start: '01 Januari 2024',
+    validTo: '31 Desember 2024'
+  },
+  {
+    idJob: '50010004',
+    titelatur: 'Manager HR',
+    description: 'MANAGER HUMAN RESOURCES',
+    start: '01 Februari 2024',
+    validTo: '31 Januari 2025'
+  },
+  {
+    idJob: '50010005',
+    titelatur: 'Manager IT',
+    description: 'MANAGER INFORMATION TECHNOLOGY',
+    start: '01 Februari 2024',
+    validTo: '31 Januari 2025'
+  },
+  {
+    idJob: '50010006',
+    titelatur: 'Manager Marketing',
+    description: 'MANAGER MARKETING',
+    start: '01 Maret 2024',
+    validTo: '28 Februari 2025'
+  },
+  {
+    idJob: '50010007',
+    titelatur: 'Supervisor Produksi',
+    description: 'SUPERVISOR PRODUKSI',
+    start: '15 Maret 2024',
+    validTo: '14 Maret 2025'
+  },
+  {
+    idJob: '50010008',
+    titelatur: 'Staff Accounting',
+    description: 'STAFF ACCOUNTING',
+    start: '01 April 2024',
+    validTo: '31 Maret 2025'
+  },
+  {
+    idJob: '50010009',
+    titelatur: 'Staff Admin',
+    description: 'STAFF ADMINISTRASI',
+    start: '01 April 2024',
+    validTo: '31 Maret 2025'
+  },
+  {
+    idJob: '50010010',
+    titelatur: 'Analyst Business',
+    description: 'BUSINESS ANALYST',
+    start: '01 Mei 2024',
+    validTo: '30 April 2025'
+  },
+]
+
+// Use props data if available, otherwise use dummy data
+const jobKatalogData = computed(() => 
+  props.data && props.data.length > 0 ? props.data : dummyData
+)
+
+// Filter data based on search
+const filteredData = computed(() => {
+  if (!searchQuery.value) return jobKatalogData.value
+  
+  const query = searchQuery.value.toLowerCase()
+  return jobKatalogData.value.filter(item => 
+    item.idJob.toLowerCase().includes(query) ||
+    item.titelatur.toLowerCase().includes(query) ||
+    item.description.toLowerCase().includes(query) ||
+    item.start.toLowerCase().includes(query) ||
+    item.validTo.toLowerCase().includes(query)
+  )
+})
+
+// Pagination
+const totalPages = computed(() => 
+  Math.ceil(filteredData.value.length / itemsPerPage.value)
+)
+
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return filteredData.value.slice(start, end)
+})
+
+const goToPage = (page: number) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
+
+// Reset to page 1 when search changes
+watch(searchQuery, () => {
+  currentPage.value = 1
+})
+
+// Reset to page 1 when items per page changes
+watch(itemsPerPage, () => {
+  currentPage.value = 1
+})
+</script>
+
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-200">
-    <!-- Header -->
-    <div class="px-4 py-3 border-b bg-gray-50 rounded-t-lg">
-      <h2 class="text-lg font-semibold text-gray-800">Job Katalog</h2>
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
+    <!-- Search Bar -->
+    <div class="px-6 py-4 bg-white rounded-t-2xl">
+      <div class="relative max-w-xs">
+        <Icon 
+          name="lucide:search" 
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+        />
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Search..."
+          class="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+        />
+      </div>
     </div>
-    
-    <!-- Content -->
-    <div class="p-4">
-      <div class="text-center py-8">
-        <Icon name="lucide:briefcase" class="w-16 h-16 mx-auto text-gray-300 mb-4" />
-        <h3 class="text-lg font-medium mb-2 text-gray-700">Job Katalog</h3>
-        <p class="text-gray-500">Data job katalog akan ditampilkan di sini</p>
+
+    <!-- Table -->
+    <div class="overflow-x-auto px-6 pb-4">
+      <table class="w-full">
+        <thead class="bg-blue-100/60 rounded-t-xl">
+          <tr>
+            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide first:rounded-tl-xl">
+              ID JOB
+            </th>
+            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+              TITELATUR
+            </th>
+            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+              DESCRIPTION
+            </th>
+            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+              START
+            </th>
+            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide last:rounded-tr-xl">
+              VALID TO
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white">
+          <tr 
+            v-for="(item, index) in paginatedData" 
+            :key="index"
+            class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/30 transition-colors"
+          >
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
+              {{ item.idJob }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
+              {{ item.titelatur }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+              {{ item.description }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
+              {{ item.start }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+              {{ item.validTo }}
+            </td>
+          </tr>
+          
+          <!-- Empty State -->
+          <tr v-if="paginatedData.length === 0">
+            <td colspan="5" class="px-6 py-16 text-center">
+              <Icon name="lucide:briefcase" class="w-14 h-14 mx-auto mb-4 text-gray-300" />
+              <p class="text-sm font-medium text-gray-600">Tidak ada data yang ditemukan</p>
+              <p class="text-xs text-gray-500 mt-1">Coba ubah kata kunci pencarian Anda</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+      <div class="text-sm text-gray-600 font-medium">
+        Menampilkan {{ paginatedData.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0 }} - 
+        {{ Math.min(currentPage * itemsPerPage, filteredData.length) }} 
+        dari {{ filteredData.length }} data
+      </div>
+      
+      <div class="flex items-center gap-2">
+        <button
+          @click="goToPage(currentPage - 1)"
+          :disabled="currentPage === 1"
+          class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        >
+          Previous
+        </button>
+        
+        <template v-if="totalPages <= 7">
+          <button
+            v-for="page in totalPages"
+            :key="page"
+            @click="goToPage(page)"
+            :class="[
+              'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
+              currentPage === page 
+                ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
+                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+            ]"
+          >
+            {{ page }}
+          </button>
+        </template>
+        
+        <template v-else>
+          <button
+            @click="goToPage(1)"
+            :class="[
+              'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
+              currentPage === 1 
+                ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
+                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+            ]"
+          >
+            1
+          </button>
+          
+          <span v-if="currentPage > 3" class="px-2 text-gray-500">...</span>
+          
+          <template v-for="page in totalPages" :key="page">
+            <button
+              v-if="page > 1 && page < totalPages && Math.abs(page - currentPage) <= 1"
+              @click="goToPage(page)"
+              :class="[
+                'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
+                currentPage === page 
+                  ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
+                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+              ]"
+            >
+              {{ page }}
+            </button>
+          </template>
+          
+          <span v-if="currentPage < totalPages - 2" class="px-2 text-gray-500">...</span>
+          
+          <button
+            @click="goToPage(totalPages)"
+            :class="[
+              'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
+              currentPage === totalPages 
+                ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
+                : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+            ]"
+          >
+            {{ totalPages }}
+          </button>
+        </template>
+        
+        <button
+          @click="goToPage(currentPage + 1)"
+          :disabled="currentPage === totalPages"
+          class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        >
+          Next
+        </button>
       </div>
     </div>
   </div>
 </template>
-
-<script setup>
-const props = defineProps({
-  data: {
-    type: Array,
-    default: () => []
-  }
-})
-</script>

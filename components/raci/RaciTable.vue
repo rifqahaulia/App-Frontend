@@ -175,17 +175,36 @@
 </template>
 
 <script setup>
-interface Props {
-  roles: Array<any>
-  processes: Array<any>
-  expandedProcesses: Array<number>
-  currentPage: number
-  itemsPerPage: number
-  totalPages: number
-  visiblePages: Array<number>
-}
-
-const props = defineProps<Props>()
+const props = defineProps({
+  roles: {
+    type: Array,
+    required: true
+  },
+  processes: {
+    type: Array,
+    required: true
+  },
+  expandedProcesses: {
+    type: Array,
+    required: true
+  },
+  currentPage: {
+    type: Number,
+    required: true
+  },
+  itemsPerPage: {
+    type: Number,
+    required: true
+  },
+  totalPages: {
+    type: Number,
+    required: true
+  },
+  visiblePages: {
+    type: Array,
+    required: true
+  }
+})
 
 const emit = defineEmits(['toggle-process', 'update:currentPage', 'update:itemsPerPage'])
 
