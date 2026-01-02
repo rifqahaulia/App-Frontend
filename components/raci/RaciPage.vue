@@ -129,232 +129,63 @@
                   
                   <!-- Body -->
                   <tbody class="bg-white divide-y divide-gray-200">
-                    <!-- Mengelola Hukum -->
-                    <tr class="hover:bg-gray-50 transition-colors">
-                      <td class="px-4 py-3 border-r border-gray-300">
-                        <div class="flex items-center gap-2">
-                          <button 
-                            @click="toggleProcess('mengelola-hukum')"
-                            class="text-[#65BEFF] hover:text-[#189EFF] transition-colors"
-                          >
+                    <template v-for="process in paginatedProcesses" :key="process.id">
+                      <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-4 py-3 border-r border-gray-300">
+                          <div class="flex items-center gap-2" :style="{ paddingLeft: `${process.level * 24}px` }">
+                            <!-- Show chevron for processes that have children -->
+                            <button 
+                              v-if="process.children && process.children.length > 0"
+                              @click="toggleProcess(process.id)"
+                              class="text-[#65BEFF] hover:text-[#189EFF] transition-colors"
+                            >
+                              <Icon 
+                                :name="expandedProcesses.includes(process.id) ? 'lucide:chevron-down' : 'lucide:chevron-right'" 
+                                class="w-4 h-4 transition-transform duration-200" 
+                              />
+                            </button>
+                            <!-- Show static chevron for leaf nodes -->
                             <Icon 
-                              :name="expandedProcesses.includes('mengelola-hukum') ? 'lucide:chevron-down' : 'lucide:chevron-right'" 
-                              class="w-4 h-4 transition-transform duration-200" 
-                            />
-                          </button>
-                          <span class="text-sm text-gray-900 font-medium">Mengelola Hukum</span>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <span class="text-sm font-medium text-gray-900">A/C</span>
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <button @click="openEditModal" class="text-[#65BEFF] hover:text-[#189EFF] transition-colors">
-                            <Icon name="lucide:edit" class="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <!-- Blue box removed -->
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center"></td>
-                    </tr>
-                    
-                    <!-- Mengelola kepatuhan peraturan perundang-undangan -->
-                    <tr 
-                      v-show="expandedProcesses.includes('mengelola-hukum')"
-                      class="hover:bg-gray-50 transition-colors"
-                    >
-                      <td class="px-4 py-3 border-r border-gray-300">
-                        <div class="flex items-center gap-2 ml-6">
-                          <span class="text-sm text-gray-900">Mengelola kepatuhan peraturan perundang-undangan</span>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <span class="text-sm font-medium text-gray-900">A/C</span>
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <button @click="openEditModal" class="text-[#65BEFF] hover:text-[#189EFF] transition-colors">
-                            <Icon name="lucide:edit" class="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <!-- Blue box removed -->
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <span class="text-sm font-medium text-gray-900">A</span>
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center"></td>
-                    </tr>
-                    
-                    <!-- Mengelola legal environment -->
-                    <tr 
-                      v-show="expandedProcesses.includes('mengelola-hukum')"
-                      class="hover:bg-gray-50 transition-colors"
-                    >
-                      <td class="px-4 py-3 border-r border-gray-300">
-                        <div class="flex items-center gap-2 ml-12">
-                          <button 
-                            @click="toggleProcess('mengelola-legal-environment')"
-                            class="text-[#65BEFF] hover:text-[#189EFF] transition-colors"
-                          >
-                            <Icon 
-                              :name="expandedProcesses.includes('mengelola-legal-environment') ? 'lucide:chevron-down' : 'lucide:chevron-right'" 
-                              class="w-4 h-4 transition-transform duration-200" 
-                            />
-                          </button>
-                          <span class="text-sm text-gray-900">Mengelola legal environment</span>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <span class="text-sm font-medium text-gray-900">A/C</span>
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <button @click="openEditModal" class="text-[#65BEFF] hover:text-[#189EFF] transition-colors">
-                            <Icon name="lucide:edit" class="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <!-- Blue box removed -->
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <span class="text-sm font-medium text-gray-900">C/R</span>
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center">
-                        <div class="flex justify-center">
-                          <span class="text-sm font-medium text-gray-900">C/R</span>
-                        </div>
-                      </td>
-                    </tr>
-                    
-                    <!-- Sub processes -->
-                    <tr 
-                      v-show="expandedProcesses.includes('mengelola-hukum') && expandedProcesses.includes('mengelola-legal-environment')"
-                      class="hover:bg-gray-50 transition-colors"
-                    >
-                      <td class="px-4 py-3 border-r border-gray-300">
-                        <div class="flex items-center gap-2 pl-16">
-                          <span class="text-sm text-gray-900">Melakukan identifikasi sumber, isu hukum dan peraturan yang dapat mempengaruhi bisnis perusahaan</span>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center"></td>
-                    </tr>
-                    
-                    <tr 
-                      v-show="expandedProcesses.includes('mengelola-hukum') && expandedProcesses.includes('mengelola-legal-environment')"
-                      class="hover:bg-gray-50 transition-colors"
-                    >
-                      <td class="px-4 py-3 border-r border-gray-300">
-                        <div class="flex items-center gap-2 pl-16">
-                          <span class="text-sm text-gray-900">Membuat sistem identifikasi sumber, isu hukum dan peraturan</span>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center"></td>
-                    </tr>
-                    
-                    <tr 
-                      v-show="expandedProcesses.includes('mengelola-hukum') && expandedProcesses.includes('mengelola-legal-environment')"
-                      class="hover:bg-gray-50 transition-colors"
-                    >
-                      <td class="px-4 py-3 border-r border-gray-300">
-                        <div class="flex items-center gap-2 pl-16">
-                          <span class="text-sm text-gray-900">Melakukan pengumpulan dan screening data terkait dengan peraturan yang dapat mempengaruhi bisnis perusahaan</span>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center"></td>
-                    </tr>
-                    
-                    <!-- Mengelola dokumen legal dan perizinan -->
-                    <tr 
-                      v-show="expandedProcesses.includes('mengelola-hukum')"
-                      class="hover:bg-gray-50 transition-colors"
-                    >
-                      <td class="px-4 py-3 border-r border-gray-300">
-                        <div class="flex items-center gap-2 ml-12">
-                          <button 
-                            @click="toggleProcess('mengelola-dokumen-legal')"
-                            class="text-[#65BEFF] hover:text-[#189EFF] transition-colors"
-                          >
-                            <Icon 
+                              v-else-if="process.level > 0"
                               name="lucide:chevron-right" 
-                              class="w-4 h-4 transition-transform duration-200"
-                              :class="{ 'rotate-90': expandedProcesses.includes('mengelola-dokumen-legal') }"
+                              class="w-4 h-4 text-gray-300" 
                             />
-                          </button>
-                          <span class="text-sm text-gray-900">Mengelola dokumen legal dan perizinan</span>
-                        </div>
-                      </td>
-                      <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">15</td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <span class="text-sm font-medium text-gray-900">A/C</span>
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300">
-                        <div class="flex justify-center">
-                          <button @click="openEditModal" class="text-[#65BEFF] hover:text-[#189EFF] transition-colors">
-                            <Icon name="lucide:edit" class="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center border-r border-gray-300"></td>
-                      <td class="px-3 py-3 text-center"></td>
-                    </tr>
+                            <span v-else class="w-4 h-4"></span>
+                            <span class="text-sm text-gray-900" :class="{ 'font-medium': process.level === 0 }">{{ process.name }}</span>
+                          </div>
+                        </td>
+                        <td class="px-4 py-3 text-center border-r border-gray-300 text-sm text-gray-900 font-medium">{{ process.group }}</td>
+                        <td class="px-3 py-3 text-center border-r border-gray-300">
+                          <div class="flex justify-center">
+                            <span class="text-sm font-medium text-gray-900" v-if="process.level === 0 || process.id === 'mengelola-kepatuhan' || process.id === 'mengelola-legal-environment' || process.id === 'mengelola-dokumen-legal'">A/C</span>
+                          </div>
+                        </td>
+                        <td class="px-3 py-3 text-center border-r border-gray-300">
+                          <div class="flex justify-center">
+                            <button @click="openEditModal" class="text-[#65BEFF] hover:text-[#189EFF] transition-colors">
+                              <Icon name="lucide:edit" class="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                        <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                        <td class="px-3 py-3 text-center border-r border-gray-300">
+                          <div class="flex justify-center" v-if="process.id === 'mengelola-kepatuhan'">
+                            <span class="text-sm font-medium text-gray-900">A</span>
+                          </div>
+                        </td>
+                        <td class="px-3 py-3 text-center border-r border-gray-300">
+                          <div class="flex justify-center" v-if="process.id === 'mengelola-legal-environment'">
+                            <span class="text-sm font-medium text-gray-900">C/R</span>
+                          </div>
+                        </td>
+                        <td class="px-3 py-3 text-center border-r border-gray-300"></td>
+                        <td class="px-3 py-3 text-center">
+                          <div class="flex justify-center" v-if="process.id === 'mengelola-legal-environment'">
+                            <span class="text-sm font-medium text-gray-900">C/R</span>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
                   </tbody>
                 </table>
               </div>
@@ -363,20 +194,49 @@
               <div class="px-4 py-3 border-t border-gray-300 bg-gray-50 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-sm text-gray-600">
                   <span>Items per page:</span>
-                  <select class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white">
+                  <select 
+                    :value="itemsPerPage" 
+                    @change="changeItemsPerPage($event.target.value)"
+                    class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white"
+                  >
+                    <option value="5">5</option>
                     <option value="10">10</option>
+                    <option value="15">15</option>
                   </select>
+                  <span class="ml-4">{{ startItem }}-{{ endItem }} of {{ totalItems }}</span>
                 </div>
                 <div class="flex items-center gap-1">
-                  <button class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 bg-white disabled:opacity-50">‹</button>
-                  <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">1</button>
-                  <button class="px-3 py-1 border border-[#65BEFF] rounded text-sm bg-[#65BEFF] text-white font-medium">2</button>
-                  <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">3</button>
-                  <span class="px-2 text-sm text-gray-500">...</span>
-                  <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">8</button>
-                  <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">9</button>
-                  <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">10</button>
-                  <button class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 bg-white">›</button>
+                  <button 
+                    @click="previousPage"
+                    :disabled="currentPage === 1"
+                    class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    ‹
+                  </button>
+                  
+                  <template v-for="page in pageNumbers" :key="page">
+                    <button 
+                      v-if="page !== '...'"
+                      @click="goToPage(page)"
+                      :class="[
+                        'px-3 py-1 border rounded text-sm font-medium',
+                        page === currentPage 
+                          ? 'border-[#65BEFF] bg-[#65BEFF] text-white' 
+                          : 'border-gray-300 bg-white hover:bg-gray-100 text-gray-700'
+                      ]"
+                    >
+                      {{ page }}
+                    </button>
+                    <span v-else class="px-2 text-sm text-gray-500">...</span>
+                  </template>
+                  
+                  <button 
+                    @click="nextPage"
+                    :disabled="currentPage === totalPages"
+                    class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 bg-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    ›
+                  </button>
                 </div>
               </div>
             </div>
@@ -466,6 +326,321 @@ const selectedOption = ref('')
 const optionReason = ref('')
 const expandedProcesses = ref([])
 
+// Pagination data
+const itemsPerPage = ref(10)
+const currentPage = ref(2)
+
+// Dummy data for RACI processes - sesuai struktur hierarki yang diminta
+const allProcesses = ref([
+  {
+    id: 'mengelola-hukum',
+    name: 'Mengelola Hukum',
+    group: 15,
+    level: 0,
+    children: [
+      {
+        id: 'mengelola-kepatuhan',
+        name: 'Mengelola kepatuhan peraturan perundang-undangan',
+        group: 15,
+        level: 1,
+        parent: 'mengelola-hukum'
+      },
+      {
+        id: 'mengelola-legal-environment',
+        name: 'Mengelola legal environment',
+        group: 15,
+        level: 1,
+        parent: 'mengelola-hukum',
+        children: [
+          {
+            id: 'identifikasi-sumber',
+            name: 'Melakukan identifikasi sumber, isu hukum dan peraturan yang dapat mempengaruhi bisnis perusahaan',
+            group: 15,
+            level: 2,
+            parent: 'mengelola-legal-environment'
+          },
+          {
+            id: 'sistem-identifikasi',
+            name: 'Membuat sistem identifikasi sumber, isu hukum dan peraturan',
+            group: 15,
+            level: 2,
+            parent: 'mengelola-legal-environment'
+          },
+          {
+            id: 'pengumpulan-screening',
+            name: 'Melakukan pengumpulan dan screening data terkait dengan peraturan yang dapat mempengaruhi bisnis perusahaan',
+            group: 15,
+            level: 2,
+            parent: 'mengelola-legal-environment'
+          }
+        ]
+      },
+      {
+        id: 'mengelola-dokumen-legal',
+        name: 'Mengelola dokumen legal dan perizinan',
+        group: 15,
+        level: 1,
+        parent: 'mengelola-hukum'
+      }
+    ]
+  },
+  {
+    id: 'mengelola-keuangan',
+    name: 'Mengelola Keuangan',
+    group: 12,
+    level: 0,
+    children: [
+      {
+        id: 'perencanaan-anggaran',
+        name: 'Perencanaan dan penyusunan anggaran',
+        group: 8,
+        level: 1,
+        parent: 'mengelola-keuangan'
+      },
+      {
+        id: 'pengelolaan-kas',
+        name: 'Pengelolaan kas dan investasi',
+        group: 6,
+        level: 1,
+        parent: 'mengelola-keuangan',
+        children: [
+          {
+            id: 'monitoring-kas',
+            name: 'Monitoring dan pelaporan posisi kas harian',
+            group: 4,
+            level: 2,
+            parent: 'pengelolaan-kas'
+          },
+          {
+            id: 'investasi-jangka-pendek',
+            name: 'Pengelolaan investasi jangka pendek',
+            group: 3,
+            level: 2,
+            parent: 'pengelolaan-kas'
+          }
+        ]
+      },
+      {
+        id: 'pelaporan-keuangan',
+        name: 'Pelaporan keuangan',
+        group: 10,
+        level: 1,
+        parent: 'mengelola-keuangan'
+      }
+    ]
+  },
+  {
+    id: 'mengelola-sdm',
+    name: 'Mengelola Sumber Daya Manusia',
+    group: 18,
+    level: 0,
+    children: [
+      {
+        id: 'rekrutmen-seleksi',
+        name: 'Rekrutmen dan seleksi karyawan',
+        group: 12,
+        level: 1,
+        parent: 'mengelola-sdm',
+        children: [
+          {
+            id: 'analisis-kebutuhan',
+            name: 'Analisis kebutuhan tenaga kerja',
+            group: 5,
+            level: 2,
+            parent: 'rekrutmen-seleksi'
+          },
+          {
+            id: 'proses-seleksi',
+            name: 'Pelaksanaan proses seleksi',
+            group: 8,
+            level: 2,
+            parent: 'rekrutmen-seleksi'
+          }
+        ]
+      },
+      {
+        id: 'pengembangan-karyawan',
+        name: 'Pengembangan dan pelatihan karyawan',
+        group: 14,
+        level: 1,
+        parent: 'mengelola-sdm'
+      },
+      {
+        id: 'evaluasi-kinerja',
+        name: 'Evaluasi kinerja karyawan',
+        group: 9,
+        level: 1,
+        parent: 'mengelola-sdm'
+      }
+    ]
+  },
+  {
+    id: 'mengelola-operasional',
+    name: 'Mengelola Operasional',
+    group: 25,
+    level: 0,
+    children: [
+      {
+        id: 'perencanaan-produksi',
+        name: 'Perencanaan dan penjadwalan produksi',
+        group: 15,
+        level: 1,
+        parent: 'mengelola-operasional'
+      },
+      {
+        id: 'quality-control',
+        name: 'Pengendalian kualitas',
+        group: 12,
+        level: 1,
+        parent: 'mengelola-operasional',
+        children: [
+          {
+            id: 'inspeksi-produk',
+            name: 'Inspeksi dan pengujian produk',
+            group: 8,
+            level: 2,
+            parent: 'quality-control'
+          },
+          {
+            id: 'audit-kualitas',
+            name: 'Audit sistem kualitas',
+            group: 6,
+            level: 2,
+            parent: 'quality-control'
+          }
+        ]
+      },
+      {
+        id: 'supply-chain',
+        name: 'Manajemen rantai pasok',
+        group: 20,
+        level: 1,
+        parent: 'mengelola-operasional'
+      }
+    ]
+  },
+  {
+    id: 'mengelola-teknologi',
+    name: 'Mengelola Teknologi Informasi',
+    group: 16,
+    level: 0,
+    children: [
+      {
+        id: 'infrastruktur-it',
+        name: 'Pengelolaan infrastruktur IT',
+        group: 10,
+        level: 1,
+        parent: 'mengelola-teknologi'
+      },
+      {
+        id: 'keamanan-sistem',
+        name: 'Keamanan sistem informasi',
+        group: 8,
+        level: 1,
+        parent: 'mengelola-teknologi',
+        children: [
+          {
+            id: 'monitoring-keamanan',
+            name: 'Monitoring dan deteksi ancaman',
+            group: 5,
+            level: 2,
+            parent: 'keamanan-sistem'
+          },
+          {
+            id: 'backup-recovery',
+            name: 'Backup dan disaster recovery',
+            group: 4,
+            level: 2,
+            parent: 'keamanan-sistem'
+          }
+        ]
+      },
+      {
+        id: 'pengembangan-aplikasi',
+        name: 'Pengembangan aplikasi',
+        group: 12,
+        level: 1,
+        parent: 'mengelola-teknologi'
+      }
+    ]
+  }
+])
+
+// Function to build display tree with expanded state
+const buildDisplayTree = (processes, expandedIds) => {
+  const result = []
+  
+  const addProcessWithChildren = (process) => {
+    result.push(process)
+    
+    if (process.children && expandedIds.includes(process.id)) {
+      process.children.forEach(child => {
+        addProcessWithChildren(child)
+      })
+    }
+  }
+  
+  processes.forEach(process => addProcessWithChildren(process))
+  return result
+}
+
+// Get display tree based on expanded state
+const displayProcesses = computed(() => {
+  return buildDisplayTree(allProcesses.value, expandedProcesses.value)
+})
+
+// Update total items based on display tree
+const totalItems = computed(() => displayProcesses.value.length)
+
+// Computed properties for pagination
+const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value))
+const startItem = computed(() => (currentPage.value - 1) * itemsPerPage.value + 1)
+const endItem = computed(() => Math.min(currentPage.value * itemsPerPage.value, totalItems.value))
+
+// Get paginated processes from display tree
+const paginatedProcesses = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage.value
+  const end = start + itemsPerPage.value
+  return displayProcesses.value.slice(start, end)
+})
+
+// Generate page numbers for pagination
+const pageNumbers = computed(() => {
+  const pages = []
+  const total = totalPages.value
+  const current = currentPage.value
+  
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) {
+      pages.push(i)
+    }
+  } else {
+    if (current <= 4) {
+      for (let i = 1; i <= 5; i++) {
+        pages.push(i)
+      }
+      pages.push('...')
+      pages.push(total)
+    } else if (current >= total - 3) {
+      pages.push(1)
+      pages.push('...')
+      for (let i = total - 4; i <= total; i++) {
+        pages.push(i)
+      }
+    } else {
+      pages.push(1)
+      pages.push('...')
+      for (let i = current - 1; i <= current + 1; i++) {
+        pages.push(i)
+      }
+      pages.push('...')
+      pages.push(total)
+    }
+  }
+  
+  return pages
+})
+
 // Tabs data
 const tabs = ref([
   { id: 'unit-hukum', name: 'Unit Hukum' },
@@ -481,6 +656,8 @@ const toggleProcess = (processId) => {
   } else {
     expandedProcesses.value.push(processId)
   }
+  // Reset to first page when expanding/collapsing to show the changes
+  currentPage.value = 1
 }
 
 const openEditModal = () => {
@@ -499,6 +676,30 @@ const saveValue = () => {
     reason: optionReason.value
   })
   closeEditModal()
+}
+
+// Pagination methods
+const changeItemsPerPage = (newValue) => {
+  itemsPerPage.value = parseInt(newValue)
+  currentPage.value = 1 // Reset to first page
+}
+
+const goToPage = (page) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
+
+const previousPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
 }
 </script>
 
