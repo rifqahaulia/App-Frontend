@@ -65,63 +65,63 @@
                 <table class="w-full border-collapse bg-white">
                   <!-- Header -->
                   <thead>
-                    <tr class="bg-blue-50">
-                      <th class="px-4 py-3 text-left text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300">
+                    <tr class="bg-blue-100/60">
+                      <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200">
                         PROSES BISNIS
                       </th>
-                      <th class="px-4 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300">
+                      <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200">
                         GROUP
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300 min-w-[120px]">
+                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 min-w-[120px]">
                         <div class="flex flex-col items-center">
-                          <div class="font-semibold text-gray-800 text-xs mb-1">KEPALA</div>
-                          <div class="font-semibold text-gray-800 text-xs mb-1">BIRO</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Hukum</div>
+                          <div class="font-bold text-gray-600 text-xs mb-1">KEPALA</div>
+                          <div class="font-bold text-gray-600 text-xs mb-1">BIRO</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Hukum</div>
                         </div>
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300 min-w-[120px]">
+                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 min-w-[120px]">
                         <div class="flex flex-col items-center">
-                          <div class="font-semibold text-gray-800 text-xs mb-1">MANAGER</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Bantuan</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Hukum</div>
+                          <div class="font-bold text-gray-600 text-xs mb-1">MANAGER</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Bantuan</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Hukum</div>
                         </div>
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300 min-w-[120px]">
+                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 min-w-[120px]">
                         <div class="flex flex-col items-center">
-                          <div class="font-semibold text-gray-800 text-xs mb-1">KEPALA</div>
-                          <div class="font-semibold text-gray-800 text-xs mb-1">BIRO</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Hukum</div>
+                          <div class="font-bold text-gray-600 text-xs mb-1">KEPALA</div>
+                          <div class="font-bold text-gray-600 text-xs mb-1">BIRO</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Hukum</div>
                         </div>
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300 min-w-[120px]">
+                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 min-w-[120px]">
                         <div class="flex flex-col items-center">
-                          <div class="font-semibold text-gray-800 text-xs mb-1">JUNIOR</div>
-                          <div class="font-semibold text-gray-800 text-xs mb-1">MANAGER</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Bantuan Hukum</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Non Litigasi</div>
+                          <div class="font-bold text-gray-600 text-xs mb-1">JUNIOR</div>
+                          <div class="font-bold text-gray-600 text-xs mb-1">MANAGER</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Bantuan Hukum</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Non Litigasi</div>
                         </div>
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300 min-w-[120px]">
+                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 min-w-[120px]">
                         <div class="flex flex-col items-center">
-                          <div class="font-semibold text-gray-800 text-xs mb-1">MANAGER</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Pertimbangan</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Hukum</div>
+                          <div class="font-bold text-gray-600 text-xs mb-1">MANAGER</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Pertimbangan</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Hukum</div>
                         </div>
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider border-r border-gray-300 min-w-[140px]">
+                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 min-w-[140px]">
                         <div class="flex flex-col items-center">
-                          <div class="font-semibold text-gray-800 text-xs mb-1">JUNIOR MANAGER</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Pertimbangan Hukum</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Bidang Produk</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Internal</div>
+                          <div class="font-bold text-gray-600 text-xs mb-1">JUNIOR MANAGER</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Pertimbangan Hukum</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Bidang Produk</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Internal</div>
                         </div>
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider min-w-[140px]">
+                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide min-w-[140px]">
                         <div class="flex flex-col items-center">
-                          <div class="font-semibold text-gray-800 text-xs mb-1">JUNIOR MANAGER</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Pertimbangan Hukum</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Bidang Produk</div>
-                          <div class="text-xs text-gray-600 normal-case font-normal">Eksternal</div>
+                          <div class="font-bold text-gray-600 text-xs mb-1">JUNIOR MANAGER</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Pertimbangan Hukum</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Bidang Produk</div>
+                          <div class="text-xs text-gray-500 normal-case font-normal">Eksternal</div>
                         </div>
                       </th>
                     </tr>
@@ -133,7 +133,15 @@
                     <tr class="hover:bg-gray-50 transition-colors">
                       <td class="px-4 py-3 border-r border-gray-300">
                         <div class="flex items-center gap-2">
-                          <Icon name="lucide:chevron-down" class="w-4 h-4 text-gray-600" />
+                          <button 
+                            @click="toggleProcess('mengelola-hukum')"
+                            class="text-[#65BEFF] hover:text-[#189EFF] transition-colors"
+                          >
+                            <Icon 
+                              :name="expandedProcesses.includes('mengelola-hukum') ? 'lucide:chevron-down' : 'lucide:chevron-right'" 
+                              class="w-4 h-4 transition-transform duration-200" 
+                            />
+                          </button>
                           <span class="text-sm text-gray-900 font-medium">Mengelola Hukum</span>
                         </div>
                       </td>
@@ -152,7 +160,7 @@
                       </td>
                       <td class="px-3 py-3 text-center border-r border-gray-300">
                         <div class="flex justify-center">
-                          <div class="w-4 h-4 border-2 border-blue-600 rounded-sm"></div>
+                          <!-- Blue box removed -->
                         </div>
                       </td>
                       <td class="px-3 py-3 text-center border-r border-gray-300"></td>
@@ -162,7 +170,10 @@
                     </tr>
                     
                     <!-- Mengelola kepatuhan peraturan perundang-undangan -->
-                    <tr class="hover:bg-gray-50 transition-colors">
+                    <tr 
+                      v-show="expandedProcesses.includes('mengelola-hukum')"
+                      class="hover:bg-gray-50 transition-colors"
+                    >
                       <td class="px-4 py-3 border-r border-gray-300">
                         <div class="flex items-center gap-2 ml-6">
                           <span class="text-sm text-gray-900">Mengelola kepatuhan peraturan perundang-undangan</span>
@@ -183,7 +194,7 @@
                       </td>
                       <td class="px-3 py-3 text-center border-r border-gray-300">
                         <div class="flex justify-center">
-                          <div class="w-4 h-4 border-2 border-blue-600 rounded-sm"></div>
+                          <!-- Blue box removed -->
                         </div>
                       </td>
                       <td class="px-3 py-3 text-center border-r border-gray-300">
@@ -197,10 +208,21 @@
                     </tr>
                     
                     <!-- Mengelola legal environment -->
-                    <tr class="hover:bg-gray-50 transition-colors">
+                    <tr 
+                      v-show="expandedProcesses.includes('mengelola-hukum')"
+                      class="hover:bg-gray-50 transition-colors"
+                    >
                       <td class="px-4 py-3 border-r border-gray-300">
                         <div class="flex items-center gap-2 ml-12">
-                          <Icon name="lucide:chevron-down" class="w-4 h-4 text-gray-600" />
+                          <button 
+                            @click="toggleProcess('mengelola-legal-environment')"
+                            class="text-[#65BEFF] hover:text-[#189EFF] transition-colors"
+                          >
+                            <Icon 
+                              :name="expandedProcesses.includes('mengelola-legal-environment') ? 'lucide:chevron-down' : 'lucide:chevron-right'" 
+                              class="w-4 h-4 transition-transform duration-200" 
+                            />
+                          </button>
                           <span class="text-sm text-gray-900">Mengelola legal environment</span>
                         </div>
                       </td>
@@ -219,7 +241,7 @@
                       </td>
                       <td class="px-3 py-3 text-center border-r border-gray-300">
                         <div class="flex justify-center">
-                          <div class="w-4 h-4 border-2 border-blue-600 rounded-sm"></div>
+                          <!-- Blue box removed -->
                         </div>
                       </td>
                       <td class="px-3 py-3 text-center border-r border-gray-300"></td>
@@ -237,7 +259,10 @@
                     </tr>
                     
                     <!-- Sub processes -->
-                    <tr class="hover:bg-gray-50 transition-colors">
+                    <tr 
+                      v-show="expandedProcesses.includes('mengelola-hukum') && expandedProcesses.includes('mengelola-legal-environment')"
+                      class="hover:bg-gray-50 transition-colors"
+                    >
                       <td class="px-4 py-3 border-r border-gray-300">
                         <div class="flex items-center gap-2 pl-16">
                           <span class="text-sm text-gray-900">Melakukan identifikasi sumber, isu hukum dan peraturan yang dapat mempengaruhi bisnis perusahaan</span>
@@ -253,7 +278,10 @@
                       <td class="px-3 py-3 text-center"></td>
                     </tr>
                     
-                    <tr class="hover:bg-gray-50 transition-colors">
+                    <tr 
+                      v-show="expandedProcesses.includes('mengelola-hukum') && expandedProcesses.includes('mengelola-legal-environment')"
+                      class="hover:bg-gray-50 transition-colors"
+                    >
                       <td class="px-4 py-3 border-r border-gray-300">
                         <div class="flex items-center gap-2 pl-16">
                           <span class="text-sm text-gray-900">Membuat sistem identifikasi sumber, isu hukum dan peraturan</span>
@@ -269,7 +297,10 @@
                       <td class="px-3 py-3 text-center"></td>
                     </tr>
                     
-                    <tr class="hover:bg-gray-50 transition-colors">
+                    <tr 
+                      v-show="expandedProcesses.includes('mengelola-hukum') && expandedProcesses.includes('mengelola-legal-environment')"
+                      class="hover:bg-gray-50 transition-colors"
+                    >
                       <td class="px-4 py-3 border-r border-gray-300">
                         <div class="flex items-center gap-2 pl-16">
                           <span class="text-sm text-gray-900">Melakukan pengumpulan dan screening data terkait dengan peraturan yang dapat mempengaruhi bisnis perusahaan</span>
@@ -286,10 +317,22 @@
                     </tr>
                     
                     <!-- Mengelola dokumen legal dan perizinan -->
-                    <tr class="hover:bg-gray-50 transition-colors">
+                    <tr 
+                      v-show="expandedProcesses.includes('mengelola-hukum')"
+                      class="hover:bg-gray-50 transition-colors"
+                    >
                       <td class="px-4 py-3 border-r border-gray-300">
                         <div class="flex items-center gap-2 ml-12">
-                          <Icon name="lucide:chevron-right" class="w-4 h-4 text-gray-600" />
+                          <button 
+                            @click="toggleProcess('mengelola-dokumen-legal')"
+                            class="text-[#65BEFF] hover:text-[#189EFF] transition-colors"
+                          >
+                            <Icon 
+                              name="lucide:chevron-right" 
+                              class="w-4 h-4 transition-transform duration-200"
+                              :class="{ 'rotate-90': expandedProcesses.includes('mengelola-dokumen-legal') }"
+                            />
+                          </button>
                           <span class="text-sm text-gray-900">Mengelola dokumen legal dan perizinan</span>
                         </div>
                       </td>
@@ -320,14 +363,14 @@
               <div class="px-4 py-3 border-t border-gray-300 bg-gray-50 flex items-center justify-between">
                 <div class="flex items-center gap-2 text-sm text-gray-600">
                   <span>Items per page:</span>
-                  <select class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                  <select class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white">
                     <option value="10">10</option>
                   </select>
                 </div>
                 <div class="flex items-center gap-1">
                   <button class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 bg-white disabled:opacity-50">‹</button>
                   <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">1</button>
-                  <button class="px-3 py-1 border border-blue-500 rounded text-sm bg-blue-500 text-white font-medium">2</button>
+                  <button class="px-3 py-1 border border-[#65BEFF] rounded text-sm bg-[#65BEFF] text-white font-medium">2</button>
                   <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">3</button>
                   <span class="px-2 text-sm text-gray-500">...</span>
                   <button class="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-100">8</button>
@@ -421,6 +464,7 @@ const activeTab = ref('unit-hukum')
 const showEditModal = ref(false)
 const selectedOption = ref('')
 const optionReason = ref('')
+const expandedProcesses = ref([])
 
 // Tabs data
 const tabs = ref([
@@ -430,6 +474,15 @@ const tabs = ref([
 ])
 
 // Methods
+const toggleProcess = (processId) => {
+  const index = expandedProcesses.value.indexOf(processId)
+  if (index > -1) {
+    expandedProcesses.value.splice(index, 1)
+  } else {
+    expandedProcesses.value.push(processId)
+  }
+}
+
 const openEditModal = () => {
   showEditModal.value = true
 }

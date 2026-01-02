@@ -4,17 +4,17 @@
       <table class="w-full">
         <!-- Header -->
         <thead>
-          <tr class="bg-blue-100">
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r">
+          <tr class="bg-[#65BEFF]/80 backdrop-blur-sm">
+            <th class="px-4 py-3 text-left text-xs font-medium text-white uppercase tracking-wider border-r border-white/30">
               PROSES BISNIS
             </th>
-            <th class="px-4 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r">
+            <th class="px-4 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-white/30">
               GROUP
             </th>
-            <th v-for="role in roles" :key="role.id" class="px-2 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r min-w-[120px]">
+            <th v-for="role in roles" :key="role.id" class="px-2 py-3 text-center text-xs font-medium text-white uppercase tracking-wider border-r border-white/30 min-w-[120px]">
               <div class="flex flex-col">
-                <span class="font-semibold text-gray-900">{{ role.title }}</span>
-                <span class="text-xs font-normal text-gray-600 normal-case">{{ role.subtitle }}</span>
+                <span class="font-semibold text-white">{{ role.title }}</span>
+                <span class="text-xs font-normal text-white/90 normal-case">{{ role.subtitle }}</span>
               </div>
             </th>
           </tr>
@@ -28,7 +28,7 @@
                 <button 
                   v-if="process.children"
                   @click="toggleProcess(process.id)"
-                  class="text-gray-400 hover:text-gray-600 transition-colors"
+                  class="text-[#65BEFF] hover:text-[#189EFF] transition-colors"
                 >
                   <Icon 
                     name="lucide:chevron-right"
@@ -70,7 +70,7 @@
                   <button 
                     v-if="child.children"
                     @click="toggleProcess(child.id)"
-                    class="text-gray-400 hover:text-gray-600 transition-colors"
+                    class="text-[#65BEFF] hover:text-[#189EFF] transition-colors"
                   >
                     <Icon 
                       name="lucide:chevron-right"
@@ -137,7 +137,7 @@
     <div class="px-4 py-3 border-t bg-gray-50 flex items-center justify-between">
       <div class="flex items-center gap-2 text-sm text-gray-600">
         <span>Items per page:</span>
-        <select v-model="itemsPerPage" class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <select v-model="itemsPerPage" class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white">
           <option value="10">10</option>
           <option value="25">25</option>
           <option value="50">50</option>
@@ -146,7 +146,7 @@
       <div class="flex items-center gap-1">
         <button 
           @click="currentPage = Math.max(1, currentPage - 1)"
-          class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed" 
+          class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed bg-white" 
           :disabled="currentPage === 1"
         >
           <Icon name="lucide:chevron-left" class="w-4 h-4" />
@@ -156,15 +156,17 @@
           :key="page"
           @click="currentPage = page"
           :class="[
-            'px-3 py-1 border border-gray-300 rounded text-sm transition-colors',
-            currentPage === page ? 'bg-blue-500 text-white border-blue-500' : 'hover:bg-gray-100'
+            'px-3 py-1 border rounded text-sm transition-colors',
+            currentPage === page 
+              ? 'bg-[#65BEFF] text-white border-[#65BEFF]' 
+              : 'bg-white border-gray-300 hover:bg-gray-100'
           ]"
         >
           {{ page }}
         </button>
         <button 
           @click="currentPage = Math.min(totalPages, currentPage + 1)"
-          class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed" 
+          class="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed bg-white" 
           :disabled="currentPage === totalPages"
         >
           <Icon name="lucide:chevron-right" class="w-4 h-4" />
