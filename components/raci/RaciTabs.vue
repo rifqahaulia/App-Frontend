@@ -21,7 +21,10 @@
           </div>
           
           <!-- Add button -->
-          <div class="relative flex items-center justify-center px-3 py-2 text-[#65BEFF] hover:text-[#189EFF] transition-all duration-300 bg-white hover:bg-blue-50 cursor-pointer tab-container tab-add">
+          <div 
+            @click="$emit('openAddTab')"
+            class="relative flex items-center justify-center px-3 py-2 text-[#65BEFF] hover:text-[#189EFF] transition-all duration-300 bg-white hover:bg-blue-50 cursor-pointer tab-container tab-add"
+          >
             <Icon name="lucide:plus" class="w-3 h-3" />
           </div>
         </div>
@@ -49,7 +52,10 @@
           </div>
           
           <!-- Add button -->
-          <div class="relative flex items-center justify-center px-4 py-3 text-[#65BEFF] hover:text-[#189EFF] transition-all duration-300 bg-white hover:bg-blue-50 cursor-pointer tab-container tab-add">
+          <div 
+            @click="$emit('openAddTab')"
+            class="relative flex items-center justify-center px-4 py-3 text-[#65BEFF] hover:text-[#189EFF] transition-all duration-300 bg-white hover:bg-blue-50 cursor-pointer tab-container tab-add"
+          >
             <Icon name="lucide:plus" class="w-4 h-4" />
           </div>
         </div>
@@ -70,7 +76,7 @@ const props = defineProps({
   }
 })
 
-defineEmits(['update:activeTab'])
+defineEmits(['update:activeTab', 'openAddTab'])
 </script>
 
 <style scoped>

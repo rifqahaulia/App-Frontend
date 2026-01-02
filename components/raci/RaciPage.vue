@@ -28,18 +28,25 @@
             <RaciTabs 
               :tabs="tabs" 
               :activeTab="activeTab" 
-              @update:activeTab="activeTab = $event" 
+              @update:activeTab="activeTab = $event"
+              @openAddTab="openAddTabModal"
             />
 
             <!-- Action Buttons -->
             <div class="mb-4 md:mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
               <div class="flex flex-wrap gap-2 md:gap-3">
-                <button class="px-3 md:px-4 py-2 bg-[#65BEFF] text-white rounded-md text-xs md:text-sm font-medium hover:bg-[#189EFF] transition-colors flex items-center gap-2 shadow-sm">
+                <button 
+                  @click="openAddRowModal"
+                  class="px-3 md:px-4 py-2 bg-[#65BEFF] text-white rounded-md text-xs md:text-sm font-medium hover:bg-[#189EFF] transition-colors flex items-center gap-2 shadow-sm"
+                >
                   <Icon name="lucide:plus" class="w-3 h-3 md:w-4 md:h-4" />
                   <span class="hidden sm:inline">Add Row</span>
                   <span class="sm:hidden">Row</span>
                 </button>
-                <button class="px-3 md:px-4 py-2 bg-[#65BEFF] text-white rounded-md text-xs md:text-sm font-medium hover:bg-[#189EFF] transition-colors flex items-center gap-2 shadow-sm">
+                <button 
+                  @click="openAddColumnModal"
+                  class="px-3 md:px-4 py-2 bg-[#65BEFF] text-white rounded-md text-xs md:text-sm font-medium hover:bg-[#189EFF] transition-colors flex items-center gap-2 shadow-sm"
+                >
                   <Icon name="lucide:plus" class="w-3 h-3 md:w-4 md:h-4" />
                   <span class="hidden sm:inline">Add Column</span>
                   <span class="sm:hidden">Column</span>
@@ -308,6 +315,149 @@
               </div>
             </div>
           </div>
+
+          <!-- Add Row Modal -->
+          <div v-if="showAddRowModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-2xl w-96 max-w-md mx-4 border border-gray-200">
+              <!-- Modal Header -->
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-[#65BEFF] rounded-t-lg">
+                <h3 class="text-lg font-semibold text-white">Add Row</h3>
+                <button @click="closeAddRowModal" class="text-white hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-white hover:bg-opacity-20">
+                  <Icon name="lucide:x" class="w-5 h-5" />
+                </button>
+              </div>
+              
+              <!-- Modal Body -->
+              <div class="p-6 space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Parent</label>
+                  <select 
+                    v-model="addRowForm.parent" 
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white text-gray-500"
+                  >
+                    <option value="">Pilih Parent</option>
+                    <option value="mengelola-hukum">Mengelola Hukum</option>
+                    <option value="mengelola-keuangan">Mengelola Keuangan</option>
+                    <option value="mengelola-sdm">Mengelola Sumber Daya Manusia</option>
+                    <option value="mengelola-operasional">Mengelola Operasional</option>
+                    <option value="mengelola-teknologi">Mengelola Teknologi Informasi</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">No Row</label>
+                  <input 
+                    v-model="addRowForm.noRow"
+                    type="text" 
+                    placeholder="No Row"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white placeholder-gray-400"
+                  />
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Label Row</label>
+                  <input 
+                    v-model="addRowForm.labelRow"
+                    type="text" 
+                    placeholder="Label Row"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white placeholder-gray-400"
+                  />
+                </div>
+              </div>
+              
+              <!-- Modal Footer -->
+              <div class="flex justify-end gap-3 p-4 border-t border-gray-200 bg-gray-50 rounded-b-lg">
+                <button @click="closeAddRowModal" class="px-4 py-2 text-sm font-medium text-[#65BEFF] hover:text-[#189EFF] transition-colors border border-[#65BEFF] rounded-md hover:bg-blue-50">
+                  Cancel
+                </button>
+                <button @click="addNewRow" class="px-4 py-2 bg-[#65BEFF] text-white text-sm font-medium rounded-md hover:bg-[#189EFF] transition-colors shadow-sm">
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Column Modal -->
+          <div v-if="showAddColumnModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-2xl w-96 max-w-md mx-4 border border-gray-200">
+              <!-- Modal Header -->
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-[#65BEFF] rounded-t-lg">
+                <h3 class="text-lg font-semibold text-white">Add Column</h3>
+                <button @click="closeAddColumnModal" class="text-white hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-white hover:bg-opacity-20">
+                  <Icon name="lucide:x" class="w-5 h-5" />
+                </button>
+              </div>
+              
+              <!-- Modal Body -->
+              <div class="p-6 space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">No Column</label>
+                  <input 
+                    v-model="addColumnForm.noColumn"
+                    type="text" 
+                    placeholder="No Column"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white placeholder-gray-400"
+                  />
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Label Column</label>
+                  <input 
+                    v-model="addColumnForm.labelColumn"
+                    type="text" 
+                    placeholder="Label Column"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white placeholder-gray-400"
+                  />
+                </div>
+              </div>
+              
+              <!-- Modal Footer -->
+              <div class="flex justify-end gap-3 p-4 border-t border-gray-200 bg-white rounded-b-lg">
+                <button @click="closeAddColumnModal" class="px-6 py-2 text-sm font-medium text-[#65BEFF] hover:text-[#189EFF] transition-colors border border-[#65BEFF] rounded-md hover:bg-blue-50">
+                  Cancel
+                </button>
+                <button @click="addNewColumn" class="px-6 py-2 bg-[#65BEFF] text-white text-sm font-medium rounded-md hover:bg-[#189EFF] transition-colors shadow-sm">
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Tab Modal -->
+          <div v-if="showAddTabModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg shadow-2xl w-96 max-w-md mx-4 border border-gray-200">
+              <!-- Modal Header -->
+              <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-[#65BEFF] rounded-t-lg">
+                <h3 class="text-lg font-semibold text-white">Add Tab</h3>
+                <button @click="closeAddTabModal" class="text-white hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-white hover:bg-opacity-20">
+                  <Icon name="lucide:x" class="w-5 h-5" />
+                </button>
+              </div>
+              
+              <!-- Modal Body -->
+              <div class="p-6 space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-2">Label Tab</label>
+                  <input 
+                    v-model="addTabForm.labelTab"
+                    type="text" 
+                    placeholder="Label Tab"
+                    class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white placeholder-gray-400"
+                  />
+                </div>
+              </div>
+              
+              <!-- Modal Footer -->
+              <div class="flex justify-end gap-3 p-4 border-t border-gray-200 bg-white rounded-b-lg">
+                <button @click="closeAddTabModal" class="px-6 py-2 text-sm font-medium text-[#65BEFF] hover:text-[#189EFF] transition-colors border border-[#65BEFF] rounded-md hover:bg-blue-50">
+                  Cancel
+                </button>
+                <button @click="addNewTab" class="px-6 py-2 bg-[#65BEFF] text-white text-sm font-medium rounded-md hover:bg-[#189EFF] transition-colors shadow-sm">
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
@@ -322,9 +472,30 @@ definePageMeta({
 // Reactive data
 const activeTab = ref('unit-hukum')
 const showEditModal = ref(false)
+const showAddRowModal = ref(false)
+const showAddColumnModal = ref(false)
+const showAddTabModal = ref(false)
 const selectedOption = ref('')
 const optionReason = ref('')
 const expandedProcesses = ref([])
+
+// Add Row form data
+const addRowForm = ref({
+  parent: '',
+  noRow: '',
+  labelRow: ''
+})
+
+// Add Column form data
+const addColumnForm = ref({
+  noColumn: '',
+  labelColumn: ''
+})
+
+// Add Tab form data
+const addTabForm = ref({
+  labelTab: ''
+})
 
 // Pagination data
 const itemsPerPage = ref(10)
@@ -668,6 +839,60 @@ const closeEditModal = () => {
   showEditModal.value = false
   selectedOption.value = ''
   optionReason.value = ''
+}
+
+const openAddRowModal = () => {
+  showAddRowModal.value = true
+}
+
+const closeAddRowModal = () => {
+  showAddRowModal.value = false
+  addRowForm.value = {
+    parent: '',
+    noRow: '',
+    labelRow: ''
+  }
+}
+
+const openAddColumnModal = () => {
+  showAddColumnModal.value = true
+}
+
+const closeAddColumnModal = () => {
+  showAddColumnModal.value = false
+  addColumnForm.value = {
+    noColumn: '',
+    labelColumn: ''
+  }
+}
+
+const openAddTabModal = () => {
+  showAddTabModal.value = true
+}
+
+const closeAddTabModal = () => {
+  showAddTabModal.value = false
+  addTabForm.value = {
+    labelTab: ''
+  }
+}
+
+const addNewRow = () => {
+  console.log('Adding new row:', addRowForm.value)
+  // Here you would implement the logic to add the new row to your data
+  closeAddRowModal()
+}
+
+const addNewColumn = () => {
+  console.log('Adding new column:', addColumnForm.value)
+  // Here you would implement the logic to add the new column to your data
+  closeAddColumnModal()
+}
+
+const addNewTab = () => {
+  console.log('Adding new tab:', addTabForm.value)
+  // Here you would implement the logic to add the new tab to your data
+  closeAddTabModal()
 }
 
 const saveValue = () => {
