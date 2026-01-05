@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// components/formasi/FormasiSDMContent.vue
 
 interface FormasiSDMData {
   lokasiDivisi: string
@@ -59,7 +58,6 @@ const jabatanOptions = [
   'Analis Data',
   'Auditor'
 ]
-
 const statusOptions = [
   'Semua Status',
   'Aktif',
@@ -145,7 +143,6 @@ const dummyData: FormasiSDMData[] = [
 const totalFormasiOptimal = computed(() => 5374)
 const totalFormasiFrms = computed(() => 1447) 
 const totalFormasiExisting = computed(() => 4851)
-
 // Filter data based on search and filters
 const filteredData = computed(() => {
   let filtered = dummyData
@@ -157,16 +154,6 @@ const filteredData = computed(() => {
   
   if (selectedFungsi.value !== 'Semua Fungsi') {
     filtered = filtered.filter(item => item.fungsi === selectedFungsi.value)
-  }
-
-  // Apply search
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(item => 
-      item.lokasiDivisi.toLowerCase().includes(query) ||
-      item.lokasiInduk.toLowerCase().includes(query) ||
-      item.fungsi.toLowerCase().includes(query)
-    )
   }
 
   return filtered
@@ -189,270 +176,317 @@ const goToPage = (page: number) => {
   }
 }
 
-// Reset to page 1 when search changes
-watch([searchQuery, selectedLokasiInduk, selectedUnitLokasi, selectedFungsi, selectedJabatan, selectedStatus], () => {
+// Reset to page 1 when filters change
+watch([selectedLokasiInduk, selectedUnitLokasi, selectedFungsi, selectedJabatan, selectedStatus], () => {
   currentPage.value = 1
 })
 
 // Export function
 const handleExport = () => {
-  // Implement export functionality
   console.log('Export data')
 }
 
 // Edit function
 const handleEdit = (item: FormasiSDMData) => {
-  // Implement edit functionality
   console.log('Edit item:', item)
 }
 </script>
-
 <template>
-  <div>
-    <!-- Filters -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-6 mb-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-4">
-        <!-- Semua Lokasi Induk -->
-        <div>
-          <select 
-            v-model="selectedLokasiInduk"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-          >
-            <option v-for="option in lokasiIndukOptions" :key="option" :value="option">
-              {{ option }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Semua Unit Lokasi -->
-        <div>
-          <select 
-            v-model="selectedUnitLokasi"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-          >
-            <option v-for="option in unitLokasiOptions" :key="option" :value="option">
-              {{ option }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Semua Fungsi -->
-        <div>
-          <select 
-            v-model="selectedFungsi"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-          >
-            <option v-for="option in fungsiOptions" :key="option" :value="option">
-              {{ option }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Semua Jabatan -->
-        <div>
-          <select 
-            v-model="selectedJabatan"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-          >
-            <option v-for="option in jabatanOptions" :key="option" :value="option">
-              {{ option }}
-            </option>
-          </select>
-        </div>
-
-        <!-- Semua Status -->
-        <div>
-          <select 
-            v-model="selectedStatus"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
-          >
-            <option v-for="option in statusOptions" :key="option" :value="option">
-              {{ option }}
-            </option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Export Button -->
-      <div class="flex justify-end">
-        <button
-          @click="handleExport"
-          class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
-        >
-          <Icon name="lucide:download" class="w-4 h-4" />
-          Export
-        </button>
-      </div>
-    </div>
-
-    <!-- Statistics Cards -->
+  <div class="min-h-screen bg-gray-50 p-6">
+    <!-- ========== CARD STATISTIK DI ATAS ========== -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
       <!-- Total Formasi Optimal -->
-      <div class="bg-gradient-to-r from-pink-50 to-pink-100 rounded-2xl p-6 border border-pink-200/60">
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 bg-pink-500 rounded-xl flex items-center justify-center">
-            <Icon name="lucide:users" class="w-6 h-6 text-white" />
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-12 h-12 bg-rose-100 rounded-lg flex items-center justify-center">
+            <Icon name="lucide:target" class="w-6 h-6 text-rose-600" />
           </div>
-          <div>
-            <p class="text-sm text-pink-700 font-medium mb-1">Total Formasi Optimal</p>
-            <p class="text-2xl font-bold text-pink-900">{{ totalFormasiOptimal.toLocaleString() }}</p>
-            <p class="text-xs text-pink-600">Formasi</p>
-          </div>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600 font-medium mb-2">Total Formasi Optimal</p>
+          <ClientOnly>
+            <p class="text-3xl font-bold text-gray-900 mb-1">{{ totalFormasiOptimal.toLocaleString() }}</p>
+            <template #fallback>
+              <p class="text-3xl font-bold text-gray-900 mb-1">{{ totalFormasiOptimal }}</p>
+            </template>
+          </ClientOnly>
+          <p class="text-xs text-gray-500">Formasi</p>
         </div>
       </div>
 
       <!-- Total Formasi FRMS -->
-      <div class="bg-gradient-to-r from-green-50 to-green-100 rounded-2xl p-6 border border-green-200/60">
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
-            <Icon name="lucide:user-check" class="w-6 h-6 text-white" />
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+            <Icon name="lucide:check-circle" class="w-6 h-6 text-emerald-600" />
           </div>
-          <div>
-            <p class="text-sm text-green-700 font-medium mb-1">Total Formasi FRMS</p>
-            <p class="text-2xl font-bold text-green-900">{{ totalFormasiFrms.toLocaleString() }}</p>
-            <p class="text-xs text-green-600">Formasi</p>
-          </div>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600 font-medium mb-2">Total Formasi FRMS</p>
+          <ClientOnly>
+            <p class="text-3xl font-bold text-gray-900 mb-1">{{ totalFormasiFrms.toLocaleString() }}</p>
+            <template #fallback>
+              <p class="text-3xl font-bold text-gray-900 mb-1">{{ totalFormasiFrms }}</p>
+            </template>
+          </ClientOnly>
+          <p class="text-xs text-gray-500">Formasi</p>
         </div>
       </div>
 
       <!-- Total Formasi Existing -->
-      <div class="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-2xl p-6 border border-yellow-200/60">
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center">
-            <Icon name="lucide:user-plus" class="w-6 h-6 text-white" />
+      <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+            <Icon name="lucide:users-2" class="w-6 h-6 text-amber-600" />
           </div>
-          <div>
-            <p class="text-sm text-yellow-700 font-medium mb-1">Total Formasi Existing</p>
-            <p class="text-2xl font-bold text-yellow-900">{{ totalFormasiExisting.toLocaleString() }}</p>
-            <p class="text-xs text-yellow-600">Formasi</p>
-          </div>
+        </div>
+        <div>
+          <p class="text-sm text-gray-600 font-medium mb-2">Total Formasi Existing</p>
+          <ClientOnly>
+            <p class="text-3xl font-bold text-gray-900 mb-1">{{ totalFormasiExisting.toLocaleString() }}</p>
+            <template #fallback>
+              <p class="text-3xl font-bold text-gray-900 mb-1">{{ totalFormasiExisting }}</p>
+            </template>
+          </ClientOnly>
+          <p class="text-xs text-gray-500">Formasi</p>
         </div>
       </div>
     </div>
+    <!-- ========== FILTER SECTION ========== -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+      <div class="mb-6">
+        <h2 class="text-lg font-semibold text-gray-900">Filter & Pencarian</h2>
+        <p class="text-sm text-gray-600">Sesuaikan tampilan data sesuai kebutuhan Anda</p>
+      </div>
+      
+      <!-- Filter Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <!-- Lokasi Induk -->
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-700">Lokasi Induk</label>
+          <div class="relative">
+            <select 
+              v-model="selectedLokasiInduk"
+              class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors appearance-none cursor-pointer"
+            >
+              <option v-for="option in lokasiIndukOptions" :key="option" :value="option">
+                {{ option }}
+              </option>
+            </select>
+            <Icon name="lucide:chevron-down" class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
+        </div>
 
-    <!-- Table -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
+        <!-- Unit Lokasi -->
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-700">Unit Lokasi</label>
+          <div class="relative">
+            <select 
+              v-model="selectedUnitLokasi"
+              class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors appearance-none cursor-pointer"
+            >
+              <option v-for="option in unitLokasiOptions" :key="option" :value="option">
+                {{ option }}
+              </option>
+            </select>
+            <Icon name="lucide:chevron-down" class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
+        </div>
+
+        <!-- Fungsi -->
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-700">Fungsi</label>
+          <div class="relative">
+            <select 
+              v-model="selectedFungsi"
+              class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors appearance-none cursor-pointer"
+            >
+              <option v-for="option in fungsiOptions" :key="option" :value="option">
+                {{ option }}
+              </option>
+            </select>
+            <Icon name="lucide:chevron-down" class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
+        </div>
+
+        <!-- Jabatan -->
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-700">Jabatan</label>
+          <div class="relative">
+            <select 
+              v-model="selectedJabatan"
+              class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors appearance-none cursor-pointer"
+            >
+              <option v-for="option in jabatanOptions" :key="option" :value="option">
+                {{ option }}
+              </option>
+            </select>
+            <Icon name="lucide:chevron-down" class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-gray-700">Status</label>
+          <div class="relative">
+            <select 
+              v-model="selectedStatus"
+              class="w-full px-3 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors appearance-none cursor-pointer"
+            >
+              <option v-for="option in statusOptions" :key="option" :value="option">
+                {{ option }}
+              </option>
+            </select>
+            <Icon name="lucide:chevron-down" class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Export Button Only -->
+      <div class="flex justify-end">
+        <button
+          @click="handleExport"
+          class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+        >
+          <Icon name="lucide:download" class="w-4 h-4" />
+          Export Data
+        </button>
+      </div>
+    </div>
+    <!-- ========== TABLE SECTION ========== -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       <!-- Table Header -->
+      <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <h2 class="text-lg font-semibold text-gray-900">Data Formasi SDM</h2>
+          </div>
+          <div class="text-sm text-gray-600">
+            Total: <span class="font-semibold text-gray-900">{{ filteredData.length }}</span> data
+          </div>
+        </div>
+      </div>
+
       <div class="overflow-x-auto">
         <table class="w-full">
-          <thead class="bg-gray-100">
+          <thead class="bg-gray-50">
             <tr>
-              <th rowspan="2" class="px-3 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide border-r border-gray-300">
-                LOKASI/DIVISI
+              <th rowspan="2" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-r border-gray-200">
+                Lokasi/Divisi
               </th>
-              <th rowspan="2" class="px-3 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide border-r border-gray-300">
-                LOKASI INDUK
+              <th rowspan="2" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-r border-gray-200">
+                Lokasi Induk
               </th>
-              <th rowspan="2" class="px-3 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wide border-r border-gray-300">
-                FUNGSI
+              <th rowspan="2" class="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wide border-r border-gray-200">
+                Fungsi
               </th>
-              <th rowspan="2" class="px-3 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wide border-r border-gray-300">
-                FORMASI OPTIMAL
+              <th rowspan="2" class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wide border-r border-gray-200">
+                Formasi Optimal
               </th>
-              <th rowspan="2" class="px-3 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wide border-r border-gray-300">
-                FORMASI FRMS
+              <th rowspan="2" class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wide border-r border-gray-200">
+                Formasi FRMS
               </th>
-              <th rowspan="2" class="px-3 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wide border-r border-gray-300">
-                EXISTING
+              <th rowspan="2" class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wide border-r border-gray-200">
+                Existing
               </th>
-              <th colspan="2" class="px-3 py-2 text-center text-xs font-bold text-gray-700 uppercase tracking-wide border-b border-r border-gray-300">
-                DEVIASI OPTIMAL
-                <br>
-                <span class="text-[10px] font-normal text-gray-600">EXISTING - FORMASI OPTIMAL</span>
+              <th colspan="2" class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-r border-gray-200">
+                Deviasi Optimal
               </th>
-              <th colspan="2" class="px-3 py-2 text-center text-xs font-bold text-gray-700 uppercase tracking-wide border-b border-gray-300">
-                DEVIASI FRMS
-                <br>
-                <span class="text-[10px] font-normal text-gray-600">EXISTING - FORMASI FRMS</span>
+              <th colspan="2" class="px-4 py-3 text-center text-xs font-semibold text-gray-700 uppercase tracking-wide border-b border-gray-200">
+                Deviasi FRMS
               </th>
             </tr>
-            <tr class="border-t border-gray-300">
-              <th class="px-3 py-2 text-center text-xs font-bold text-gray-700 uppercase tracking-wide border-r border-gray-300">
+            <tr class="border-t border-gray-200">
+              <th class="px-4 py-2 text-center text-xs font-semibold text-emerald-700 uppercase tracking-wide border-r border-gray-200 bg-emerald-50">
                 +
               </th>
-              <th class="px-3 py-2 text-center text-xs font-bold text-gray-700 uppercase tracking-wide border-r border-gray-300">
+              <th class="px-4 py-2 text-center text-xs font-semibold text-red-700 uppercase tracking-wide border-r border-gray-200 bg-red-50">
                 -
               </th>
-              <th class="px-3 py-2 text-center text-xs font-bold text-gray-700 uppercase tracking-wide border-r border-gray-300">
+              <th class="px-4 py-2 text-center text-xs font-semibold text-emerald-700 uppercase tracking-wide border-r border-gray-200 bg-emerald-50">
                 +
               </th>
-              <th class="px-3 py-2 text-center text-xs font-bold text-gray-700 uppercase tracking-wide">
+              <th class="px-4 py-2 text-center text-xs font-semibold text-red-700 uppercase tracking-wide bg-red-50">
                 -
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white">
+          <tbody class="bg-white divide-y divide-gray-200">
             <tr 
               v-for="(item, index) in paginatedData" 
               :key="index"
-              class="border-b border-gray-200 last:border-b-0 hover:bg-gray-50/30 transition-colors"
+              class="hover:bg-gray-50 transition-colors"
             >
-              <td class="px-3 py-3 text-sm text-gray-700 font-medium border-r border-gray-200">
+              <td class="px-4 py-3 text-sm text-gray-900 font-medium border-r border-gray-200">
                 {{ item.lokasiDivisi }}
               </td>
-              <td class="px-3 py-3 text-sm text-gray-700 font-medium border-r border-gray-200">
+              <td class="px-4 py-3 text-sm text-gray-900 font-medium border-r border-gray-200">
                 {{ item.lokasiInduk }}
               </td>
-              <td class="px-3 py-3 text-sm text-gray-600 border-r border-gray-200">
+              <td class="px-4 py-3 text-sm text-gray-700 border-r border-gray-200">
                 {{ item.fungsi }}
               </td>
-              <td class="px-3 py-3 text-center border-r border-gray-200">
+              <td class="px-4 py-3 text-center border-r border-gray-200">
                 <div class="flex items-center justify-center gap-2">
-                  <span class="text-sm text-gray-700 font-semibold">{{ item.formasiOptimal }}</span>
+                  <span class="text-sm text-gray-900 font-semibold">{{ item.formasiOptimal }}</span>
                   <button 
                     @click="handleEdit(item)"
-                    class="text-blue-500 hover:text-blue-700 transition-colors"
+                    class="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
                   >
-                    <Icon name="lucide:edit-2" class="w-4 h-4" />
+                    <Icon name="lucide:edit-2" class="w-3 h-3" />
                   </button>
                 </div>
               </td>
-              <td class="px-3 py-3 text-center border-r border-gray-200">
+              <td class="px-4 py-3 text-center border-r border-gray-200">
                 <div class="flex items-center justify-center gap-2">
-                  <span class="text-sm text-gray-700 font-semibold">{{ item.formasiFrms }}</span>
+                  <span class="text-sm text-gray-900 font-semibold">{{ item.formasiFrms }}</span>
                   <button 
                     @click="handleEdit(item)"
-                    class="text-blue-500 hover:text-blue-700 transition-colors"
+                    class="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
                   >
-                    <Icon name="lucide:edit-2" class="w-4 h-4" />
+                    <Icon name="lucide:edit-2" class="w-3 h-3" />
                   </button>
                 </div>
               </td>
-              <td class="px-3 py-3 text-center text-sm text-gray-700 font-semibold border-r border-gray-200">
+              <td class="px-4 py-3 text-center text-sm text-gray-900 font-semibold border-r border-gray-200">
                 {{ item.existing }}
               </td>
-              <td class="px-3 py-3 text-center border-r border-gray-200">
+              <td class="px-4 py-3 text-center border-r border-gray-200">
                 <span 
                   v-if="item.deviasiOptimal > 0"
-                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                  class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-emerald-100 text-emerald-800"
                 >
                   +{{ item.deviasiOptimal }}
                 </span>
-                <span v-else class="text-sm text-gray-700">0</span>
+                <span v-else class="text-sm text-gray-400">—</span>
               </td>
-              <td class="px-3 py-3 text-center border-r border-gray-200">
+              <td class="px-4 py-3 text-center border-r border-gray-200">
                 <span 
                   v-if="item.deviasiOptimal < 0"
-                  class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"
+                  class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-red-100 text-red-800"
                 >
                   {{ Math.abs(item.deviasiOptimal) }}
                 </span>
-                <span v-else class="text-sm text-gray-700">0</span>
+                <span v-else class="text-sm text-gray-400">—</span>
               </td>
-              <td class="px-3 py-3 text-center border-r border-gray-200">
-                <span class="text-sm text-gray-700">0</span>
+              <td class="px-4 py-3 text-center border-r border-gray-200">
+                <span class="text-sm text-gray-400">—</span>
               </td>
-              <td class="px-3 py-3 text-center">
-                <span class="text-sm text-gray-700">0</span>
+              <td class="px-4 py-3 text-center">
+                <span class="text-sm text-gray-400">—</span>
               </td>
             </tr>
             
             <!-- Empty State -->
             <tr v-if="paginatedData.length === 0">
-              <td colspan="10" class="px-6 py-16 text-center">
-                <Icon name="lucide:users" class="w-14 h-14 mx-auto mb-4 text-gray-300" />
-                <p class="text-sm font-medium text-gray-600">Tidak ada data yang ditemukan</p>
-                <p class="text-xs text-gray-500 mt-1">Coba ubah filter atau kata kunci pencarian Anda</p>
+              <td colspan="10" class="px-6 py-12 text-center">
+                <div class="flex flex-col items-center justify-center">
+                  <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                    <Icon name="lucide:search-x" class="w-6 h-6 text-gray-400" />
+                  </div>
+                  <p class="text-lg font-medium text-gray-600 mb-2">Tidak ada data yang ditemukan</p>
+                  <p class="text-sm text-gray-500">Coba ubah filter atau kata kunci pencarian Anda</p>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -460,93 +494,51 @@ const handleEdit = (item: FormasiSDMData) => {
       </div>
 
       <!-- Pagination -->
-      <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
-        <div class="text-sm text-gray-600 font-medium">
-          Menampilkan {{ paginatedData.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0 }} - 
-          {{ Math.min(currentPage * itemsPerPage, filteredData.length) }} 
-          dari {{ filteredData.length }} data
-        </div>
-        
-        <div class="flex items-center gap-2">
-          <button
-            @click="goToPage(currentPage - 1)"
-            :disabled="currentPage === 1"
-            class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-          >
-            Previous
-          </button>
+      <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="text-sm text-gray-600">
+            Menampilkan <span class="font-semibold text-gray-900">{{ paginatedData.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0 }}</span> - 
+            <span class="font-semibold text-gray-900">{{ Math.min(currentPage * itemsPerPage, filteredData.length) }}</span> 
+            dari <span class="font-semibold text-gray-900">{{ filteredData.length }}</span> data
+          </div>
           
-          <template v-if="totalPages <= 7">
+          <div class="flex items-center gap-2">
             <button
-              v-for="page in totalPages"
-              :key="page"
-              @click="goToPage(page)"
-              :class="[
-                'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
-                currentPage === page 
-                  ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-              ]"
+              @click="goToPage(currentPage - 1)"
+              :disabled="currentPage === 1"
+              class="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {{ page }}
-            </button>
-          </template>
-          
-          <template v-else>
-            <button
-              @click="goToPage(1)"
-              :class="[
-                'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
-                currentPage === 1 
-                  ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-              ]"
-            >
-              1
+              <Icon name="lucide:chevron-left" class="w-4 h-4" />
+              Previous
             </button>
             
-            <span v-if="currentPage > 3" class="px-2 text-gray-500">...</span>
-            
-            <template v-for="page in totalPages" :key="page">
+            <template v-if="totalPages <= 7">
               <button
-                v-if="page > 1 && page < totalPages && Math.abs(page - currentPage) <= 1"
+                v-for="page in totalPages"
+                :key="page"
                 @click="goToPage(page)"
                 :class="[
-                  'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
+                  'px-3 py-2 border rounded-lg text-sm font-medium transition-colors',
                   currentPage === page 
-                    ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
-                    : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                    ? 'bg-blue-600 text-white border-blue-600' 
+                    : 'border-gray-300 text-gray-700 hover:bg-white'
                 ]"
               >
                 {{ page }}
               </button>
             </template>
             
-            <span v-if="currentPage < totalPages - 2" class="px-2 text-gray-500">...</span>
-            
             <button
-              @click="goToPage(totalPages)"
-              :class="[
-                'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
-                currentPage === totalPages 
-                  ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-              ]"
+              @click="goToPage(currentPage + 1)"
+              :disabled="currentPage === totalPages"
+              class="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {{ totalPages }}
+              Next
+              <Icon name="lucide:chevron-right" class="w-4 h-4" />
             </button>
-          </template>
-          
-          <button
-            @click="goToPage(currentPage + 1)"
-            :disabled="currentPage === totalPages"
-            class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-          >
-            Next
-          </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</template>// Test comment added Mon Jan  5 15:46:46 WIB 2026
-/* Layout updated: Cards di atas, Filter modern di bawah */
+</template>
