@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    // components/organization/JobKatalogTable.vue
+    // components/tables/JobKatalogTable.vue
     
     interface JobKatalog {
       idJob: string

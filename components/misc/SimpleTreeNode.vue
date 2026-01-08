@@ -132,7 +132,7 @@
 
     <!-- Children -->
     <div v-if="isExpanded && hasChildren" class="transition-all duration-300">
-      <SimpleTreeNode
+      <MiscSimpleTreeNode
         v-for="child in node.children"
         :key="child.id"
         :node="child"

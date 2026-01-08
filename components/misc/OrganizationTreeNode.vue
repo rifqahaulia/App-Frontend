@@ -148,7 +148,7 @@
       leave-to-class="max-h-0 opacity-0"
     >
       <div v-if="isExpanded && hasChildren" class="overflow-hidden">
-        <OrganizationTreeNode
+        <MiscOrganizationTreeNode
           v-for="child in node.children"
           :key="child.id"
           :node="child"

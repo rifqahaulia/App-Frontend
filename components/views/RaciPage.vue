@@ -25,7 +25,7 @@
         <div class="flex-1 overflow-y-auto bg-white relative">
           <div class="p-4 md:p-6">
             <!-- Tabs -->
-            <RaciTabs 
+            <ViewsRaciTabs 
               :tabs="tabs" 
               :activeTab="activeTab" 
               @update:activeTab="activeTab = $event"
@@ -73,59 +73,59 @@
                   <!-- Header -->
                   <thead>
                     <tr class="bg-blue-100/60">
-                      <th class="px-4 py-3 text-left text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200">
+                      <th class="px-3 py-2 text-left text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200">
                         PROSES BISNIS
                       </th>
-                      <th class="px-4 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200">
+                      <th class="px-2 py-2 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 w-16">
                         GROUP
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 min-w-[120px]">
+                      <th class="px-2 py-2 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 w-20">
                         <div class="flex flex-col items-center">
-                          <div class="font-bold text-gray-600 text-xs mb-1">KEPALA</div>
-                          <div class="font-bold text-gray-600 text-xs mb-1">BIRO</div>
+                          <div class="font-bold text-gray-600 text-xs">KEPALA</div>
+                          <div class="font-bold text-gray-600 text-xs">BIRO</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Hukum</div>
                         </div>
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 min-w-[120px]">
+                      <th class="px-2 py-2 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 w-20">
                         <div class="flex flex-col items-center">
-                          <div class="font-bold text-gray-600 text-xs mb-1">MANAGER</div>
+                          <div class="font-bold text-gray-600 text-xs">MANAGER</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Bantuan</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Hukum</div>
                         </div>
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 min-w-[120px]">
+                      <th class="px-2 py-2 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 w-20">
                         <div class="flex flex-col items-center">
-                          <div class="font-bold text-gray-600 text-xs mb-1">KEPALA</div>
-                          <div class="font-bold text-gray-600 text-xs mb-1">BIRO</div>
+                          <div class="font-bold text-gray-600 text-xs">KEPALA</div>
+                          <div class="font-bold text-gray-600 text-xs">BIRO</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Hukum</div>
                         </div>
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 min-w-[120px]">
+                      <th class="px-2 py-2 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 w-24">
                         <div class="flex flex-col items-center">
-                          <div class="font-bold text-gray-600 text-xs mb-1">JUNIOR</div>
-                          <div class="font-bold text-gray-600 text-xs mb-1">MANAGER</div>
+                          <div class="font-bold text-gray-600 text-xs">JUNIOR</div>
+                          <div class="font-bold text-gray-600 text-xs">MANAGER</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Bantuan Hukum</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Non Litigasi</div>
                         </div>
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 min-w-[120px]">
+                      <th class="px-2 py-2 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 w-20">
                         <div class="flex flex-col items-center">
-                          <div class="font-bold text-gray-600 text-xs mb-1">MANAGER</div>
+                          <div class="font-bold text-gray-600 text-xs">MANAGER</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Pertimbangan</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Hukum</div>
                         </div>
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 min-w-[140px]">
+                      <th class="px-2 py-2 text-center text-xs font-bold text-gray-600 uppercase tracking-wide border-r border-gray-200 w-24">
                         <div class="flex flex-col items-center">
-                          <div class="font-bold text-gray-600 text-xs mb-1">JUNIOR MANAGER</div>
+                          <div class="font-bold text-gray-600 text-xs">JUNIOR MANAGER</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Pertimbangan Hukum</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Bidang Produk</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Internal</div>
                         </div>
                       </th>
-                      <th class="px-3 py-3 text-center text-xs font-bold text-gray-600 uppercase tracking-wide min-w-[140px]">
+                      <th class="px-2 py-2 text-center text-xs font-bold text-gray-600 uppercase tracking-wide w-24">
                         <div class="flex flex-col items-center">
-                          <div class="font-bold text-gray-600 text-xs mb-1">JUNIOR MANAGER</div>
+                          <div class="font-bold text-gray-600 text-xs">JUNIOR MANAGER</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Pertimbangan Hukum</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Bidang Produk</div>
                           <div class="text-xs text-gray-500 normal-case font-normal">Eksternal</div>

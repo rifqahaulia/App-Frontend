@@ -107,7 +107,7 @@
                       <p class="text-sm text-gray-500">Memuat data...</p>
                     </div>
                     <div v-else>
-                      <SimpleTree
+                      <MiscSimpleTree
                         v-for="item in displayData"
                         :key="item.id"
                         :node="item"

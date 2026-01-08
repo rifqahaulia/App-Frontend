@@ -126,7 +126,7 @@
 
     <!-- Children -->
     <div v-if="isExpanded && hasChildren">
-      <FinalTreeNode
+      <MiscFinalTreeNode
         v-for="child in node.children"
         :key="child.id"
         :node="child"

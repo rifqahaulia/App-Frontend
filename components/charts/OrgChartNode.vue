@@ -218,7 +218,7 @@
               <!-- Vertical Line to Child -->
               <div class="w-0.5 h-8 bg-gray-300"></div>
               
-              <OrgChartNode :node="child" />
+              <ChartsOrgChartNode :node="child" />
             </div>
           </div>
         </Transition>

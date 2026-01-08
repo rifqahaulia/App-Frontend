@@ -25,7 +25,7 @@
     <template>
       <div v-if="chartData" class="org-chart-container">
         <div class="chart-content">
-          <OrgChartNode :node="chartData" />
+          <ChartsOrgChartNode :node="chartData" />
         </div>
       </div>
       <div v-else class="empty-state">

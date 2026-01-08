@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    // components/organization/JabatanKosongTable.vue
+    // components/tables/JabatanKosongTable.vue
     
     interface JabatanKosong {
       idJob: string

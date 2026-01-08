@@ -92,7 +92,7 @@
 
     <!-- Children -->
     <div v-if="isExpanded && hasChildren" class="ml-4">
-      <ClickableTreeNode
+      <MiscClickableTreeNode
         v-for="child in node.children"
         :key="child.id"
         :node="child"

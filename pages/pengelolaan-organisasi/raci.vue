@@ -1,5 +1,5 @@
 <template>
-  <RaciPage />
+  <ViewsRaciPage />
 </template>
 
 <script setup>

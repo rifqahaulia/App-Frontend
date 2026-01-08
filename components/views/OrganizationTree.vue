@@ -194,7 +194,7 @@
           <!-- Tree -->
           <div v-else class="p-2 max-h-[600px] overflow-y-auto">
             <template v-if="displayTreeData.length > 0">
-              <OrganizationTreeNode
+              <MiscOrganizationTreeNode
                 v-for="node in displayTreeData"
                 :key="node.id"
                 :node="node.data"
