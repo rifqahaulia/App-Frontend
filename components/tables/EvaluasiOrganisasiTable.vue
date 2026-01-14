@@ -263,6 +263,7 @@ const getStatusClass = (status: string) => {
 const showAddModal = ref(false)
 const showEditModal = ref(false)
 const editingItem = ref<EvaluasiOrganisasi | null>(null)
+const dateInput = ref<HTMLInputElement | null>(null)
 
 // Form data
 const formData = ref({
@@ -351,6 +352,19 @@ const handleRadarSelect = (event: Event) => {
   if (target.value && !formData.value.radar.includes(target.value)) {
     formData.value.radar.push(target.value)
     target.value = ''
+  }
+}
+
+const openDatePicker = () => {
+  if (dateInput.value) {
+    dateInput.value.showPicker()
+  }
+}
+
+const handleDateChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (target.value) {
+    formData.value.periode = target.value
   }
 }
 </script>
@@ -617,9 +631,21 @@ const handleRadarSelect = (event: Event) => {
               v-model="formData.periode"
               type="text" 
               placeholder="Select Periode"
-              class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF] pr-8"
+              readonly
+              @click="openDatePicker"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF] pr-8 cursor-pointer bg-white"
             />
-            <button type="button" class="absolute right-2 top-1/2 transform -translate-y-1/2">
+            <input 
+              ref="dateInput"
+              type="date"
+              @change="handleDateChange"
+              class="absolute inset-0 opacity-0 w-0 h-0 pointer-events-none"
+            />
+            <button 
+              type="button" 
+              @click="openDatePicker"
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+            >
               <Icon name="lucide:calendar" class="w-4 h-4 text-[#65BEFF]" />
             </button>
           </div>
