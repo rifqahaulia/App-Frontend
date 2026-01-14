@@ -598,178 +598,180 @@ const handleRadarSelect = (event: Event) => {
 
   <!-- Add Modal -->
   <div v-if="showAddModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-lg shadow-2xl w-full max-w-[480px] mx-4 border border-gray-200">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
       <!-- Modal Header -->
-      <div class="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-[#65BEFF] rounded-t-lg">
-        <h3 class="text-base font-semibold text-white">Tambah Pelaporan Organisasi</h3>
-        <button @click="closeAddModal" class="text-white hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-white hover:bg-opacity-20">
+      <div class="flex items-center justify-between px-4 py-3 bg-[#65BEFF] rounded-t-lg">
+        <h3 class="text-sm font-semibold text-white">Tambah Pelaporan Organisasi</h3>
+        <button @click="closeAddModal" class="text-white hover:text-gray-200 transition-colors">
           <Icon name="lucide:x" class="w-4 h-4" />
         </button>
       </div>
       
       <!-- Modal Body -->
-      <div class="p-5 space-y-3">
+      <div class="p-4 space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto">
         <!-- Periode -->
         <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1.5">Periode</label>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Periode</label>
           <div class="relative">
             <input 
               v-model="formData.periode"
               type="text" 
               placeholder="Select Periode"
-              class="w-full border border-gray-300 rounded-md pl-3 pr-10 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white placeholder-gray-400"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF] pr-8"
             />
-            <button type="button" class="absolute right-2 top-1/2 transform -translate-y-1/2 p-0.5 hover:bg-gray-100 rounded">
+            <button type="button" class="absolute right-2 top-1/2 transform -translate-y-1/2">
               <Icon name="lucide:calendar" class="w-4 h-4 text-[#65BEFF]" />
             </button>
           </div>
         </div>
 
-        <!-- Area -->
-        <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1.5">Area</label>
-          <div class="relative">
-            <select 
-              v-model="formData.area"
-              class="w-full border border-gray-300 rounded-md pl-3 pr-9 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] appearance-none cursor-pointer bg-white text-gray-500"
-            >
-              <option value="" disabled selected>Option</option>
-              <option v-for="option in areaOptions" :key="option" :value="option">
-                {{ option }}
-              </option>
-            </select>
-            <Icon name="lucide:chevron-down" class="absolute right-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+        <!-- Area & Sub Area - 2 columns -->
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Area -->
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Area</label>
+            <div class="relative">
+              <select 
+                v-model="formData.area"
+                class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF] appearance-none cursor-pointer pr-8"
+              >
+                <option value="" disabled selected>Option</option>
+                <option v-for="option in areaOptions" :key="option" :value="option">
+                  {{ option }}
+                </option>
+              </select>
+              <Icon name="lucide:chevron-down" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
+            </div>
+          </div>
+
+          <!-- Sub Area -->
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Sub Area</label>
+            <div class="relative">
+              <select 
+                v-model="formData.subArea"
+                class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF] appearance-none cursor-pointer pr-8"
+              >
+                <option value="" disabled selected>Option</option>
+                <option v-for="option in subAreaOptions" :key="option" :value="option">
+                  {{ option }}
+                </option>
+              </select>
+              <Icon name="lucide:chevron-down" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
+            </div>
           </div>
         </div>
 
-        <!-- Sub Area -->
-        <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1.5">Sub Area</label>
-          <div class="relative">
-            <select 
-              v-model="formData.subArea"
-              class="w-full border border-gray-300 rounded-md pl-3 pr-9 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] appearance-none cursor-pointer bg-white text-gray-500"
-            >
-              <option value="" disabled selected>Option</option>
-              <option v-for="option in subAreaOptions" :key="option" :value="option">
-                {{ option }}
-              </option>
-            </select>
-            <Icon name="lucide:chevron-down" class="absolute right-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+        <!-- Move & Jumlah SDM - 2 columns -->
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Move -->
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Move</label>
+            <input 
+              v-model="formData.move"
+              type="text" 
+              placeholder="0"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF]"
+            />
           </div>
-        </div>
 
-        <!-- Move -->
-        <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1.5">Move</label>
-          <input 
-            v-model="formData.move"
-            type="text" 
-            placeholder="0"
-            class="w-full border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white placeholder-gray-400"
-          />
-        </div>
-
-        <!-- Jumlah SDM -->
-        <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1.5">Jumlah SDM</label>
-          <input 
-            v-model.number="formData.jumlahSDM"
-            type="number" 
-            placeholder="0"
-            min="0"
-            class="w-full border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white placeholder-gray-400"
-          />
+          <!-- Jumlah SDM -->
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Jumlah SDM</label>
+            <input 
+              v-model.number="formData.jumlahSDM"
+              type="number" 
+              placeholder="0"
+              min="0"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF]"
+            />
+          </div>
         </div>
 
         <!-- Service -->
         <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1.5">Service</label>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Service</label>
           <div class="relative">
-            <div class="w-full border border-gray-300 rounded-md pl-3 pr-9 py-1.5 min-h-[34px] flex flex-wrap gap-1.5 items-center bg-white">
-              <template v-if="formData.service.length > 0">
-                <span 
-                  v-for="(item, index) in formData.service" 
-                  :key="index"
-                  class="inline-flex items-center gap-1 bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs"
-                >
-                  Selected
-                  <button @click="removeServiceTag(index)" class="hover:text-red-600 transition-colors">
-                    <Icon name="lucide:x" class="w-3 h-3" />
-                  </button>
-                </span>
-              </template>
-              <select 
-                @change="handleServiceSelect"
-                class="flex-1 min-w-[70px] border-0 outline-none text-sm bg-transparent cursor-pointer text-gray-500"
-                :class="{ 'text-gray-400': formData.service.length === 0 }"
-              >
-                <option value="" disabled selected>Select...</option>
-                <option v-for="option in serviceOptions" :key="option" :value="option">
-                  {{ option }}
-                </option>
-              </select>
-            </div>
-            <Icon name="lucide:chevron-down" class="absolute right-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+            <select 
+              @change="handleServiceSelect"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF] appearance-none cursor-pointer pr-8"
+            >
+              <option value="" disabled selected>Select...</option>
+              <option v-for="option in serviceOptions" :key="option" :value="option">
+                {{ option }}
+              </option>
+            </select>
+            <Icon name="lucide:chevron-down" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
+          </div>
+          <!-- Selected tags -->
+          <div v-if="formData.service.length > 0" class="flex flex-wrap gap-1.5 mt-2">
+            <span 
+              v-for="(item, index) in formData.service" 
+              :key="index"
+              class="inline-flex items-center gap-1 bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs"
+            >
+              {{ item }}
+              <button @click="removeServiceTag(index)" class="hover:text-red-600 transition-colors">
+                <Icon name="lucide:x" class="w-3 h-3" />
+              </button>
+            </span>
           </div>
         </div>
 
         <!-- Radar -->
         <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1.5">Radar</label>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Radar</label>
           <div class="relative">
-            <div class="w-full border border-gray-300 rounded-md pl-3 pr-9 py-1.5 min-h-[34px] flex flex-wrap gap-1.5 items-center bg-white">
-              <template v-if="formData.radar.length > 0">
-                <span 
-                  v-for="(item, index) in formData.radar" 
-                  :key="index"
-                  class="inline-flex items-center gap-1 bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs"
-                >
-                  Selected
-                  <button @click="removeRadarTag(index)" class="hover:text-red-600 transition-colors">
-                    <Icon name="lucide:x" class="w-3 h-3" />
-                  </button>
-                </span>
-              </template>
-              <select 
-                @change="handleRadarSelect"
-                class="flex-1 min-w-[70px] border-0 outline-none text-sm bg-transparent cursor-pointer text-gray-500"
-                :class="{ 'text-gray-400': formData.radar.length === 0 }"
-              >
-                <option value="" disabled selected>Select...</option>
-                <option v-for="option in radarOptions" :key="option" :value="option">
-                  {{ option }}
-                </option>
-              </select>
-            </div>
-            <Icon name="lucide:chevron-down" class="absolute right-2.5 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none" />
+            <select 
+              @change="handleRadarSelect"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF] appearance-none cursor-pointer pr-8"
+            >
+              <option value="" disabled selected>Select...</option>
+              <option v-for="option in radarOptions" :key="option" :value="option">
+                {{ option }}
+              </option>
+            </select>
+            <Icon name="lucide:chevron-down" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
+          </div>
+          <!-- Selected tags -->
+          <div v-if="formData.radar.length > 0" class="flex flex-wrap gap-1.5 mt-2">
+            <span 
+              v-for="(item, index) in formData.radar" 
+              :key="index"
+              class="inline-flex items-center gap-1 bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-xs"
+            >
+              {{ item }}
+              <button @click="removeRadarTag(index)" class="hover:text-red-600 transition-colors">
+                <Icon name="lucide:x" class="w-3 h-3" />
+              </button>
+            </span>
           </div>
         </div>
 
         <!-- Jumlah Transaksi -->
         <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1.5">Jumlah Transaksi</label>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Jumlah Transaksi</label>
           <input 
             v-model.number="formData.jumlahTransaksi"
             type="number" 
             placeholder="0"
             min="0"
-            class="w-full border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#65BEFF] focus:border-[#65BEFF] bg-white placeholder-gray-400"
+            class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF]"
           />
         </div>
       </div>
       
       <!-- Modal Footer -->
-      <div class="flex justify-end gap-2 px-5 py-3 border-t border-gray-200 bg-white rounded-b-lg">
+      <div class="flex justify-end gap-2 px-4 py-3 border-t border-gray-200">
         <button 
           @click="closeAddModal" 
-          class="px-5 py-1.5 text-sm font-medium text-[#65BEFF] hover:text-[#189EFF] transition-colors border border-[#65BEFF] rounded-md hover:bg-blue-50"
+          class="px-4 py-1.5 text-sm font-medium text-[#65BEFF] hover:text-[#189EFF] transition-colors border border-[#65BEFF] rounded hover:bg-blue-50"
         >
           Cancel
         </button>
         <button 
           @click="submitForm" 
-          class="px-5 py-1.5 bg-[#65BEFF] text-white text-sm font-medium rounded-md hover:bg-[#189EFF] transition-colors shadow-sm"
+          class="px-4 py-1.5 bg-[#65BEFF] text-white text-sm font-medium rounded hover:bg-[#189EFF] transition-colors"
         >
           Submit
         </button>
