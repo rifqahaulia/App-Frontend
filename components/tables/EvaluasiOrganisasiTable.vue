@@ -353,6 +353,12 @@ const submitForm = () => {
   closeAddModal()
 }
 
+const submitEditForm = () => {
+  console.log('Update form:', editingItem.value)
+  // Implement update logic here
+  closeEditModal()
+}
+
 const removeServiceTag = (index: number) => {
   formData.value.service.splice(index, 1)
 }
@@ -822,6 +828,167 @@ const handleDateChange = (event: Event) => {
           class="px-4 py-1.5 bg-[#65BEFF] text-white text-sm font-medium rounded hover:bg-[#189EFF] transition-colors"
         >
           Submit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div v-if="showEditModal && editingItem" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-4 py-3 bg-[#65BEFF] rounded-t-lg">
+        <h3 class="text-sm font-semibold text-white">Edit Pelaporan Organisasi</h3>
+        <button @click="closeEditModal" class="text-white hover:text-gray-200 transition-colors">
+          <Icon name="lucide:x" class="w-4 h-4" />
+        </button>
+      </div>
+      
+      <!-- Modal Body -->
+      <div class="p-4 space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto">
+        <!-- Periode -->
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Periode</label>
+          <div class="relative">
+            <input 
+              v-model="editingItem.periode"
+              type="text" 
+              placeholder="Select Periode"
+              readonly
+              @click="openDatePicker"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF] pr-8 cursor-pointer bg-white"
+            />
+            <input 
+              ref="dateInput"
+              type="date"
+              @change="(e) => editingItem.periode = e.target.value"
+              class="absolute inset-0 opacity-0 w-0 h-0 pointer-events-none"
+            />
+            <button 
+              type="button" 
+              @click="openDatePicker"
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+            >
+              <Icon name="lucide:calendar" class="w-4 h-4 text-[#65BEFF]" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Area & Sub Area - 2 columns -->
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Area -->
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Area</label>
+            <div class="relative">
+              <select 
+                v-model="editingItem.area"
+                class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF] appearance-none cursor-pointer pr-8"
+              >
+                <option value="" disabled>Option</option>
+                <option v-for="option in areaOptions" :key="option" :value="option">
+                  {{ option }}
+                </option>
+              </select>
+              <Icon name="lucide:chevron-down" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
+            </div>
+          </div>
+
+          <!-- Sub Area -->
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Sub Area</label>
+            <div class="relative">
+              <select 
+                v-model="editingItem.subArea"
+                class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF] appearance-none cursor-pointer pr-8"
+              >
+                <option value="" disabled>Option</option>
+                <option v-for="option in subAreaOptions" :key="option" :value="option">
+                  {{ option }}
+                </option>
+              </select>
+              <Icon name="lucide:chevron-down" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Move & Jumlah SDM - 2 columns -->
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Move -->
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Move</label>
+            <input 
+              v-model="editingItem.mave"
+              type="text" 
+              placeholder="0"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF]"
+            />
+          </div>
+
+          <!-- Jumlah SDM -->
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Jumlah SDM</label>
+            <input 
+              v-model.number="editingItem.jumlahSDM"
+              type="number" 
+              placeholder="0"
+              min="0"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF]"
+            />
+          </div>
+        </div>
+
+        <!-- Service -->
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Service</label>
+          <div class="relative">
+            <input 
+              v-model="editingItem.service"
+              type="text" 
+              placeholder="Service"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF]"
+            />
+          </div>
+        </div>
+
+        <!-- Radar -->
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Radar</label>
+          <div class="relative">
+            <input 
+              v-model="editingItem.radar"
+              type="text" 
+              placeholder="Radar"
+              class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF]"
+            />
+          </div>
+        </div>
+
+        <!-- Jumlah Transaksi -->
+        <div>
+          <label class="block text-xs font-medium text-gray-700 mb-1">Jumlah Transaksi</label>
+          <input 
+            v-model.number="editingItem.jumlahTransaksi"
+            type="number" 
+            placeholder="0"
+            min="0"
+            class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF]"
+          />
+        </div>
+      </div>
+      
+      <!-- Modal Footer -->
+      <div class="flex justify-end gap-2 px-4 py-3 border-t border-gray-200">
+        <button 
+          @click="closeEditModal" 
+          class="px-4 py-1.5 text-sm font-medium text-[#65BEFF] hover:text-[#189EFF] transition-colors border border-[#65BEFF] rounded hover:bg-blue-50"
+        >
+          Cancel
+        </button>
+        <button 
+          @click="submitEditForm" 
+          class="px-4 py-1.5 bg-[#65BEFF] text-white text-sm font-medium rounded hover:bg-[#189EFF] transition-colors"
+        >
+          Update
         </button>
       </div>
     </div>
