@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// pages/pengelolaan-organisasi/evaluasi.vue
 
 // Set page title
 useHead({

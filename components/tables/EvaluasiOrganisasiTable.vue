@@ -1,4 +1,4 @@
-<script setup lang="ts">
+masi<script setup lang="ts">
 // components/tables/EvaluasiOrganisasiTable.vue
 
 interface EvaluasiOrganisasi {
@@ -262,7 +262,9 @@ const getStatusClass = (status: string) => {
 // Modal states
 const showAddModal = ref(false)
 const showEditModal = ref(false)
+const showViewModal = ref(false)
 const editingItem = ref<EvaluasiOrganisasi | null>(null)
+const viewingItem = ref<EvaluasiOrganisasi | null>(null)
 const dateInput = ref<HTMLInputElement | null>(null)
 
 // Form data
@@ -300,7 +302,8 @@ const handleAdd = () => {
 }
 
 const handleView = (item: EvaluasiOrganisasi) => {
-  console.log('View item:', item)
+  viewingItem.value = { ...item }
+  showViewModal.value = true
 }
 
 const handleEdit = (item: EvaluasiOrganisasi) => {
@@ -323,6 +326,25 @@ const closeAddModal = () => {
 const closeEditModal = () => {
   showEditModal.value = false
   editingItem.value = null
+}
+
+const closeViewModal = () => {
+  showViewModal.value = false
+  viewingItem.value = null
+}
+
+const handleApprove = () => {
+  console.log('Approve item:', viewingItem.value)
+  // Implement approve logic here
+  closeViewModal()
+}
+
+const handleReject = () => {
+  if (confirm('Apakah Anda yakin ingin menolak data ini?')) {
+    console.log('Reject item:', viewingItem.value)
+    // Implement reject logic here
+    closeViewModal()
+  }
 }
 
 const submitForm = () => {
@@ -800,6 +822,149 @@ const handleDateChange = (event: Event) => {
           class="px-4 py-1.5 bg-[#65BEFF] text-white text-sm font-medium rounded hover:bg-[#189EFF] transition-colors"
         >
           Submit
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Modal -->
+  <div v-if="showViewModal && viewingItem" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 max-h-[90vh] flex flex-col overflow-hidden">
+      <!-- Modal Header - Blue Background -->
+      <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#1E90FF] to-[#00BFFF] flex-shrink-0">
+        <h3 class="text-xl font-bold text-white">Detail Pelaporan Evaluasi</h3>
+        <button @click="closeViewModal" class="text-white hover:text-gray-200 transition-colors">
+          <Icon name="lucide:x" class="w-6 h-6" />
+        </button>
+      </div>
+      
+      <!-- Modal Body - Scrollable -->
+      <div class="p-6 overflow-y-auto flex-1">
+        <!-- Section Title -->
+        <h4 class="text-lg font-bold text-gray-900 mb-4">Pelaporan Evaluasi</h4>
+        
+        <!-- Details List -->
+        <div class="space-y-2 mb-6">
+          <!-- Status -->
+          <div class="flex">
+            <div class="w-40 text-sm text-gray-500">Status</div>
+            <div class="flex-1">
+              <span class="text-sm font-bold text-[#FFA500]">Waiting Approval</span>
+            </div>
+          </div>
+
+          <!-- Periode -->
+          <div class="flex">
+            <div class="w-40 text-sm text-gray-500">Periode</div>
+            <div class="flex-1 text-sm text-gray-900">2024-11</div>
+          </div>
+
+          <!-- Area -->
+          <div class="flex">
+            <div class="w-40 text-sm text-gray-500">Area</div>
+            <div class="flex-1 text-sm text-gray-900">1234567890</div>
+          </div>
+
+          <!-- Sub Area -->
+          <div class="flex">
+            <div class="w-40 text-sm text-gray-500">Sub Area</div>
+            <div class="flex-1 text-sm text-gray-900">1001023 - Nazzarudin (IT Programmer)</div>
+          </div>
+
+          <!-- Move -->
+          <div class="flex">
+            <div class="w-40 text-sm text-gray-500">Move</div>
+            <div class="flex-1 text-sm text-gray-900">59807</div>
+          </div>
+
+          <!-- Jumlah SDM -->
+          <div class="flex">
+            <div class="w-40 text-sm text-gray-500">Jumlah SDM</div>
+            <div class="flex-1 text-sm text-gray-900">188</div>
+          </div>
+
+          <!-- Service -->
+          <div class="flex">
+            <div class="w-40 text-sm text-gray-500">Service</div>
+            <div class="flex-1 text-sm text-gray-900">APT, TOWER</div>
+          </div>
+
+          <!-- Radar -->
+          <div class="flex">
+            <div class="w-40 text-sm text-gray-500">Radar</div>
+            <div class="flex-1 text-sm text-gray-900">RADAR</div>
+          </div>
+
+          <!-- Jml. Transaksi -->
+          <div class="flex">
+            <div class="w-40 text-sm text-gray-500">Jml. Transaksi</div>
+            <div class="flex-1 text-sm text-gray-900">15628</div>
+          </div>
+        </div>
+
+        <!-- Approval Section -->
+        <div class="mt-6">
+          <h4 class="text-lg font-bold text-gray-900 mb-4">Approval</h4>
+          
+          <!-- Approval Tree -->
+          <div class="space-y-2">
+            <!-- Level 1: Approval -->
+            <div class="flex items-center gap-2">
+              <Icon name="lucide:folder" class="w-4 h-4 text-gray-500" />
+              <span class="text-sm text-gray-700">Approval</span>
+            </div>
+
+            <!-- Level 2: Procurement -->
+            <div class="flex items-center gap-2 ml-6">
+              <Icon name="lucide:folder" class="w-4 h-4 text-gray-500" />
+              <span class="text-sm text-gray-700">Procurement</span>
+            </div>
+
+            <!-- Level 3: Rechart Navi -->
+            <div class="flex items-center gap-2 ml-12">
+              <Icon name="lucide:file-text" class="w-4 h-4 text-gray-500" />
+              <span class="text-sm text-gray-700">Rechart Navi</span>
+              <Icon name="lucide:check-circle-2" class="w-5 h-5 text-green-500 ml-auto" />
+            </div>
+
+            <!-- Level 3: Nur Haren -->
+            <div class="flex items-center gap-2 ml-12">
+              <Icon name="lucide:file-text" class="w-4 h-4 text-gray-500" />
+              <span class="text-sm text-gray-700">Nur Haren</span>
+              <Icon name="lucide:check-circle-2" class="w-5 h-5 text-green-500 ml-auto" />
+            </div>
+
+            <!-- Level 2: CTO -->
+            <div class="flex items-center gap-2 ml-6">
+              <Icon name="lucide:folder" class="w-4 h-4 text-gray-500" />
+              <span class="text-sm text-gray-700">CTO</span>
+            </div>
+
+            <!-- Level 3: Satrio Cahyadi -->
+            <div class="flex items-center gap-2 ml-12">
+              <Icon name="lucide:file-text" class="w-4 h-4 text-gray-500" />
+              <span class="text-sm text-gray-700">Satrio Cahyadi</span>
+              <Icon name="lucide:plus-circle" class="w-5 h-5 text-gray-400 ml-auto" />
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Modal Footer with 2 buttons -->
+      <div class="flex gap-3 px-6 py-4 flex-shrink-0 bg-white">
+        <button 
+          @click="handleReject" 
+          class="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-medium text-[#1E90FF] bg-white border-2 border-[#1E90FF] rounded-lg hover:bg-blue-50 transition-colors"
+        >
+          <Icon name="lucide:x" class="w-4 h-4" />
+          Reject
+        </button>
+        <button 
+          @click="handleApprove" 
+          class="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 bg-[#1E90FF] text-white text-sm font-medium rounded-lg hover:bg-[#1873CC] transition-colors shadow-sm"
+        >
+          <Icon name="lucide:check-circle" class="w-4 h-4" />
+          Approve
         </button>
       </div>
     </div>
