@@ -10,6 +10,7 @@ interface EvaluasiOrganisasi {
   radar: string
   jumlahTransaksi: number
   status: 'Waiting Approval' | 'Approved' | 'Rejected'
+  periode?: string
 }
 
 interface Props {
@@ -855,18 +856,10 @@ const handleDateChange = (event: Event) => {
               type="text" 
               placeholder="Select Periode"
               readonly
-              @click="openDatePicker"
               class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF] pr-8 cursor-pointer bg-white"
-            />
-            <input 
-              ref="dateInput"
-              type="date"
-              @change="(e) => editingItem.periode = e.target.value"
-              class="absolute inset-0 opacity-0 w-0 h-0 pointer-events-none"
             />
             <button 
               type="button" 
-              @click="openDatePicker"
               class="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
             >
               <Icon name="lucide:calendar" class="w-4 h-4 text-[#65BEFF]" />
