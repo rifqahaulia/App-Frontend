@@ -20,7 +20,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return
   }
 
-  // Jika tidak ada token dan bukan public route, redirect ke homepage
+  // Jika tidak ada token dan bukan public route, redirect ke dashboard
   if (!accessToken.value && !isPublicRoute) {
     console.log('Tidak ada token, redirect ke homepage')
     return navigateTo('/', { replace: true })
