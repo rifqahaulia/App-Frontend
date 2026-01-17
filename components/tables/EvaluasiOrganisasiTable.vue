@@ -1,5 +1,4 @@
 masi<script setup lang="ts">
-// components/tables/EvaluasiOrganisasiTable.vue
 
 interface EvaluasiOrganisasi {
   area: string
