@@ -520,7 +520,7 @@ onMounted(() => {
           
           <div 
             @click="setActiveTab('position')"
-            class="flex items-center gap-2 px-6 py-3 rounded cursor-pointer transition-colors"
+            class="flex items-center gap-2 px-12 py-3 rounded cursor-pointer transition-colors"
             :class="activeTab === 'position' ? 'bg-blue-100' : 'hover:bg-gray-50'"
           >
             <Icon name="lucide:map-pin" class="w-4 h-4" :class="activeTab === 'position' ? 'text-blue-500' : 'text-gray-600'" />
