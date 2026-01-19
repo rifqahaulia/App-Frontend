@@ -266,6 +266,7 @@ const showViewModal = ref(false)
 const editingItem = ref<EvaluasiOrganisasi | null>(null)
 const viewingItem = ref<EvaluasiOrganisasi | null>(null)
 const dateInput = ref<HTMLInputElement | null>(null)
+const editDateInput = ref<HTMLInputElement | null>(null)
 
 // Form data
 const formData = ref({
@@ -385,14 +386,49 @@ const handleRadarSelect = (event: Event) => {
 
 const openDatePicker = () => {
   if (dateInput.value) {
-    dateInput.value.showPicker()
+    dateInput.value.focus()
+    dateInput.value.click()
+    // Fallback for browsers that don't support showPicker
+    if (dateInput.value.showPicker) {
+      dateInput.value.showPicker()
+    }
   }
 }
 
 const handleDateChange = (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target.value) {
-    formData.value.periode = target.value
+    // Format the date to a more readable format
+    const date = new Date(target.value)
+    const formattedDate = date.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    })
+    formData.value.periode = formattedDate
+  }
+}
+
+const openEditDatePicker = () => {
+  if (editDateInput.value) {
+    editDateInput.value.focus()
+    editDateInput.value.click()
+    if (editDateInput.value.showPicker) {
+      editDateInput.value.showPicker()
+    }
+  }
+}
+
+const handleEditDateChange = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (target.value && editingItem.value) {
+    const date = new Date(target.value)
+    const formattedDate = date.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    })
+    editingItem.value.periode = formattedDate
   }
 }
 </script>
@@ -667,12 +703,13 @@ const handleDateChange = (event: Event) => {
               ref="dateInput"
               type="date"
               @change="handleDateChange"
-              class="absolute inset-0 opacity-0 w-0 h-0 pointer-events-none"
+              class="absolute inset-0 opacity-0 cursor-pointer"
+              style="z-index: -1;"
             />
             <button 
               type="button" 
               @click="openDatePicker"
-              class="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer z-10"
             >
               <Icon name="lucide:calendar" class="w-4 h-4 text-[#65BEFF]" />
             </button>
@@ -855,11 +892,20 @@ const handleDateChange = (event: Event) => {
               type="text" 
               placeholder="Select Periode"
               readonly
+              @click="openEditDatePicker"
               class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-[#65BEFF] focus:border-[#65BEFF] pr-8 cursor-pointer bg-white"
+            />
+            <input 
+              ref="editDateInput"
+              type="date"
+              @change="handleEditDateChange"
+              class="absolute inset-0 opacity-0 cursor-pointer"
+              style="z-index: -1;"
             />
             <button 
               type="button" 
-              class="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer"
+              @click="openEditDatePicker"
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer z-10"
             >
               <Icon name="lucide:calendar" class="w-4 h-4 text-[#65BEFF]" />
             </button>
