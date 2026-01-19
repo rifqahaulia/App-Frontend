@@ -48,6 +48,18 @@ interface OrganizationChild {
   validTo: string
 }
 
+// Position data
+interface Position {
+  idPosition: string
+  titelatur: string
+  job: string
+  start: string
+  validTo: string
+  person: string
+  chief: string
+  file: string
+}
+
 const organizationChildData = ref<OrganizationChild[]>([
   {
     idUnit: '100999',
@@ -86,10 +98,48 @@ const organizationChildData = ref<OrganizationChild[]>([
   }
 ])
 
+const positionData = ref<Position[]>([
+  {
+    idPosition: '100099',
+    titelatur: '-',
+    job: 'Perencanaan dan Evaluasi Teknologi Informasi',
+    start: '12.10.2020',
+    validTo: '12.10.2030',
+    person: '1001234-Wahyudin',
+    chief: 'Chief',
+    file: 'File'
+  },
+  {
+    idPosition: '100099',
+    titelatur: '-',
+    job: 'Perencanaan dan Evaluasi Teknologi Informasi',
+    start: '12.10.2020',
+    validTo: '12.10.2030',
+    person: '1001234-Evan Denda',
+    chief: '',
+    file: 'File'
+  },
+  {
+    idPosition: '100099',
+    titelatur: '-',
+    job: 'Perencanaan dan Evaluasi Teknologi Informasi',
+    start: '12.10.2020',
+    validTo: '12.10.2030',
+    person: '1001234-Bellingham',
+    chief: '',
+    file: 'File'
+  }
+])
+
 // Pagination for Organization Child
 const childCurrentPage = ref(1)
 const childItemsPerPage = ref(10)
 const childSearchQuery = ref('')
+
+// Pagination for Position
+const positionCurrentPage = ref(1)
+const positionItemsPerPage = ref(10)
+const positionSearchQuery = ref('')
 
 // Dummy data untuk struktur organisasi
 const organisasiData = ref<OrganisasiUnit[]>([
@@ -307,9 +357,42 @@ const goToChildPage = (page: number) => {
   }
 }
 
+// Position pagination
+const filteredPositionData = computed(() => {
+  if (!positionSearchQuery.value) return positionData.value
+  
+  const query = positionSearchQuery.value.toLowerCase()
+  return positionData.value.filter(item => 
+    item.idPosition.toLowerCase().includes(query) ||
+    item.titelatur.toLowerCase().includes(query) ||
+    item.job.toLowerCase().includes(query) ||
+    item.person.toLowerCase().includes(query)
+  )
+})
+
+const positionTotalPages = computed(() => 
+  Math.ceil(filteredPositionData.value.length / positionItemsPerPage.value)
+)
+
+const paginatedPositionData = computed(() => {
+  const start = (positionCurrentPage.value - 1) * positionItemsPerPage.value
+  const end = start + positionItemsPerPage.value
+  return filteredPositionData.value.slice(start, end)
+})
+
+const goToPositionPage = (page: number) => {
+  if (page >= 1 && page <= positionTotalPages.value) {
+    positionCurrentPage.value = page
+  }
+}
+
 // Reset to page 1 when search changes
 watch(childSearchQuery, () => {
   childCurrentPage.value = 1
+})
+
+watch(positionSearchQuery, () => {
+  positionCurrentPage.value = 1
 })
 
 // Filter function for search
@@ -665,9 +748,158 @@ onMounted(() => {
         </div>
 
         <!-- Position Content - Show when activeTab is 'position' -->
-        <div v-if="activeTab === 'position'" class="bg-gray-50 rounded-lg border border-gray-200 p-4">
-          <h3 class="text-base font-medium text-gray-900 mb-4">Position Information</h3>
-          <p class="text-sm text-gray-600">Position content will be implemented here.</p>
+        <div v-if="activeTab === 'position'">
+          <!-- Form Header -->
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-medium text-gray-900">Position</h3>
+            <button 
+              @click="handleCreate"
+              class="flex items-center gap-1 px-2 py-1 text-blue-600 border border-blue-200 rounded text-sm hover:bg-blue-50 transition-colors"
+            >
+              <Icon name="lucide:plus" class="w-3 h-3" />
+              Create
+            </button>
+          </div>
+
+          <!-- Table Container -->
+          <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
+            <!-- Search Bar -->
+            <div class="px-6 py-4 bg-white border-b border-gray-200">
+              <div class="relative max-w-xs">
+                <Icon 
+                  name="lucide:search" 
+                  class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+                />
+                <input
+                  v-model="positionSearchQuery"
+                  type="text"
+                  placeholder="Search..."
+                  class="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all"
+                />
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto px-6 py-6">
+              <table class="w-full">
+                <thead class="bg-blue-100/60 rounded-t-xl">
+                  <tr>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide first:rounded-tl-xl">
+                      ID Position
+                    </th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                      Titelatur
+                    </th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                      Job
+                    </th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                      Start
+                    </th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                      Valid to
+                    </th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                      Person
+                    </th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                      Chief
+                    </th>
+                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide last:rounded-tr-xl">
+                      File
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white">
+                  <tr 
+                    v-for="(item, index) in paginatedPositionData" 
+                    :key="index"
+                    class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/30 transition-colors"
+                  >
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
+                      {{ item.idPosition }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      {{ item.titelatur }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {{ item.job }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      {{ item.start }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      {{ item.validTo }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      {{ item.person }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      <span v-if="item.chief" class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">{{ item.chief }}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600">
+                      <button class="flex items-center gap-1 hover:text-blue-800 transition-colors">
+                        <Icon name="lucide:file" class="w-4 h-4" />
+                        {{ item.file }}
+                      </button>
+                    </td>
+                  </tr>
+                  
+                  <!-- Empty State -->
+                  <tr v-if="paginatedPositionData.length === 0">
+                    <td colspan="8" class="px-6 py-16 text-center">
+                      <Icon name="lucide:inbox" class="w-14 h-14 mx-auto mb-4 text-gray-300" />
+                      <p class="text-sm font-medium text-gray-600">Tidak ada data yang ditemukan</p>
+                      <p class="text-xs text-gray-500 mt-1">Coba ubah kata kunci pencarian Anda</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
+              <div class="text-sm text-gray-600 font-medium">
+                Menampilkan {{ paginatedPositionData.length > 0 ? (positionCurrentPage - 1) * positionItemsPerPage + 1 : 0 }} - 
+                {{ Math.min(positionCurrentPage * positionItemsPerPage, filteredPositionData.length) }} 
+                dari {{ filteredPositionData.length }} data
+              </div>
+              
+              <div class="flex items-center gap-2">
+                <button
+                  @click="goToPositionPage(positionCurrentPage - 1)"
+                  :disabled="positionCurrentPage === 1"
+                  class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Previous
+                </button>
+                
+                <template v-if="positionTotalPages <= 7">
+                  <button
+                    v-for="page in positionTotalPages"
+                    :key="page"
+                    @click="goToPositionPage(page)"
+                    :class="[
+                      'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
+                      positionCurrentPage === page 
+                        ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
+                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                    ]"
+                  >
+                    {{ page }}
+                  </button>
+                </template>
+                
+                <button
+                  @click="goToPositionPage(positionCurrentPage + 1)"
+                  :disabled="positionCurrentPage === positionTotalPages"
+                  class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
