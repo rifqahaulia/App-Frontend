@@ -122,7 +122,10 @@ onMounted(() => {
     <!-- Struktur Section -->
     <div class="mb-6">
       <!-- Struktur Header - Always visible -->
-      <div class="bg-blue-500 text-white px-4 py-3 rounded-t-lg">
+      <div 
+        class="px-4 py-3 rounded-t-lg transition-colors"
+        :class="showStructure ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 border border-gray-200'"
+      >
         <button 
           @click="toggleStructure"
           class="flex items-center gap-2 text-sm font-medium w-full text-left"
@@ -158,7 +161,7 @@ onMounted(() => {
         </div>
 
         <!-- Tree Structure -->
-        <div class="p-4 bg-gray-100">
+        <div class="p-4 bg-white">
           <OrganisasiUnitTree 
             :data="filteredOrganisasiData" 
             :selected="selectedUnit"
@@ -171,100 +174,112 @@ onMounted(() => {
 
     <!-- Detail Section -->
     <div v-if="selectedUnit" class="flex-1">
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
-        Detail Organisasi Unit - {{ selectedUnit.name }}
-      </h2>
-      
-      <!-- Tab Navigation -->
-      <div class="flex gap-6 mb-6">
-        <div class="flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg border border-blue-200">
-          <Icon name="lucide:info" class="w-4 h-4 text-blue-600" />
-          <span class="text-sm font-medium text-blue-700">Detail Organization</span>
-          <span class="text-xs text-blue-600">Organization Information</span>
-        </div>
+      <!-- Detail Organization Card -->
+      <div class="bg-white rounded border border-gray-200 p-4">
+        <!-- Title inside card with bold and border -->
+        <h2 class="text-base font-bold text-gray-900 mb-4 pb-4 border-b border-gray-200">
+          Detail Organisasi Unit - {{ selectedUnit.name }}
+        </h2>
         
-        <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg border border-gray-200">
-          <Icon name="lucide:users" class="w-4 h-4 text-gray-600" />
-          <span class="text-sm font-medium text-gray-700">Organization Child</span>
-          <span class="text-xs text-gray-600">Organization Child Information</span>
-        </div>
-        
-        <div class="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg border border-gray-200">
-          <Icon name="lucide:map-pin" class="w-4 h-4 text-gray-600" />
-          <span class="text-sm font-medium text-gray-700">Position</span>
-          <span class="text-xs text-gray-600">Position Information</span>
-        </div>
-      </div>
-
-      <!-- Detail Organization Form -->
-      <div class="bg-white rounded-lg border border-gray-200 p-6">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-lg font-semibold text-gray-900">Detail Organization</h3>
-          <button class="flex items-center gap-2 px-3 py-1.5 text-blue-600 border border-blue-200 rounded-lg text-sm hover:bg-blue-50 transition-colors">
-            <Icon name="lucide:edit-2" class="w-4 h-4" />
-            Edit
-          </button>
-        </div>
-
-        <div class="space-y-4">
-          <!-- ID -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">ID</label>
-            <input 
-              type="text" 
-              :value="unitDetail.id"
-              readonly
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 text-sm"
-            />
-          </div>
-
-          <!-- Titelatur -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Titelatur</label>
-            <input 
-              type="text" 
-              :value="unitDetail.titelatur"
-              readonly
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 text-sm"
-            />
-          </div>
-
-          <!-- Description -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea 
-              :value="unitDetail.description"
-              readonly
-              rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 text-sm resize-none"
-            ></textarea>
-          </div>
-
-          <!-- Date Range -->
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Start</label>
-              <div class="relative">
-                <input 
-                  type="text" 
-                  :value="unitDetail.start"
-                  readonly
-                  class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 text-sm"
-                />
-                <Icon name="lucide:calendar" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              </div>
+        <!-- Tab Navigation - Inside the card with proper spacing -->
+        <div class="flex justify-around gap-6 mb-6 px-4">
+          <div class="flex items-center gap-2 px-12 py-3 bg-blue-100 rounded">
+            <Icon name="lucide:info" class="w-4 h-4 text-blue-500" />
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-blue-500">Detail Organization</span>
+              <span class="text-xs text-blue-500">Organization Information</span>
             </div>
-            
+          </div>
+          
+          <div class="flex items-center gap-2 px-12 py-3 cursor-pointer hover:bg-gray-50 rounded">
+            <Icon name="lucide:users" class="w-4 h-4 text-gray-600" />
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-gray-700">Organization Child</span>
+              <span class="text-xs text-gray-500">Organization Child Information</span>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-2 px-6 py-3 cursor-pointer hover:bg-gray-50 rounded">
+            <Icon name="lucide:map-pin" class="w-4 h-4 text-gray-600" />
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-gray-700">Position</span>
+              <span class="text-xs text-gray-500">Position Information</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Header and Fields - Wrapped in inner card -->
+        <div class="bg-gray-50 rounded-lg border border-gray-200 p-4">
+          <!-- Form Header -->
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-medium text-gray-900">Detail Organization</h3>
+            <button class="flex items-center gap-1 px-2 py-1 text-blue-600 border border-blue-200 rounded text-sm hover:bg-blue-50 transition-colors">
+              <Icon name="lucide:edit-2" class="w-3 h-3" />
+              Edit
+            </button>
+          </div>
+
+          <!-- Form Fields -->
+          <div class="space-y-3">
+            <!-- ID -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Valid to</label>
-              <div class="relative">
-                <input 
-                  type="text" 
-                  :value="unitDetail.validTo"
-                  readonly
-                  class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 text-sm"
-                />
-                <Icon name="lucide:calendar" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <label class="block text-xs font-medium text-gray-700 mb-1">ID</label>
+              <input 
+                type="text" 
+                :value="unitDetail.id"
+                readonly
+                class="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100 text-gray-700 text-sm"
+              />
+            </div>
+
+            <!-- Titelatur -->
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">Titelatur</label>
+              <input 
+                type="text" 
+                :value="unitDetail.titelatur"
+                readonly
+                class="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100 text-gray-700 text-sm"
+              />
+            </div>
+
+            <!-- Description -->
+            <div>
+              <label class="block text-xs font-medium text-gray-700 mb-1">Description</label>
+              <textarea 
+                :value="unitDetail.description"
+                readonly
+                rows="2"
+                class="w-full px-3 py-2 border border-gray-300 rounded bg-gray-100 text-gray-700 text-sm resize-none"
+              ></textarea>
+            </div>
+
+            <!-- Date Range -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">Start</label>
+                <div class="relative">
+                  <input 
+                    type="text" 
+                    :value="unitDetail.start"
+                    readonly
+                    class="w-full px-3 py-2 pr-8 border border-gray-300 rounded bg-gray-100 text-gray-700 text-sm"
+                  />
+                  <Icon name="lucide:calendar" class="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
+                </div>
+              </div>
+              
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">Valid to</label>
+                <div class="relative">
+                  <input 
+                    type="text" 
+                    :value="unitDetail.validTo"
+                    readonly
+                    class="w-full px-3 py-2 pr-8 border border-gray-300 rounded bg-gray-100 text-gray-700 text-sm"
+                  />
+                  <Icon name="lucide:calendar" class="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400" />
+                </div>
               </div>
             </div>
           </div>

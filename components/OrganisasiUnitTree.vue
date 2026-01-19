@@ -82,7 +82,7 @@ const handleToggle = (unit: OrganisasiUnit) => {
 
         <!-- Unit Name -->
         <span 
-          class="text-sm truncate flex-1"
+          class="text-xs truncate flex-1"
           :class="selected?.id === unit.id ? 'text-white font-medium' : 'text-gray-700'"
         >
           {{ unit.name }}

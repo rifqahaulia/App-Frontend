@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// components/tables/ReportEvaluasiTable.vue
 
 interface ReportEvaluasi {
   no: number
