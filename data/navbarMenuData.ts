@@ -56,14 +56,18 @@ export const navbarMenus: PageNavbarMenu = {
     },
   ],
   '/administrasi-personal': [
-    { label: 'Data Personal' },
+    { label: 'Display' },
+    { label: 'Transaksi Pegawai' },
+    { label: 'Info SDM' },
     { 
-      label: 'Dokumen',
+      label: 'Data Kodal',
       children: [
-        { label: 'KTP', path: '/administrasi-personal/ktp' },
-        { label: 'NPWP', path: '/administrasi-personal/npwp' },
+        { label: 'Input Data', path: '/administrasi-personal/data-kodal/input-data' },
+        { label: 'Submit Data', path: '/administrasi-personal/data-kodal/submit-data' },
+        { label: 'Monitoring Laporan', path: '/administrasi-personal/data-kodal/monitoring-laporan' },
       ]
     },
+    { label: 'Maintain PNS' },
   ],
   '/layanan-mandiri': [
     { label: 'Beranda' },
