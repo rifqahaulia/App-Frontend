@@ -280,8 +280,8 @@ const handleEditValidToDateChange = (event: Event) => {
 <template>
   <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
     <!-- Header with Create Button -->
-    <div class="px-6 py-4 bg-white rounded-t-2xl flex items-center justify-between">
-      <div class="relative max-w-xs">
+    <div class="px-4 sm:px-6 py-4 bg-white rounded-t-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+      <div class="relative max-w-xs w-full sm:w-auto">
         <Icon 
           name="lucide:search" 
           class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
@@ -296,105 +296,112 @@ const handleEditValidToDateChange = (event: Event) => {
       
       <button 
         @click="handleCreate"
-        class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
+        class="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors w-full sm:w-auto justify-center sm:justify-start"
       >
         <Icon name="lucide:plus" class="w-4 h-4" />
         Tambah Area
       </button>
     </div>
 
-    <!-- Table -->
-    <div class="overflow-x-auto px-6 pb-4">
-      <table class="w-full">
-        <thead class="bg-blue-100/60 rounded-t-xl">
-          <tr>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide first:rounded-tl-xl">
-              ID AREA
-            </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-              NAMA AREA
-            </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-              DESCRIPTION
-            </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-              START
-            </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-              VALID TO
-            </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide last:rounded-tr-xl">
-              ACTIONS
-            </th>
-          </tr>
-        </thead>
-        <tbody class="bg-white">
-          <tr 
-            v-for="(item, index) in paginatedData" 
-            :key="index"
-            class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/30 transition-colors"
-          >
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
-              {{ item.idArea }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
-              {{ item.namaArea }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-              {{ item.description }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-              {{ item.start }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-              {{ item.validTo }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-              <button 
-                @click="handleEdit(item)"
-                class="w-8 h-8 bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-colors"
-              >
-                <Icon name="lucide:edit-3" class="w-4 h-4 text-white" />
-              </button>
-            </td>
-          </tr>
-          
-          <!-- Empty State -->
-          <tr v-if="paginatedData.length === 0">
-            <td colspan="6" class="px-6 py-16 text-center">
-              <Icon name="lucide:inbox" class="w-14 h-14 mx-auto mb-4 text-gray-300" />
-              <p class="text-sm font-medium text-gray-600">Tidak ada data yang ditemukan</p>
-              <p class="text-xs text-gray-500 mt-1">Coba ubah kata kunci pencarian Anda</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Table Container with Horizontal Scroll -->
+    <div class="overflow-x-auto">
+      <div class="px-4 sm:px-6 pb-4">
+        <table class="w-full min-w-[640px]">
+          <thead class="bg-blue-100/60 rounded-t-xl">
+            <tr>
+              <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide first:rounded-tl-xl">
+                ID AREA
+              </th>
+              <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                NAMA AREA
+              </th>
+              <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                DESCRIPTION
+              </th>
+              <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                START
+              </th>
+              <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                VALID TO
+              </th>
+              <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide last:rounded-tr-xl">
+                ACTIONS
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white">
+            <tr 
+              v-for="(item, index) in paginatedData" 
+              :key="index"
+              class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/30 transition-colors"
+            >
+              <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
+                {{ item.idArea }}
+              </td>
+              <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
+                <span class="hidden sm:inline">{{ item.namaArea }}</span>
+                <span class="sm:hidden">{{ item.namaArea.length > 15 ? item.namaArea.substring(0, 15) + '...' : item.namaArea }}</span>
+              </td>
+              <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                <span class="hidden sm:inline">{{ item.description }}</span>
+                <span class="sm:hidden">{{ item.description.length > 10 ? item.description.substring(0, 10) + '...' : item.description }}</span>
+              </td>
+              <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                <span class="hidden sm:inline">{{ item.start }}</span>
+                <span class="sm:hidden">{{ item.start.split(' ')[0] }}</span>
+              </td>
+              <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                <span class="hidden sm:inline">{{ item.validTo }}</span>
+                <span class="sm:hidden">{{ item.validTo.split(' ')[0] }}</span>
+              </td>
+              <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                <button 
+                  @click="handleEdit(item)"
+                  class="w-8 h-8 bg-blue-500 hover:bg-blue-600 rounded-lg flex items-center justify-center transition-colors"
+                >
+                  <Icon name="lucide:edit-3" class="w-4 h-4 text-white" />
+                </button>
+              </td>
+            </tr>
+            
+            <!-- Empty State -->
+            <tr v-if="paginatedData.length === 0">
+              <td colspan="6" class="px-6 py-16 text-center">
+                <Icon name="lucide:inbox" class="w-14 h-14 mx-auto mb-4 text-gray-300" />
+                <p class="text-sm font-medium text-gray-600">Tidak ada data yang ditemukan</p>
+                <p class="text-xs text-gray-500 mt-1">Coba ubah kata kunci pencarian Anda</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Pagination -->
-    <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
-      <div class="text-sm text-gray-600 font-medium">
+    <div class="px-4 sm:px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between bg-gray-50/30 gap-4 sm:gap-0">
+      <div class="text-sm text-gray-600 font-medium text-center sm:text-left">
         Menampilkan {{ paginatedData.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0 }} - 
         {{ Math.min(currentPage * itemsPerPage, filteredData.length) }} 
         dari {{ filteredData.length }} data
       </div>
       
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-1 sm:gap-2 flex-wrap justify-center">
         <button
           @click="goToPage(currentPage - 1)"
           :disabled="currentPage === 1"
-          class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          class="px-2 sm:px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
-          Previous
+          <span class="hidden sm:inline">Previous</span>
+          <Icon name="lucide:chevron-left" class="w-4 h-4 sm:hidden" />
         </button>
         
-        <template v-if="totalPages <= 7">
+        <template v-if="totalPages <= 5">
           <button
             v-for="page in totalPages"
             :key="page"
             @click="goToPage(page)"
             :class="[
-              'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
+              'px-2 sm:px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
               currentPage === page 
                 ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
                 : 'border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -408,7 +415,7 @@ const handleEditValidToDateChange = (event: Event) => {
           <button
             @click="goToPage(1)"
             :class="[
-              'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
+              'px-2 sm:px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
               currentPage === 1 
                 ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
                 : 'border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -417,14 +424,14 @@ const handleEditValidToDateChange = (event: Event) => {
             1
           </button>
           
-          <span v-if="currentPage > 3" class="px-2 text-gray-500">...</span>
+          <span v-if="currentPage > 3" class="px-1 sm:px-2 text-gray-500 text-sm">...</span>
           
           <template v-for="page in totalPages" :key="page">
             <button
               v-if="page > 1 && page < totalPages && Math.abs(page - currentPage) <= 1"
               @click="goToPage(page)"
               :class="[
-                'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
+                'px-2 sm:px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
                 currentPage === page 
                   ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
                   : 'border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -434,12 +441,12 @@ const handleEditValidToDateChange = (event: Event) => {
             </button>
           </template>
           
-          <span v-if="currentPage < totalPages - 2" class="px-2 text-gray-500">...</span>
+          <span v-if="currentPage < totalPages - 2" class="px-1 sm:px-2 text-gray-500 text-sm">...</span>
           
           <button
             @click="goToPage(totalPages)"
             :class="[
-              'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
+              'px-2 sm:px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
               currentPage === totalPages 
                 ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
                 : 'border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -452,9 +459,10 @@ const handleEditValidToDateChange = (event: Event) => {
         <button
           @click="goToPage(currentPage + 1)"
           :disabled="currentPage === totalPages"
-          class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          class="px-2 sm:px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
-          Next
+          <span class="hidden sm:inline">Next</span>
+          <Icon name="lucide:chevron-right" class="w-4 h-4 sm:hidden" />
         </button>
       </div>
     </div>
@@ -462,9 +470,9 @@ const handleEditValidToDateChange = (event: Event) => {
 
   <!-- Create Modal -->
   <div v-if="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden">
       <!-- Modal Header -->
-      <div class="flex items-center justify-between px-6 py-4 bg-blue-500 rounded-t-lg">
+      <div class="flex items-center justify-between px-4 sm:px-6 py-4 bg-blue-500 rounded-t-lg">
         <h3 class="text-lg font-semibold text-white">Tambah Area</h3>
         <button @click="closeCreateModal" class="text-white hover:text-gray-200 transition-colors">
           <Icon name="lucide:x" class="w-5 h-5" />
@@ -472,7 +480,7 @@ const handleEditValidToDateChange = (event: Event) => {
       </div>
       
       <!-- Modal Body -->
-      <div class="p-6 space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+      <div class="p-4 sm:p-6 space-y-4 max-h-[calc(90vh-140px)] overflow-y-auto">
         <!-- ID Area -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">ID Area</label>
@@ -507,7 +515,7 @@ const handleEditValidToDateChange = (event: Event) => {
         </div>
 
         <!-- Date Range -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Start</label>
             <div class="relative">
@@ -569,16 +577,16 @@ const handleEditValidToDateChange = (event: Event) => {
       </div>
       
       <!-- Modal Footer -->
-      <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-200">
+      <div class="flex flex-col sm:flex-row justify-end gap-3 px-4 sm:px-6 py-4 border-t border-gray-200">
         <button 
           @click="closeCreateModal" 
-          class="px-6 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors border border-blue-300 rounded-lg hover:bg-blue-50"
+          class="px-6 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors border border-blue-300 rounded-lg hover:bg-blue-50 order-2 sm:order-1"
         >
           Cancel
         </button>
         <button 
           @click="saveCreate" 
-          class="px-6 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
+          class="px-6 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors order-1 sm:order-2"
         >
           Save
         </button>
@@ -588,9 +596,9 @@ const handleEditValidToDateChange = (event: Event) => {
 
   <!-- Edit Modal -->
   <div v-if="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden">
       <!-- Modal Header -->
-      <div class="flex items-center justify-between px-6 py-4 bg-blue-500 rounded-t-lg">
+      <div class="flex items-center justify-between px-4 sm:px-6 py-4 bg-blue-500 rounded-t-lg">
         <h3 class="text-lg font-semibold text-white">Edit Area</h3>
         <button @click="closeEditModal" class="text-white hover:text-gray-200 transition-colors">
           <Icon name="lucide:x" class="w-5 h-5" />
@@ -598,7 +606,7 @@ const handleEditValidToDateChange = (event: Event) => {
       </div>
       
       <!-- Modal Body -->
-      <div class="p-6 space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+      <div class="p-4 sm:p-6 space-y-4 max-h-[calc(90vh-140px)] overflow-y-auto">
         <!-- ID Area -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-2">ID Area</label>
@@ -631,7 +639,7 @@ const handleEditValidToDateChange = (event: Event) => {
         </div>
 
         <!-- Date Range -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Start</label>
             <div class="relative">
@@ -693,16 +701,16 @@ const handleEditValidToDateChange = (event: Event) => {
       </div>
       
       <!-- Modal Footer -->
-      <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-200">
+      <div class="flex flex-col sm:flex-row justify-end gap-3 px-4 sm:px-6 py-4 border-t border-gray-200">
         <button 
           @click="closeEditModal" 
-          class="px-6 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors border border-blue-300 rounded-lg hover:bg-blue-50"
+          class="px-6 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors border border-blue-300 rounded-lg hover:bg-blue-50 order-2 sm:order-1"
         >
           Cancel
         </button>
         <button 
           @click="saveEdit" 
-          class="px-6 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
+          class="px-6 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors order-1 sm:order-2"
         >
           Update
         </button>

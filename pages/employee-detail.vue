@@ -97,6 +97,7 @@ const tabs = [
 const activeTab = ref('Personal Info')
 const isEditModalOpen = ref(false)
 const isCreateAlamatModalOpen = ref(false)
+const showMobileEmployeeInfo = ref(false)
 
 // Refs for date inputs
 const tanggalLahirInput = ref<HTMLInputElement | null>(null)
@@ -199,7 +200,7 @@ const goBack = () => {
 </script>
 
 <template>
-  <div class="h-screen bg-gray-50 flex flex-col overflow-hidden">
+  <div class="min-h-screen bg-gray-50 flex flex-col overflow-hidden">
     <LayoutTheNavbar />
     
     <div class="flex flex-1 overflow-hidden">

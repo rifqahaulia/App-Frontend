@@ -54,8 +54,8 @@
       </div>
   
       <!-- Logo pojok kiri atas -->
-      <div class="absolute top-8 left-8 z-30 animate-fade-in">
-        <img src="/logoApp.png" alt="AirNav Logo" class="h-16 w-auto drop-shadow-lg" />
+      <div class="absolute top-4 sm:top-8 left-4 sm:left-8 z-30 animate-fade-in">
+        <img src="/logoApp.png" alt="AirNav Logo" class="h-12 sm:h-16 w-auto drop-shadow-lg" />
       </div>
   
       <!-- Splash Screen - Full screen clickable -->
@@ -64,15 +64,15 @@
         @click="handleStart"
         class="absolute inset-0 z-10 flex items-center justify-center cursor-pointer"
       >
-        <div class="text-center animate-fade-in-up">
+        <div class="text-center animate-fade-in-up px-4">
           <div class="space-y-4">
-            <h1 class="text-6xl md:text-8xl font-bold text-white leading-tight animate-pulse-slow">
+            <h1 class="text-4xl sm:text-6xl md:text-8xl font-bold text-white leading-tight animate-pulse-slow">
               Welcome App
             </h1>
-            <p class="text-xl md:text-2xl text-blue-100">
+            <p class="text-lg sm:text-xl md:text-2xl text-blue-100">
               Aplikasi Perkantoran AirNav Indonesia
             </p>
-            <p class="text-sm md:text-base text-blue-200 mt-8 opacity-70">
+            <p class="text-sm md:text-base text-blue-200 mt-6 sm:mt-8 opacity-70">
               Klik di mana saja untuk melanjutkan
             </p>
           </div>
@@ -84,31 +84,31 @@
         v-if="showLoginScreen"
         class="relative z-10 w-full max-w-6xl mx-auto animate-slide-up-bottom"
       >
-        <div class="bg-white/40 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden min-h-[600px] flex flex-col md:flex-row animate-slide-up border border-white/50">
+        <div class="bg-white/40 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden min-h-[500px] sm:min-h-[600px] flex flex-col md:flex-row animate-slide-up border border-white/50">
           
           <!-- Left side - Welcome text -->
-          <div class="w-full md:w-1/2 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 p-8 md:p-12 flex flex-col justify-center relative overflow-hidden">
+          <div class="w-full md:w-1/2 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-600 p-6 sm:p-8 md:p-12 flex flex-col justify-center relative overflow-hidden">
             <!-- Decorative elements -->
-            <div class="absolute top-10 right-10 w-32 h-32 border-4 border-white/20 rounded-full"></div>
-            <div class="absolute bottom-10 left-10 w-24 h-24 border-4 border-white/20 rounded-full"></div>
-            <div class="absolute top-1/2 left-1/4 w-16 h-16 bg-white/10 rounded-lg transform rotate-45"></div>
+            <div class="absolute top-6 sm:top-10 right-6 sm:right-10 w-24 sm:w-32 h-24 sm:h-32 border-4 border-white/20 rounded-full"></div>
+            <div class="absolute bottom-6 sm:bottom-10 left-6 sm:left-10 w-16 sm:w-24 h-16 sm:h-24 border-4 border-white/20 rounded-full"></div>
+            <div class="absolute top-1/2 left-1/4 w-12 sm:w-16 h-12 sm:h-16 bg-white/10 rounded-lg transform rotate-45"></div>
             
             <div class="relative z-10 space-y-4 md:space-y-6 animate-fade-in-up">
-              <h1 class="text-5xl md:text-7xl font-bold text-white leading-tight">
+              <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight">
                 Welcome App
               </h1>
-              <p class="text-lg md:text-2xl text-blue-100 leading-relaxed">
+              <p class="text-base sm:text-lg md:text-2xl text-blue-100 leading-relaxed">
                 Selamat datang di Aplikasi Perkantoran AirNav Indonesia.
               </p>
             </div>
           </div>
   
           <!-- Right side - Login form -->
-          <div class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center animate-fade-in-up animation-delay-200 bg-white/20">
+          <div class="w-full md:w-1/2 p-6 sm:p-8 md:p-12 flex flex-col justify-center animate-fade-in-up animation-delay-200 bg-white/20">
             <div class="space-y-6 md:space-y-8">
               <div class="text-center">
-                <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mx-auto shadow-lg mb-4 md:mb-6">
-                  <svg class="w-8 h-8 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl mx-auto shadow-lg mb-4 md:mb-6">
+                  <svg class="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                 </div>

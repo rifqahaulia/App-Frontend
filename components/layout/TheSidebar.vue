@@ -84,8 +84,8 @@ aside {
 </style>
 
 <template>
-  <aside class="w-16 md:w-20 bg-white border-r border-gray-200 flex flex-col items-center py-4 h-full overflow-y-auto flex-shrink-0">
-    <div class="flex flex-col gap-3 w-full items-center">
+  <aside class="w-16 md:w-20 bg-white border-r border-gray-200 flex flex-col items-center py-2 md:py-4 h-full overflow-y-auto flex-shrink-0">
+    <div class="flex flex-col gap-2 md:gap-3 w-full items-center">
       <div
         v-for="(item, index) in sidebarMenuItems"
         :key="`${item.path}-${index}`"
@@ -94,7 +94,7 @@ aside {
         <NuxtLink
           :to="item.path"
           :class="[
-            'w-9 h-9 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-all duration-300 relative flex-shrink-0',
+            'w-8 h-8 md:w-9 md:h-9 lg:w-11 lg:h-11 rounded-full flex items-center justify-center transition-all duration-300 relative flex-shrink-0',
             isActive(item.path) 
               ? 'bg-blue-500 shadow-lg scale-105' 
               : 'bg-gray-50 hover:bg-blue-500 hover:scale-110 shadow-sm border border-gray-200 hover:border-blue-500'
@@ -106,7 +106,7 @@ aside {
             :src="item.image" 
             :alt="item.label"
             :class="[
-              'w-4 h-4 md:w-5 md:h-5 object-contain transition-all duration-300',
+              'w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5 object-contain transition-all duration-300',
               isActive(item.path) ? 'brightness-0 invert' : 'hover:brightness-0 hover:invert'
             ]"
           />
@@ -115,7 +115,7 @@ aside {
             v-else
             :name="item.icon" 
             :class="[
-              'w-4 h-4 md:w-5 md:h-5 transition-all duration-300',
+              'w-3 h-3 md:w-4 md:h-4 lg:w-5 lg:h-5 transition-all duration-300',
               isActive(item.path) ? 'text-white' : 'text-gray-700 hover:text-white hover:scale-110'
             ]"
           />
