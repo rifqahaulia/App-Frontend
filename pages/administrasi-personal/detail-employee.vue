@@ -4,7 +4,12 @@ useHead({
 })
 
 const route = useRoute()
-const employeeId = route.params.id
+const employeeId = route.query.id
+
+console.log('🚀 DETAIL-EMPLOYEE.VUE FILE LOADED!')
+console.log('🚀 Employee ID from query:', employeeId)
+console.log('🚀 Route query:', route.query)
+console.log('🚀 Full route:', route)
 
 // Data dummy untuk detail karyawan berdasarkan mockup
 const employeeDetail = ref({
@@ -113,6 +118,13 @@ const goBack = () => {
       <LayoutTheSidebar />
       
       <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- DEBUG INFO -->
+        <div class="bg-red-100 border border-red-300 p-4 m-4 rounded-lg">
+          <h2 class="text-red-800 font-bold text-lg">🔥 DEBUG: [ID].VUE FILE IS LOADED!</h2>
+          <p class="text-red-700">Employee ID: {{ employeeId }}</p>
+          <p class="text-red-700">Route Path: {{ $route.path }}</p>
+          <p class="text-red-700">Route Params: {{ JSON.stringify($route.params) }}</p>
+        </div>
         <!-- Header -->
         <div class="px-4 md:px-6 py-4 border-b bg-white flex-shrink-0">
           <div class="flex items-center justify-between">

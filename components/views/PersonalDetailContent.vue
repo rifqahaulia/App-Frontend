@@ -106,6 +106,11 @@ const setActiveTab = (tab: string) => {
 
 <template>
   <div class="p-4 md:p-6">
+    <!-- Debug Info -->
+    <div class="mb-4 p-4 bg-green-100 border border-green-200 rounded-lg">
+      <p class="text-sm text-green-800">✅ PersonalDetailContent Component Loaded</p>
+      <p class="text-sm text-green-800">Employee ID: {{ props.employeeId }}</p>
+    </div>
     
     <!-- Employee Header Card -->
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-6 mb-6">

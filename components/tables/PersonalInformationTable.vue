@@ -155,11 +155,15 @@ const getAvatarColor = (name: string) => {
 
 // Navigation function
 const navigateToDetail = async (persnum: string, employeeName: string) => {
-  console.log('Navigating to detail for:', employeeName, 'ID:', persnum)
+  console.log('🔥 BUTTON CLICKED! Navigating to detail for:', employeeName, 'ID:', persnum)
+  console.log('🔥 About to navigate to:', `/employee-detail?id=${persnum}`)
+  
   try {
-    await navigateTo(`/administrasi-personal/detail?id=${persnum}`)
+    // Force navigation using window.location
+    window.location.href = `/employee-detail?id=${persnum}`
   } catch (error) {
-    console.error('Navigation error:', error)
+    console.error('🔥 Navigation error:', error)
+    alert('Navigation error: ' + error)
   }
 }
 </script>
