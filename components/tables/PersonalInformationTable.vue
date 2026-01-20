@@ -133,11 +133,6 @@ watch(itemsPerPage, () => {
   currentPage.value = 1
 })
 
-const handleDetailClick = (employee: PersonalInfo) => {
-  console.log('Detail clicked for:', employee.employee)
-  // Implement detail action here
-}
-
 // Generate initials for avatar fallback
 const getInitials = (name: string) => {
   return name.split(' ').map(n => n[0]).join('').toUpperCase()
@@ -156,6 +151,16 @@ const getAvatarColor = (name: string) => {
   }
   const index = Math.abs(hash) % colors.length
   return colors[index]
+}
+
+// Navigation function
+const navigateToDetail = async (persnum: string, employeeName: string) => {
+  console.log('Navigating to detail for:', employeeName, 'ID:', persnum)
+  try {
+    await navigateTo(`/administrasi-personal/detail?id=${persnum}`)
+  } catch (error) {
+    console.error('Navigation error:', error)
+  }
 }
 </script>
 
@@ -182,19 +187,19 @@ const getAvatarColor = (name: string) => {
       <table class="w-full">
         <thead class="bg-blue-100/60 rounded-t-xl">
           <tr>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide first:rounded-tl-xl">
-              EMPLOYEE
+            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide first:rounded-tl-xl align-middle">
+              <div class="ml-4">EMPLOYEE</div>
             </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+            <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wide">
               PERSNUM
             </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+            <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wide">
               GENDER
             </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+            <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wide">
               OFFICE
             </th>
-            <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide last:rounded-tr-xl">
+            <th class="px-6 py-4 text-center text-xs font-bold text-gray-600 uppercase tracking-wide last:rounded-tr-xl">
               ACTION
             </th>
           </tr>
@@ -204,9 +209,10 @@ const getAvatarColor = (name: string) => {
             v-for="(item, index) in paginatedData" 
             :key="index"
             class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/30 transition-colors"
+            style="position: relative;"
           >
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="flex items-center gap-3">
+            <td class="px-6 py-4 whitespace-nowrap align-middle">
+              <div class="flex items-center gap-3 ml-4">
                 <!-- Avatar dengan initials -->
                 <div 
                   :class="[
@@ -223,22 +229,25 @@ const getAvatarColor = (name: string) => {
                 </div>
               </div>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
+            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-700 font-medium">
               {{ item.persnum }}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-600">
               {{ item.gender }}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+            <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-600">
               {{ item.office }}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <button
-                @click="handleDetailClick(item)"
-                class="px-4 py-1.5 bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1"
-              >
-                {{ item.action }}
-              </button>
+            <td class="px-6 py-4 whitespace-nowrap text-center">
+              <div class="flex justify-center">
+                <button
+                  @click="navigateToDetail(item.persnum, item.employee)"
+                  class="px-4 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-600 border border-blue-300 hover:border-blue-400 text-xs font-medium rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1 flex items-center gap-1.5 cursor-pointer"
+                >
+                  {{ item.action }}
+                  <Icon name="lucide:chevron-right" class="w-3 h-3" />
+                </button>
+              </div>
             </td>
           </tr>
           
