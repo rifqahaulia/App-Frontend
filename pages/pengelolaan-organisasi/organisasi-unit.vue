@@ -19,9 +19,7 @@ useHead({
             <div class="hidden md:flex items-center text-sm text-gray-500">
               <span>Organisasi</span>
               <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
-              <span>Import</span>
-              <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
-              <span class="text-gray-900 font-medium">Organisasi Unit</span>
+              <span class="text-gray-900 font-medium">Struktur Organisasi</span>
             </div>
           </div>
         </div>

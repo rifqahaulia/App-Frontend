@@ -1,9 +1,9 @@
 <script setup lang="ts">
 useHead({
-  title: 'Submit Data - Data Kodal - Administrasi Personal'
+  title: 'Submit Data - Data Kodal'
 })
 
-const submitDataData = ref([])
+const submitDataKodalData = ref([])
 </script>
 
 <template>
@@ -17,8 +17,10 @@ const submitDataData = ref([])
         <!-- Header -->
         <div class="px-4 md:px-6 py-4 border-b bg-white flex-shrink-0">
           <div class="flex items-center justify-between">
-            <h1 class="text-xl md:text-2xl font-bold text-gray-900">Submit Data</h1>
+            <h1 class="text-xl md:text-2xl font-bold text-gray-900">Submit Data Kodal</h1>
             <div class="hidden md:flex items-center text-sm text-gray-500">
+              <span>Administrasi Personal</span>
+              <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
               <span>Data Kodal</span>
               <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
               <span class="text-gray-900 font-medium">Submit Data</span>
@@ -29,14 +31,8 @@ const submitDataData = ref([])
         <!-- Content Container - Scrollable area -->
         <div class="flex-1 overflow-y-auto bg-white relative">
           <div class="p-4 md:p-6">
-            <!-- Content Placeholder -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-6">
-              <div class="text-center py-12">
-                <Icon name="lucide:send" class="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Submit Data</h3>
-                <p class="text-gray-600">Halaman submit data sedang dalam pengembangan</p>
-              </div>
-            </div>
+            <!-- Content - Submit Data Kodal Table -->
+            <TablesSubmitDataKodalTable :data="submitDataKodalData" />
           </div>
         </div>
       </main>
