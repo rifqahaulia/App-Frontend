@@ -12,7 +12,6 @@ useHead({
       <LayoutTheSidebar />
       
       <main class="flex-1 flex flex-col overflow-hidden">
-        <!-- Header -->
         <div class="px-4 md:px-6 py-4 border-b bg-white flex-shrink-0">
           <div class="flex items-center justify-between">
             <h1 class="text-xl md:text-2xl font-bold text-gray-900">Organisasi Unit</h1>
@@ -24,7 +23,6 @@ useHead({
           </div>
         </div>
 
-        <!-- Content -->
         <div class="flex-1 overflow-y-auto bg-white relative">
           <div class="p-4 md:p-6">
             <ViewsOrganisasiUnitContent />

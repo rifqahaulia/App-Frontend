@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// components/tables/RiwayatHasilSurveiTable.vue
 
 interface RiwayatHasilSurvei {
   nik: string
@@ -22,17 +21,17 @@ const searchQuery = ref('')
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
 
-// Filter states
 const selectedLokasi = ref('')
 const selectedStatus = ref('')
 
-// Modal states
 const showInputSurveiModal = ref(false)
+const showEditModal = ref(false)
+const showViewModal = ref(false)
+const editingItem = ref<RiwayatHasilSurvei | null>(null)
+const viewingItem = ref<RiwayatHasilSurvei | null>(null)
 
-// Date picker ref
 const tanggalSurveiInput = ref<HTMLInputElement | null>(null)
 
-// Form data
 const formData = ref({
   nik: '',
   nama: '',
@@ -46,10 +45,21 @@ const formData = ref({
   status: 'belum'
 })
 
-// Options untuk items per page
+const editData = ref({
+  nik: '',
+  nama: '',
+  jabatan: '',
+  levelJabatan: '',
+  lokasi: '',
+  tanggalSurvei: '',
+  jenisSurvei: '',
+  hasilSurvei: '',
+  catatan: '',
+  status: 'belum'
+})
+
 const itemsPerPageOptions = [5, 10, 15, 20, 25, 50]
 
-// DATA DUMMY sesuai mockup
 const dummyData: RiwayatHasilSurvei[] = [
   {
     nik: '10835478',
@@ -125,12 +135,10 @@ const dummyData: RiwayatHasilSurvei[] = [
   }
 ]
 
-// Use props data if available, otherwise use dummy data
 const riwayatHasilSurveiData = computed(() => 
   props.data && props.data.length > 0 ? props.data : dummyData
 )
 
-// Dropdown options
 const filterLokasiOptions = [
   { value: '', label: 'Semua Lokasi' },
   { value: 'kantor_pusat', label: 'Kantor Pusat' },
@@ -165,11 +173,9 @@ const hasilSurveiOptions = [
   { value: 'kurang', label: 'Kurang' }
 ]
 
-// Filter data based on search and filters
 const filteredData = computed(() => {
   let filtered = riwayatHasilSurveiData.value
 
-  // Apply search filter
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     filtered = filtered.filter(item => 
@@ -180,14 +186,12 @@ const filteredData = computed(() => {
     )
   }
 
-  // Apply lokasi filter
   if (selectedLokasi.value) {
     filtered = filtered.filter(item => 
       item.lokasi.toLowerCase().includes(selectedLokasi.value.toLowerCase())
     )
   }
 
-  // Apply status filter
   if (selectedStatus.value) {
     filtered = filtered.filter(item => item.status === selectedStatus.value)
   }
@@ -195,7 +199,6 @@ const filteredData = computed(() => {
   return filtered
 })
 
-// Pagination
 const totalPages = computed(() => 
   Math.ceil(filteredData.value.length / itemsPerPage.value)
 )
@@ -212,24 +215,20 @@ const goToPage = (page: number) => {
   }
 }
 
-// Reset to page 1 when search changes
 watch(searchQuery, () => {
   currentPage.value = 1
 })
 
-// Reset to page 1 when filters change
 watch([selectedLokasi, selectedStatus], () => {
   currentPage.value = 1
 })
 
-// Functions
 const handleExport = () => {
   console.log('Exporting survey results...')
   alert('Data survei berhasil diekspor!')
 }
 
 const handleInputSurvei = () => {
-  // Reset form data
   formData.value = {
     nik: '',
     nama: '',
@@ -245,7 +244,6 @@ const handleInputSurvei = () => {
   showInputSurveiModal.value = true
 }
 
-// Date picker function
 const openTanggalSurveiPicker = () => {
   if (tanggalSurveiInput.value) {
     tanggalSurveiInput.value.focus()
@@ -268,7 +266,6 @@ const closeInputSurveiModal = () => {
 }
 
 const submitInputSurvei = () => {
-  // Validate required fields
   if (!formData.value.nik || !formData.value.nama || !formData.value.jabatan || 
       !formData.value.levelJabatan || !formData.value.lokasi || !formData.value.tanggalSurvei ||
       !formData.value.jenisSurvei || !formData.value.hasilSurvei) {
@@ -282,21 +279,50 @@ const submitInputSurvei = () => {
 }
 
 const handleView = (item: RiwayatHasilSurvei) => {
-  console.log('Viewing item:', item)
+  viewingItem.value = item
+  showViewModal.value = true
 }
 
 const handleEdit = (item: RiwayatHasilSurvei) => {
-  console.log('Editing item:', item)
+  editingItem.value = item
+  editData.value = {
+    nik: item.nik,
+    nama: item.nama,
+    jabatan: item.jabatan,
+    levelJabatan: item.levelJabatan,
+    lokasi: item.lokasi,
+    tanggalSurvei: '2024-01-15',
+    jenisSurvei: 'kepuasan_kerja',
+    hasilSurvei: 'baik',
+    catatan: 'Survey hasil baik',
+    status: item.status
+  }
+  showEditModal.value = true
 }
 
 const handleDelete = (item: RiwayatHasilSurvei) => {
-  console.log('Deleting item:', item)
   if (confirm(`Hapus data survei untuk ${item.nama}?`)) {
+    console.log('Deleting item:', item)
     alert('Data berhasil dihapus!')
   }
 }
 
-// Status styling
+const closeViewModal = () => {
+  showViewModal.value = false
+  viewingItem.value = null
+}
+
+const closeEditModal = () => {
+  showEditModal.value = false
+  editingItem.value = null
+}
+
+const saveEdit = () => {
+  console.log('Saving edit:', editData.value)
+  alert('Data berhasil diperbarui!')
+  closeEditModal()
+}
+
 const getStatusClass = (status: string) => {
   switch (status) {
     case 'sudah':
@@ -764,6 +790,199 @@ const getStatusText = (status: string) => {
             class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
           >
             Simpan Survei
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- View Modal -->
+    <div v-if="showViewModal && viewingItem" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-blue-500 rounded-t-2xl">
+          <h3 class="text-lg font-semibold text-white">Detail Survei</h3>
+          <button 
+            @click="closeViewModal"
+            class="p-2 hover:bg-blue-600 rounded-lg transition-colors"
+          >
+            <Icon name="lucide:x" class="w-5 h-5 text-white" />
+          </button>
+        </div>
+
+        <div class="px-6 py-4">
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">NIK</label>
+                <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded">{{ viewingItem.nik }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
+                <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded">{{ viewingItem.nama }}</p>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
+              <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded">{{ viewingItem.jabatan }}</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Level Jabatan</label>
+                <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded">{{ viewingItem.levelJabatan }}</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Lokasi</label>
+                <p class="text-sm text-gray-900 bg-gray-50 p-2 rounded">{{ viewingItem.lokasi }}</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <span 
+                  :class="getStatusClass(viewingItem.status)"
+                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border"
+                >
+                  {{ getStatusText(viewingItem.status) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 py-4 border-t border-gray-200 flex justify-end">
+          <button
+            @click="closeViewModal"
+            type="button"
+            class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors text-sm font-medium"
+          >
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div v-if="showEditModal && editingItem" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-blue-500 rounded-t-2xl">
+          <h3 class="text-lg font-semibold text-white">Edit Survei</h3>
+          <button 
+            @click="closeEditModal"
+            class="p-2 hover:bg-blue-600 rounded-lg transition-colors"
+          >
+            <Icon name="lucide:x" class="w-5 h-5 text-white" />
+          </button>
+        </div>
+
+        <div class="px-6 py-4">
+          <form @submit.prevent="saveEdit" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">NIK</label>
+                <input
+                  v-model="editData.nik"
+                  type="text"
+                  readonly
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Nama</label>
+                <input
+                  v-model="editData.nama"
+                  type="text"
+                  readonly
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Jabatan</label>
+              <input
+                v-model="editData.jabatan"
+                type="text"
+                readonly
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Level Jabatan</label>
+                <input
+                  v-model="editData.levelJabatan"
+                  type="text"
+                  readonly
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi</label>
+                <select
+                  v-model="editData.lokasi"
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white"
+                >
+                  <option v-for="option in lokasiOptions" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Survei</label>
+                <select
+                  v-model="editData.jenisSurvei"
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white"
+                >
+                  <option v-for="option in jenisSurveiOptions" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Hasil Survei</label>
+                <select
+                  v-model="editData.hasilSurvei"
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white"
+                >
+                  <option v-for="option in hasilSurveiOptions" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label>
+              <textarea
+                v-model="editData.catatan"
+                rows="3"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-none"
+                placeholder="Masukkan catatan"
+              ></textarea>
+            </div>
+          </form>
+        </div>
+
+        <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+          <button
+            @click="closeEditModal"
+            type="button"
+            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+          >
+            Batal
+          </button>
+          <button
+            @click="saveEdit"
+            type="button"
+            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
+          >
+            Simpan Perubahan
           </button>
         </div>
       </div>

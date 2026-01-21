@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// components/tables/MaintainPNSTable.vue
 
 interface MaintainPNS {
   nik: string
@@ -21,10 +20,8 @@ const searchQuery = ref('')
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
 
-// Options untuk items per page
 const itemsPerPageOptions = [5, 10, 15, 20, 25, 50]
 
-// DATA DUMMY sesuai mockup
 const dummyData: MaintainPNS[] = [
   {
     nik: 'ASH835478',
@@ -91,12 +88,10 @@ const dummyData: MaintainPNS[] = [
   }
 ]
 
-// Use props data if available, otherwise use dummy data
 const maintainPNSData = computed(() => 
   props.data && props.data.length > 0 ? props.data : dummyData
 )
 
-// Filter data based on search
 const filteredData = computed(() => {
   if (!searchQuery.value) return maintainPNSData.value
   

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// components/tables/InputDataKodalTable.vue
 
 interface InputDataKodal {
   nama: string
@@ -25,23 +24,19 @@ const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const editingItem = ref<InputDataKodal | null>(null)
 
-// Filter states
 const selectedLokasi = ref('')
 const selectedBulan = ref('')
 const selectedTahun = ref('')
 const selectedOrderBy = ref('')
 
-// Date picker refs
 const createTglBerlakuInput = ref<HTMLInputElement | null>(null)
 const createTglBerakhirInput = ref<HTMLInputElement | null>(null)
 const createTglBerakhirRatingInput = ref<HTMLInputElement | null>(null)
 const createTglBerakhirIELTSTOEFLInput = ref<HTMLInputElement | null>(null)
 const createTglBerakhirMedicalCheckupInput = ref<HTMLInputElement | null>(null)
 
-// Options untuk items per page
 const itemsPerPageOptions = [5, 10, 15, 20, 25, 50]
 
-// DATA DUMMY sesuai mockup
 const dummyData: InputDataKodal[] = [
   {
     nama: 'Lestari Agus Wibowo',

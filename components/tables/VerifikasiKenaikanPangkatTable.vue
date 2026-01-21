@@ -21,16 +21,29 @@ const searchQuery = ref('')
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
 
-// Filter states
 const selectedLokasi = ref('')
 const selectedProses = ref('')
 const selectedBulan = ref('')
 const selectedTahun = ref('')
 
-// Options untuk items per page
+const showEditModal = ref(false)
+const showViewModal = ref(false)
+const editingItem = ref<VerifikasiKenaikanPangkat | null>(null)
+const viewingItem = ref<VerifikasiKenaikanPangkat | null>(null)
+
 const itemsPerPageOptions = [5, 10, 15, 20, 25, 50]
 
-// DATA DUMMY sesuai mockup
+const editData = ref({
+  nik: '',
+  nama: '',
+  jabatan: '',
+  lokasi: '',
+  tanggalVerifikasi: '',
+  statusVerifikasi: '',
+  catatan: '',
+  status: 'belum'
+})
+
 const dummyData: VerifikasiKenaikanPangkat[] = [
   {
     nik: '10835478',
@@ -191,17 +204,44 @@ watch([selectedLokasi, selectedProses, selectedBulan, selectedTahun], () => {
   currentPage.value = 1
 })
 
-// Functions
 const handleEdit = (item: VerifikasiKenaikanPangkat) => {
-  console.log('Editing item:', item)
+  editingItem.value = item
+  editData.value = {
+    nik: item.nik,
+    nama: item.nama,
+    jabatan: item.jabatan,
+    lokasi: item.lokasi,
+    tanggalVerifikasi: '2024-01-15',
+    statusVerifikasi: 'approved',
+    catatan: 'Verifikasi kenaikan pangkat telah disetujui',
+    status: item.status
+  }
+  showEditModal.value = true
 }
 
 const handleDelete = (item: VerifikasiKenaikanPangkat) => {
-  console.log('Deleting item:', item)
   if (confirm(`Hapus data verifikasi untuk ${item.nama}?`)) {
+    console.log('Deleting item:', item)
     alert('Data berhasil dihapus!')
   }
 }
+
+const closeEditModal = () => {
+  showEditModal.value = false
+  editingItem.value = null
+}
+
+const saveEdit = () => {
+  console.log('Saving edit:', editData.value)
+  alert('Data berhasil diperbarui!')
+  closeEditModal()
+}
+
+const statusVerifikasiOptions = [
+  { value: 'pending', label: 'Pending' },
+  { value: 'approved', label: 'Disetujui' },
+  { value: 'rejected', label: 'Ditolak' }
+]
 
 // Status styling
 const getStatusClass = (status: string) => {
@@ -475,6 +515,117 @@ const getStatusText = (status: string) => {
           <span class="hidden sm:inline">Next</span>
           <Icon name="lucide:chevron-right" class="w-4 h-4 sm:hidden" />
         </button>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div v-if="showEditModal && editingItem" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-blue-500 rounded-t-2xl">
+          <h3 class="text-lg font-semibold text-white">Edit Verifikasi Kenaikan Pangkat</h3>
+          <button 
+            @click="closeEditModal"
+            class="p-2 hover:bg-blue-600 rounded-lg transition-colors"
+          >
+            <Icon name="lucide:x" class="w-5 h-5 text-white" />
+          </button>
+        </div>
+
+        <div class="px-6 py-4">
+          <form @submit.prevent="saveEdit" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">NIK</label>
+                <input
+                  v-model="editData.nik"
+                  type="text"
+                  readonly
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Nama</label>
+                <input
+                  v-model="editData.nama"
+                  type="text"
+                  readonly
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Jabatan</label>
+              <input
+                v-model="editData.jabatan"
+                type="text"
+                readonly
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-500"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Lokasi</label>
+                <select
+                  v-model="editData.lokasi"
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white"
+                >
+                  <option v-for="option in filterLokasiOptions.slice(1)" :key="option.value" :value="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Verifikasi</label>
+                <input
+                  v-model="editData.tanggalVerifikasi"
+                  type="date"
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Status Verifikasi</label>
+              <select
+                v-model="editData.statusVerifikasi"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent bg-white"
+              >
+                <option v-for="option in statusVerifikasiOptions" :key="option.value" :value="option.value">
+                  {{ option.label }}
+                </option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Catatan</label>
+              <textarea
+                v-model="editData.catatan"
+                rows="3"
+                class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent resize-none"
+                placeholder="Masukkan catatan verifikasi"
+              ></textarea>
+            </div>
+          </form>
+        </div>
+
+        <div class="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+          <button
+            @click="closeEditModal"
+            type="button"
+            class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+          >
+            Batal
+          </button>
+          <button
+            @click="saveEdit"
+            type="button"
+            class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium"
+          >
+            Simpan Perubahan
+          </button>
+        </div>
       </div>
     </div>
   </div>
