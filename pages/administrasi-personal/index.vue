@@ -1,9 +1,9 @@
 <script setup lang="ts">
 useHead({
-  title: 'Transaksi Pegawai - Administrasi Personal'
+  title: 'Informasi Data Personal - Administrasi Personal'
 })
 
-const transaksiPegawaiData = ref([])
+const personalData = ref([])
 </script>
 
 <template>
@@ -17,11 +17,11 @@ const transaksiPegawaiData = ref([])
         <!-- Header -->
         <div class="px-4 md:px-6 py-4 border-b bg-white flex-shrink-0">
           <div class="flex items-center justify-between">
-            <h1 class="text-xl md:text-2xl font-bold text-gray-900">Transaksi Pegawai</h1>
+            <h1 class="text-xl md:text-2xl font-bold text-gray-900">Informasi Data Personal</h1>
             <div class="hidden md:flex items-center text-sm text-gray-500">
               <span>Administrasi Personal</span>
               <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
-              <span class="text-gray-900 font-medium">Transaksi Pegawai</span>
+              <span class="text-gray-900 font-medium">Display</span>
             </div>
           </div>
         </div>
@@ -29,8 +29,8 @@ const transaksiPegawaiData = ref([])
         <!-- Content Container - Scrollable area -->
         <div class="flex-1 overflow-y-auto bg-white relative">
           <div class="p-4 md:p-6">
-            <!-- Content - Transaksi Pegawai Table -->
-            <TablesTransaksiPegawaiTable :data="transaksiPegawaiData" />
+            <!-- Content - Personal Information Table (untuk Display) -->
+            <TablesPersonalInformationTable :data="personalData" />
           </div>
         </div>
       </main>

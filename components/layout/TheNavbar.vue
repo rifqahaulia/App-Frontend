@@ -87,8 +87,7 @@ const handleMenuClick = (menuLabel: string) => {
   // You can add specific logic here for different menu items
   switch (menuLabel) {
     case 'Display':
-      // Could navigate to a default display page
-      navigateTo('/administrasi-personal')
+      navigateTo('/administrasi-personal/display')
       break
     case 'Transaksi Pegawai':
       navigateTo('/administrasi-personal/transaksi-pegawai')

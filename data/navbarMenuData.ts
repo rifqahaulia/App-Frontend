@@ -56,9 +56,9 @@ export const navbarMenus: PageNavbarMenu = {
     },
   ],
   '/administrasi-personal': [
-    { label: 'Display' },
-    { label: 'Transaksi Pegawai' },
-    { label: 'Info SDM' },
+    { label: 'Display', path: '/administrasi-personal/display' },
+    { label: 'Transaksi Pegawai', path: '/administrasi-personal/transaksi-pegawai' },
+    { label: 'Info SDM', path: '/administrasi-personal/info-sdm' },
     { 
       label: 'Data Kodal',
       children: [
@@ -67,7 +67,7 @@ export const navbarMenus: PageNavbarMenu = {
         { label: 'Monitoring Laporan', path: '/administrasi-personal/data-kodal/monitoring-laporan' },
       ]
     },
-    { label: 'Maintain PNS' },
+    { label: 'Maintain PNS', path: '/administrasi-personal/maintain-pns' },
   ],
   '/employee-detail': [
     { label: 'Display', path: '/administrasi-personal' },
