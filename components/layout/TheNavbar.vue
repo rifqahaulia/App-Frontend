@@ -7,36 +7,32 @@ const route = useRoute()
 
 const showUserMenu = ref(false)
 const openDropdown = ref<string | null>(null)
-const showMobileMenu = ref(false)
 const showMobileSidebar = ref(false)
-
-// Watch for changes in showMobileSidebar
-watch(showMobileSidebar, (newVal) => {
-  console.log('showMobileSidebar changed to:', newVal)
-})
 const openMobileDropdown = ref<string | null>(null)
 
-  const currentMenuItems = computed(() => {
-  const parentPath = '/' + route.path.split('/')[1]   // ambil parent
+const currentMenuItems = computed(() => {
+  const parentPath = '/' + route.path.split('/')[1]
   return navbarMenus[parentPath] || navbarMenus['/dashboard'] || []
 })
 
 const dropdownRef = ref<HTMLElement | null>(null)
 
 const handleClickOutside = (event: MouseEvent) => {
-  if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
+  const target = event.target as Node
+  
+  // Check if click is inside dropdown or mobile sidebar
+  if (dropdownRef.value && !dropdownRef.value.contains(target)) {
     showUserMenu.value = false
   }
-  openDropdown.value = null
-  showMobileMenu.value = false
   
-  if (showMobileSidebar.value) {
-    showMobileSidebar.value = false
-    if (typeof window !== 'undefined') {
-      document.body.classList.remove('mobile-sidebar-open')
-    }
+  // Check if click is inside mobile sidebar
+  const mobileSidebar = document.querySelector('.mobile-sidebar-menu')
+  if (mobileSidebar && mobileSidebar.contains(target)) {
+    return // Don't close if clicking inside mobile sidebar
   }
   
+  openDropdown.value = null
+  showMobileSidebar.value = false
   openMobileDropdown.value = null
 }
 
@@ -61,29 +57,22 @@ const toggleDropdown = (label: string, event: Event) => {
 const handleLogout = async (event: Event) => {
   event.stopPropagation()
   showUserMenu.value = false
-  showMobileMenu.value = false
-  
-  if (showMobileSidebar.value) {
-    showMobileSidebar.value = false
-    if (typeof window !== 'undefined') {
-      document.body.classList.remove('mobile-sidebar-open')
-    }
-  }
-  
+  showMobileSidebar.value = false
   await logout()
 }
 
-const toggleMobileDropdown = (label: string) => {
+const toggleMobileDropdown = (label: string, event?: Event) => {
+  if (event) {
+    event.stopPropagation()
+  }
   openMobileDropdown.value = openMobileDropdown.value === label ? null : label
 }
 
-const toggleMobileSidebar = () => {
-  console.log('Burger clicked! Current state:', showMobileSidebar.value)
+const toggleMobileSidebar = (event: Event) => {
+  event.stopPropagation()
   showMobileSidebar.value = !showMobileSidebar.value
-  console.log('New state:', showMobileSidebar.value)
 }
 
-// Check if route is active for sidebar items
 const isActiveRoute = (path: string) => {
   if (path === '/dashboard') {
     return route.path === path
@@ -91,12 +80,30 @@ const isActiveRoute = (path: string) => {
   return route.path === path || route.path.startsWith(path + '/')
 }
 
-// Clean up body class on unmount
-onUnmounted(() => {
-  if (typeof window !== 'undefined') {
-    document.body.classList.remove('mobile-sidebar-open')
+const handleMenuClick = (menuLabel: string) => {
+  // Handle menu clicks for items without specific paths
+  console.log(`Menu clicked: ${menuLabel}`)
+  
+  // You can add specific logic here for different menu items
+  switch (menuLabel) {
+    case 'Display':
+      // Could navigate to a default display page
+      navigateTo('/administrasi-personal')
+      break
+    case 'Transaksi Pegawai':
+      navigateTo('/administrasi-personal/transaksi-pegawai')
+      break
+    case 'Info SDM':
+      navigateTo('/administrasi-personal/info-sdm')
+      break
+    case 'Maintain PNS':
+      navigateTo('/administrasi-personal/maintain-pns')
+      break
+    default:
+      // For other menu items, you might want to show a message or do nothing
+      console.log(`No specific action defined for: ${menuLabel}`)
   }
-})
+}
 
 </script>
 
@@ -117,11 +124,6 @@ onUnmounted(() => {
       >
         <Icon :name="showMobileSidebar ? 'lucide:x' : 'lucide:menu'" class="w-6 h-6 text-white" />
       </button>
-      
-      <!-- Debug Info (remove later) -->
-      <div class="md:hidden text-white text-xs absolute top-16 right-4 bg-black bg-opacity-50 p-2 rounded">
-        State: {{ showMobileSidebar }}
-      </div>
 
       <!-- Center: Navigation Menu (Desktop) -->
       <div class="hidden md:flex items-center gap-4 lg:gap-8">
@@ -258,186 +260,121 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- Mobile Menu Dropdown (Simple Implementation) -->
-    <div 
-      v-if="showMobileSidebar"
-      class="md:hidden absolute top-full left-0 right-0 bg-blue-600 border-t border-blue-400 z-50 shadow-lg"
-    >
-      <div class="px-4 py-3 space-y-3 max-h-96 overflow-y-auto">
-        <!-- User Profile -->
-        <div class="flex items-center gap-3 text-white border-b border-blue-500 pb-3">
-          <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center">
-            <Icon name="lucide:user" class="w-4 h-4 text-white" />
-          </div>
-          <div>
-            <p class="text-sm font-semibold">{{ profile?.data?.name || 'Bagus Wicaksono' }}</p>
-            <p class="text-xs text-blue-100">Super Admin</p>
-          </div>
-        </div>
-
-        <!-- Main Menu -->
-        <div class="space-y-2">
-          <h3 class="text-xs font-semibold text-blue-100 uppercase tracking-wide">Main Menu</h3>
-          <template v-for="item in sidebarMenuItems" :key="item.path">
-            <NuxtLink 
-              :to="item.path" 
-              @click="showMobileSidebar = false"
-              class="flex items-center gap-3 px-3 py-2 text-white hover:bg-blue-500 rounded-lg transition-colors"
-            >
-              <img 
-                v-if="item.image"
-                :src="item.image" 
-                :alt="item.label"
-                class="w-4 h-4 object-contain brightness-0 invert"
-              />
-              <Icon 
-                v-else
-                :name="item.icon" 
-                class="w-4 h-4"
-              />
-              <span class="text-sm">{{ item.label }}</span>
-            </NuxtLink>
-          </template>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="border-t border-blue-500 pt-3 space-y-2">
-          <div class="flex items-center gap-2">
-            <button 
-              type="button"
-              class="flex-1 flex items-center justify-center gap-2 p-2 bg-blue-500 hover:bg-blue-400 rounded-lg transition-colors text-white"
-            >
-              <Icon name="lucide:search" class="w-4 h-4" />
-              <span class="text-xs">Search</span>
-            </button>
-            <button 
-              type="button"
-              class="flex-1 flex items-center justify-center gap-2 p-2 bg-blue-500 hover:bg-blue-400 rounded-lg transition-colors text-white"
-            >
-              <Icon name="lucide:mail" class="w-4 h-4" />
-              <span class="text-xs">Messages</span>
-            </button>
-            <button 
-              type="button"
-              class="flex-1 flex items-center justify-center gap-2 p-2 bg-blue-500 hover:bg-blue-400 rounded-lg transition-colors text-white"
-            >
-              <Icon name="lucide:bell" class="w-4 h-4" />
-              <span class="text-xs">Notifications</span>
-            </button>
-          </div>
-          
-          <button 
-            type="button"
-            @click="handleLogout"
-            class="w-full flex items-center justify-center gap-2 p-2 bg-red-500 hover:bg-red-600 rounded-lg transition-colors text-white"
-          >
-            <Icon name="lucide:log-out" class="w-4 h-4" />
-            <span class="text-sm">Logout</span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Mobile Menu (Dropdown style - keep as fallback) -->
+    <!-- Mobile Sidebar Menu -->
     <Transition
-      enter-active-class="transition ease-out duration-200"
+      enter-active-class="transition ease-out duration-300"
       enter-from-class="transform opacity-0 -translate-y-2"
       enter-to-class="transform opacity-100 translate-y-0"
-      leave-active-class="transition ease-in duration-150"
+      leave-active-class="transition ease-in duration-200"
       leave-from-class="transform opacity-100 translate-y-0"
       leave-to-class="transform opacity-0 -translate-y-2"
     >
-      <div v-if="showMobileMenu" class="md:hidden bg-blue-600 border-t border-blue-400">
-        <div class="px-4 py-3 space-y-3">
-          <!-- Mobile Navigation Menu -->
-          <template v-for="item in currentMenuItems" :key="item.label">
-            <!-- Menu without children -->
-            <NuxtLink 
-              v-if="!item.children && item.path"
-              :to="item.path" 
-              @click="showMobileMenu = false"
-              class="block text-white hover:text-blue-100 transition-colors text-sm font-medium py-2"
-            >
-              {{ item.label }}
-            </NuxtLink>
-            
-            <!-- Menu label without link -->
-            <span 
-              v-else-if="!item.children"
-              class="block text-white text-sm font-medium py-2"
-            >
-              {{ item.label }}
-            </span>
-            
-            <!-- Menu with dropdown -->
-            <div v-else class="space-y-2">
-              <button 
-                @click="toggleMobileDropdown(item.label)"
-                class="w-full text-left text-white hover:text-blue-100 transition-colors text-sm font-medium flex items-center justify-between py-2"
+      <div 
+        v-if="showMobileSidebar"
+        class="mobile-sidebar-menu md:hidden absolute top-full left-0 right-0 bg-blue-600 border-t border-blue-400 z-50 shadow-lg"
+        @click.stop
+      >
+        <div class="px-4 py-3 space-y-3 max-h-96 overflow-y-auto">
+          <!-- User Profile -->
+          <div class="flex items-center gap-3 text-white border-b border-blue-500 pb-3">
+            <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center">
+              <Icon name="lucide:user" class="w-4 h-4 text-white" />
+            </div>
+            <div>
+              <p class="text-sm font-semibold">{{ profile?.data?.name || 'Bagus Wicaksono' }}</p>
+              <p class="text-xs text-blue-100">Super Admin</p>
+            </div>
+          </div>
+
+          <!-- Current Page Menu (Navbar Items) -->
+          <div class="space-y-2">
+            <h3 v-if="currentMenuItems.length > 0" class="text-xs font-semibold text-blue-100 uppercase tracking-wide">Menu</h3>
+            <div v-if="currentMenuItems.length === 0" class="text-center py-4">
+              <p class="text-blue-100 text-sm">No menu items available</p>
+            </div>
+            <template v-for="item in currentMenuItems" :key="item.label">
+              <!-- Menu without children but with path -->
+              <NuxtLink 
+                v-if="!item.children && item.path"
+                :to="item.path" 
+                @click="showMobileSidebar = false"
+                class="block text-blue-100 hover:text-white hover:bg-blue-500 px-3 py-2 rounded-lg transition-colors text-sm"
               >
                 {{ item.label }}
-                <Icon 
-                  name="lucide:chevron-down" 
-                  class="w-4 h-4 transition-transform duration-200"
-                  :class="{ 'rotate-180': openMobileDropdown === item.label }"
-                />
+              </NuxtLink>
+              
+              <!-- Menu without children and without path (clickable but no navigation) -->
+              <button 
+                v-else-if="!item.children"
+                @click="handleMenuClick(item.label); showMobileSidebar = false"
+                class="w-full text-left text-blue-100 hover:text-white hover:bg-blue-500 px-3 py-2 rounded-lg transition-colors text-sm"
+              >
+                {{ item.label }}
               </button>
               
-              <!-- Mobile Dropdown Items -->
-              <div v-if="openMobileDropdown === item.label" class="pl-4 space-y-2">
-                <NuxtLink
-                  v-for="child in item.children"
-                  :key="child.label"
-                  :to="child.path || '#'"
-                  @click="showMobileMenu = false"
-                  class="block text-blue-100 hover:text-white transition-colors text-sm py-1"
+              <!-- Menu with dropdown -->
+              <div v-else class="space-y-1">
+                <button 
+                  @click.stop="toggleMobileDropdown(item.label, $event)"
+                  class="w-full text-left text-blue-100 hover:text-white hover:bg-blue-500 px-3 py-2 rounded-lg transition-colors text-sm font-medium flex items-center justify-between"
                 >
-                  {{ child.label }}
-                </NuxtLink>
+                  {{ item.label }}
+                  <Icon 
+                    name="lucide:chevron-down" 
+                    class="w-4 h-4 transition-transform duration-200"
+                    :class="{ 'rotate-180': openMobileDropdown === item.label }"
+                  />
+                </button>
+                
+                <!-- Mobile Dropdown Items -->
+                <div v-if="openMobileDropdown === item.label" class="pl-4 space-y-1">
+                  <NuxtLink
+                    v-for="child in item.children"
+                    :key="child.label"
+                    :to="child.path || '#'"
+                    @click="showMobileSidebar = false"
+                    class="block text-blue-200 hover:text-white hover:bg-blue-500 px-3 py-1.5 rounded-lg transition-colors text-sm"
+                  >
+                    {{ child.label }}
+                  </NuxtLink>
+                </div>
               </div>
-            </div>
-          </template>
+            </template>
+          </div>
 
-          <!-- Mobile User Actions -->
-          <div class="border-t border-blue-400 pt-3 mt-4 space-y-3">
-            <div class="flex items-center gap-3 text-white">
-              <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center">
-                <Icon name="lucide:user" class="w-4 h-4 text-white" />
-              </div>
-              <div>
-                <p class="text-sm font-semibold">{{ profile?.data?.name || 'Bagus Wicaksono' }}</p>
-                <p class="text-xs text-blue-100">Super Admin</p>
-              </div>
-            </div>
-            
-            <div class="flex items-center gap-4">
+          <!-- Action Buttons -->
+          <div class="border-t border-blue-500 pt-3 space-y-2">
+            <div class="flex items-center gap-2">
               <button 
                 type="button"
-                class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center"
+                class="flex-1 flex items-center justify-center gap-2 p-2 bg-blue-500 hover:bg-blue-400 rounded-lg transition-colors text-white"
               >
-                <Icon name="lucide:search" class="w-4 h-4 text-white" />
+                <Icon name="lucide:search" class="w-4 h-4" />
+                <span class="text-xs">Search</span>
               </button>
               <button 
                 type="button"
-                class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center"
+                class="flex-1 flex items-center justify-center gap-2 p-2 bg-blue-500 hover:bg-blue-400 rounded-lg transition-colors text-white"
               >
-                <Icon name="lucide:mail" class="w-4 h-4 text-white" />
+                <Icon name="lucide:mail" class="w-4 h-4" />
+                <span class="text-xs">Messages</span>
               </button>
               <button 
                 type="button"
-                class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center"
+                class="flex-1 flex items-center justify-center gap-2 p-2 bg-blue-500 hover:bg-blue-400 rounded-lg transition-colors text-white"
               >
-                <Icon name="lucide:bell" class="w-4 h-4 text-white" />
+                <Icon name="lucide:bell" class="w-4 h-4" />
+                <span class="text-xs">Notifications</span>
               </button>
             </div>
             
             <button 
               type="button"
               @click="handleLogout"
-              class="w-full text-left text-white hover:text-blue-100 flex items-center gap-2 text-sm py-2"
+              class="w-full flex items-center justify-center gap-2 p-2 bg-red-500 hover:bg-red-600 rounded-lg transition-colors text-white"
             >
               <Icon name="lucide:log-out" class="w-4 h-4" />
-              Logout
+              <span class="text-sm">Logout</span>
             </button>
           </div>
         </div>
@@ -453,31 +390,39 @@ onUnmounted(() => {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Mobile sidebar specific styles */
-.mobile-sidebar {
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
-}
-
-.mobile-sidebar.open {
-  transform: translateX(0);
-}
-
-/* Prevent body scroll when mobile sidebar is open */
-:global(body.mobile-sidebar-open) {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-}
-
-/* Ensure proper stacking */
-.mobile-overlay {
+/* Mobile sidebar overlay */
+.mobile-sidebar-overlay {
   backdrop-filter: blur(4px);
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
-/* Ensure mobile sidebar is visible */
-.mobile-sidebar-container {
-  transform: translateX(0);
-  transition: transform 0.3s ease-in-out;
+/* Ensure proper stacking and visibility */
+nav {
+  position: relative;
+  z-index: 50;
+}
+
+/* Mobile menu container */
+.mobile-menu-container {
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+}
+
+/* Scrollbar styling for mobile menu */
+.mobile-menu-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mobile-menu-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-menu-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+.mobile-menu-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 </style>

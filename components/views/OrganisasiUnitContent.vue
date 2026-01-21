@@ -493,40 +493,40 @@ onMounted(() => {
         </h2>
         
         <!-- Tab Navigation - Inside the card with proper spacing -->
-        <div class="flex justify-around gap-6 mb-6 px-4">
+        <div class="flex flex-col sm:flex-row sm:justify-around gap-2 sm:gap-6 mb-6 px-2 sm:px-4">
           <div 
             @click="setActiveTab('detail')"
-            class="flex items-center gap-2 px-12 py-3 rounded cursor-pointer transition-colors"
+            class="flex items-center gap-2 px-3 sm:px-6 lg:px-12 py-3 rounded cursor-pointer transition-colors"
             :class="activeTab === 'detail' ? 'bg-blue-100' : 'hover:bg-gray-50'"
           >
-            <Icon name="lucide:info" class="w-4 h-4" :class="activeTab === 'detail' ? 'text-blue-500' : 'text-gray-600'" />
+            <Icon name="lucide:info" class="w-4 h-4 flex-shrink-0" :class="activeTab === 'detail' ? 'text-blue-500' : 'text-gray-600'" />
             <div class="flex flex-col">
-              <span class="text-sm font-bold" :class="activeTab === 'detail' ? 'text-blue-500' : 'text-gray-700'">Detail Organization</span>
-              <span class="text-xs" :class="activeTab === 'detail' ? 'text-blue-500' : 'text-gray-500'">Organization Information</span>
+              <span class="text-xs sm:text-sm font-bold" :class="activeTab === 'detail' ? 'text-blue-500' : 'text-gray-700'">Detail Organization</span>
+              <span class="text-xs hidden sm:block" :class="activeTab === 'detail' ? 'text-blue-500' : 'text-gray-500'">Organization Information</span>
             </div>
           </div>
           
           <div 
             @click="setActiveTab('child')"
-            class="flex items-center gap-2 px-12 py-3 rounded cursor-pointer transition-colors"
+            class="flex items-center gap-2 px-3 sm:px-6 lg:px-12 py-3 rounded cursor-pointer transition-colors"
             :class="activeTab === 'child' ? 'bg-blue-100' : 'hover:bg-gray-50'"
           >
-            <Icon name="lucide:users" class="w-4 h-4" :class="activeTab === 'child' ? 'text-blue-500' : 'text-gray-600'" />
+            <Icon name="lucide:users" class="w-4 h-4 flex-shrink-0" :class="activeTab === 'child' ? 'text-blue-500' : 'text-gray-600'" />
             <div class="flex flex-col">
-              <span class="text-sm font-bold" :class="activeTab === 'child' ? 'text-blue-500' : 'text-gray-700'">Organization Child</span>
-              <span class="text-xs" :class="activeTab === 'child' ? 'text-blue-500' : 'text-gray-500'">Organization Child Information</span>
+              <span class="text-xs sm:text-sm font-bold" :class="activeTab === 'child' ? 'text-blue-500' : 'text-gray-700'">Organization Child</span>
+              <span class="text-xs hidden sm:block" :class="activeTab === 'child' ? 'text-blue-500' : 'text-gray-500'">Organization Child Information</span>
             </div>
           </div>
           
           <div 
             @click="setActiveTab('position')"
-            class="flex items-center gap-2 px-12 py-3 rounded cursor-pointer transition-colors"
+            class="flex items-center gap-2 px-3 sm:px-6 lg:px-12 py-3 rounded cursor-pointer transition-colors"
             :class="activeTab === 'position' ? 'bg-blue-100' : 'hover:bg-gray-50'"
           >
-            <Icon name="lucide:map-pin" class="w-4 h-4" :class="activeTab === 'position' ? 'text-blue-500' : 'text-gray-600'" />
+            <Icon name="lucide:map-pin" class="w-4 h-4 flex-shrink-0" :class="activeTab === 'position' ? 'text-blue-500' : 'text-gray-600'" />
             <div class="flex flex-col">
-              <span class="text-sm font-bold" :class="activeTab === 'position' ? 'text-blue-500' : 'text-gray-700'">Position</span>
-              <span class="text-xs" :class="activeTab === 'position' ? 'text-blue-500' : 'text-gray-500'">Position Information</span>
+              <span class="text-xs sm:text-sm font-bold" :class="activeTab === 'position' ? 'text-blue-500' : 'text-gray-700'">Position</span>
+              <span class="text-xs hidden sm:block" :class="activeTab === 'position' ? 'text-blue-500' : 'text-gray-500'">Position Information</span>
             </div>
           </div>
         </div>
@@ -581,7 +581,7 @@ onMounted(() => {
             </div>
 
             <!-- Date Range -->
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-medium text-gray-700 mb-1">Start</label>
                 <div class="relative">
@@ -630,7 +630,7 @@ onMounted(() => {
           <!-- Table Container -->
           <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
             <!-- Search Bar -->
-            <div class="px-6 py-4 bg-white border-b border-gray-200">
+            <div class="px-4 sm:px-6 py-4 bg-white border-b border-gray-200">
               <div class="relative max-w-xs">
                 <Icon 
                   name="lucide:search" 
@@ -646,65 +646,67 @@ onMounted(() => {
             </div>
 
             <!-- Table -->
-            <div class="overflow-x-auto px-6 py-6">
-              <table class="w-full">
-                <thead class="bg-blue-100/60 rounded-t-xl">
-                  <tr>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide first:rounded-tl-xl">
-                      ID Unit
-                    </th>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-                      Titelatur
-                    </th>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-                      Description
-                    </th>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-                      Start
-                    </th>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide last:rounded-tr-xl">
-                      Valid to
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white">
-                  <tr 
-                    v-for="(item, index) in paginatedChildData" 
-                    :key="index"
-                    class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/30 transition-colors"
-                  >
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
-                      {{ item.idUnit }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {{ item.titelatur }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {{ item.description }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {{ item.start }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {{ item.validTo }}
-                    </td>
-                  </tr>
-                  
-                  <!-- Empty State -->
-                  <tr v-if="paginatedChildData.length === 0">
-                    <td colspan="5" class="px-6 py-16 text-center">
-                      <Icon name="lucide:inbox" class="w-14 h-14 mx-auto mb-4 text-gray-300" />
-                      <p class="text-sm font-medium text-gray-600">Tidak ada data yang ditemukan</p>
-                      <p class="text-xs text-gray-500 mt-1">Coba ubah kata kunci pencarian Anda</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="overflow-x-auto">
+              <div class="px-4 sm:px-6 py-6">
+                <table class="w-full min-w-[600px]">
+                  <thead class="bg-blue-100/60 rounded-t-xl">
+                    <tr>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide first:rounded-tl-xl">
+                        ID Unit
+                      </th>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                        Titelatur
+                      </th>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                        Description
+                      </th>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                        Start
+                      </th>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide last:rounded-tr-xl">
+                        Valid to
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white">
+                    <tr 
+                      v-for="(item, index) in paginatedChildData" 
+                      :key="index"
+                      class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/30 transition-colors"
+                    >
+                      <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
+                        {{ item.idUnit }}
+                      </td>
+                      <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {{ item.titelatur }}
+                      </td>
+                      <td class="px-3 sm:px-6 py-4 text-sm text-gray-700 max-w-xs truncate">
+                        {{ item.description }}
+                      </td>
+                      <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {{ item.start }}
+                      </td>
+                      <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {{ item.validTo }}
+                      </td>
+                    </tr>
+                    
+                    <!-- Empty State -->
+                    <tr v-if="paginatedChildData.length === 0">
+                      <td colspan="5" class="px-6 py-16 text-center">
+                        <Icon name="lucide:inbox" class="w-14 h-14 mx-auto mb-4 text-gray-300" />
+                        <p class="text-sm font-medium text-gray-600">Tidak ada data yang ditemukan</p>
+                        <p class="text-xs text-gray-500 mt-1">Coba ubah kata kunci pencarian Anda</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <!-- Pagination -->
-            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
-              <div class="text-sm text-gray-600 font-medium">
+            <div class="px-4 sm:px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between bg-gray-50/30 gap-4">
+              <div class="text-sm text-gray-600 font-medium text-center sm:text-left">
                 Menampilkan {{ paginatedChildData.length > 0 ? (childCurrentPage - 1) * childItemsPerPage + 1 : 0 }} - 
                 {{ Math.min(childCurrentPage * childItemsPerPage, filteredChildData.length) }} 
                 dari {{ filteredChildData.length }} data
@@ -714,9 +716,10 @@ onMounted(() => {
                 <button
                   @click="goToChildPage(childCurrentPage - 1)"
                   :disabled="childCurrentPage === 1"
-                  class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  class="px-2 sm:px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
-                  Previous
+                  <span class="hidden sm:inline">Previous</span>
+                  <Icon name="lucide:chevron-left" class="w-4 h-4 sm:hidden" />
                 </button>
                 
                 <template v-if="childTotalPages <= 7">
@@ -725,7 +728,7 @@ onMounted(() => {
                     :key="page"
                     @click="goToChildPage(page)"
                     :class="[
-                      'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
+                      'px-2 sm:px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
                       childCurrentPage === page 
                         ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
                         : 'border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -738,9 +741,10 @@ onMounted(() => {
                 <button
                   @click="goToChildPage(childCurrentPage + 1)"
                   :disabled="childCurrentPage === childTotalPages"
-                  class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  class="px-2 sm:px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
-                  Next
+                  <span class="hidden sm:inline">Next</span>
+                  <Icon name="lucide:chevron-right" class="w-4 h-4 sm:hidden" />
                 </button>
               </div>
             </div>
@@ -764,7 +768,7 @@ onMounted(() => {
           <!-- Table Container -->
           <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 overflow-hidden">
             <!-- Search Bar -->
-            <div class="px-6 py-4 bg-white border-b border-gray-200">
+            <div class="px-4 sm:px-6 py-4 bg-white border-b border-gray-200">
               <div class="relative max-w-xs">
                 <Icon 
                   name="lucide:search" 
@@ -780,86 +784,88 @@ onMounted(() => {
             </div>
 
             <!-- Table -->
-            <div class="overflow-x-auto px-6 py-6">
-              <table class="w-full">
-                <thead class="bg-blue-100/60 rounded-t-xl">
-                  <tr>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide first:rounded-tl-xl">
-                      ID Position
-                    </th>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-                      Titelatur
-                    </th>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-                      Job
-                    </th>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-                      Start
-                    </th>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-                      Valid to
-                    </th>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-                      Person
-                    </th>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
-                      Chief
-                    </th>
-                    <th class="px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide last:rounded-tr-xl">
-                      File
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="bg-white">
-                  <tr 
-                    v-for="(item, index) in paginatedPositionData" 
-                    :key="index"
-                    class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/30 transition-colors"
-                  >
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
-                      {{ item.idPosition }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {{ item.titelatur }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {{ item.job }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {{ item.start }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {{ item.validTo }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      {{ item.person }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      <span v-if="item.chief" class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">{{ item.chief }}</span>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600">
-                      <button class="flex items-center gap-1 hover:text-blue-800 transition-colors">
-                        <Icon name="lucide:file" class="w-4 h-4" />
-                        {{ item.file }}
-                      </button>
-                    </td>
-                  </tr>
-                  
-                  <!-- Empty State -->
-                  <tr v-if="paginatedPositionData.length === 0">
-                    <td colspan="8" class="px-6 py-16 text-center">
-                      <Icon name="lucide:inbox" class="w-14 h-14 mx-auto mb-4 text-gray-300" />
-                      <p class="text-sm font-medium text-gray-600">Tidak ada data yang ditemukan</p>
-                      <p class="text-xs text-gray-500 mt-1">Coba ubah kata kunci pencarian Anda</p>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="overflow-x-auto">
+              <div class="px-4 sm:px-6 py-6">
+                <table class="w-full min-w-[800px]">
+                  <thead class="bg-blue-100/60 rounded-t-xl">
+                    <tr>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide first:rounded-tl-xl">
+                        ID Position
+                      </th>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                        Titelatur
+                      </th>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                        Job
+                      </th>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                        Start
+                      </th>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                        Valid to
+                      </th>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                        Person
+                      </th>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide">
+                        Chief
+                      </th>
+                      <th class="px-3 sm:px-6 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wide last:rounded-tr-xl">
+                        File
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white">
+                    <tr 
+                      v-for="(item, index) in paginatedPositionData" 
+                      :key="index"
+                      class="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/30 transition-colors"
+                    >
+                      <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-medium">
+                        {{ item.idPosition }}
+                      </td>
+                      <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {{ item.titelatur }}
+                      </td>
+                      <td class="px-3 sm:px-6 py-4 text-sm text-gray-700 max-w-xs truncate">
+                        {{ item.job }}
+                      </td>
+                      <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {{ item.start }}
+                      </td>
+                      <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        {{ item.validTo }}
+                      </td>
+                      <td class="px-3 sm:px-6 py-4 text-sm text-gray-700 max-w-xs truncate">
+                        {{ item.person }}
+                      </td>
+                      <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <span v-if="item.chief" class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded">{{ item.chief }}</span>
+                      </td>
+                      <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-blue-600">
+                        <button class="flex items-center gap-1 hover:text-blue-800 transition-colors">
+                          <Icon name="lucide:file" class="w-4 h-4" />
+                          <span class="hidden sm:inline">{{ item.file }}</span>
+                        </button>
+                      </td>
+                    </tr>
+                    
+                    <!-- Empty State -->
+                    <tr v-if="paginatedPositionData.length === 0">
+                      <td colspan="8" class="px-6 py-16 text-center">
+                        <Icon name="lucide:inbox" class="w-14 h-14 mx-auto mb-4 text-gray-300" />
+                        <p class="text-sm font-medium text-gray-600">Tidak ada data yang ditemukan</p>
+                        <p class="text-xs text-gray-500 mt-1">Coba ubah kata kunci pencarian Anda</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <!-- Pagination -->
-            <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/30">
-              <div class="text-sm text-gray-600 font-medium">
+            <div class="px-4 sm:px-6 py-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between bg-gray-50/30 gap-4">
+              <div class="text-sm text-gray-600 font-medium text-center sm:text-left">
                 Menampilkan {{ paginatedPositionData.length > 0 ? (positionCurrentPage - 1) * positionItemsPerPage + 1 : 0 }} - 
                 {{ Math.min(positionCurrentPage * positionItemsPerPage, filteredPositionData.length) }} 
                 dari {{ filteredPositionData.length }} data
@@ -869,9 +875,10 @@ onMounted(() => {
                 <button
                   @click="goToPositionPage(positionCurrentPage - 1)"
                   :disabled="positionCurrentPage === 1"
-                  class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  class="px-2 sm:px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
-                  Previous
+                  <span class="hidden sm:inline">Previous</span>
+                  <Icon name="lucide:chevron-left" class="w-4 h-4 sm:hidden" />
                 </button>
                 
                 <template v-if="positionTotalPages <= 7">
@@ -880,7 +887,7 @@ onMounted(() => {
                     :key="page"
                     @click="goToPositionPage(page)"
                     :class="[
-                      'px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
+                      'px-2 sm:px-3.5 py-2 border rounded-lg text-sm font-medium transition-all',
                       positionCurrentPage === page 
                         ? 'bg-blue-500 text-white border-blue-500 shadow-sm' 
                         : 'border-gray-300 text-gray-700 hover:bg-gray-50'
@@ -893,9 +900,10 @@ onMounted(() => {
                 <button
                   @click="goToPositionPage(positionCurrentPage + 1)"
                   :disabled="positionCurrentPage === positionTotalPages"
-                  class="px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  class="px-2 sm:px-3.5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
-                  Next
+                  <span class="hidden sm:inline">Next</span>
+                  <Icon name="lucide:chevron-right" class="w-4 h-4 sm:hidden" />
                 </button>
               </div>
             </div>
@@ -907,9 +915,9 @@ onMounted(() => {
 
   <!-- Edit Modal -->
   <div v-if="showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col">
       <!-- Modal Header -->
-      <div class="flex items-center justify-between px-6 py-4 bg-blue-500 rounded-t-lg">
+      <div class="flex items-center justify-between px-4 sm:px-6 py-4 bg-blue-500 rounded-t-lg flex-shrink-0">
         <h3 class="text-lg font-semibold text-white">Edit Organization</h3>
         <button @click="closeEditModal" class="text-white hover:text-gray-200 transition-colors">
           <Icon name="lucide:x" class="w-5 h-5" />
@@ -917,9 +925,9 @@ onMounted(() => {
       </div>
       
       <!-- Modal Body -->
-      <div class="p-6 space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+      <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
         <!-- ID Fields - 2 columns -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Id</label>
             <input 
@@ -977,7 +985,7 @@ onMounted(() => {
         </div>
 
         <!-- Date Range -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Start</label>
             <div class="relative">
@@ -1045,16 +1053,16 @@ onMounted(() => {
       </div>
       
       <!-- Modal Footer -->
-      <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-200">
+      <div class="flex flex-col sm:flex-row justify-end gap-3 px-4 sm:px-6 py-4 border-t border-gray-200 flex-shrink-0">
         <button 
           @click="closeEditModal" 
-          class="px-6 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors border border-blue-300 rounded-lg hover:bg-blue-50"
+          class="w-full sm:w-auto px-6 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors border border-blue-300 rounded-lg hover:bg-blue-50"
         >
           Cancel
         </button>
         <button 
           @click="saveEdit" 
-          class="px-6 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
+          class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
         >
           Save
         </button>
@@ -1064,9 +1072,9 @@ onMounted(() => {
 
   <!-- Create Modal -->
   <div v-if="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 max-h-[90vh] flex flex-col">
       <!-- Modal Header -->
-      <div class="flex items-center justify-between px-6 py-4 bg-blue-500 rounded-t-lg">
+      <div class="flex items-center justify-between px-4 sm:px-6 py-4 bg-blue-500 rounded-t-lg flex-shrink-0">
         <h3 class="text-lg font-semibold text-white">Create Organization</h3>
         <button @click="closeCreateModal" class="text-white hover:text-gray-200 transition-colors">
           <Icon name="lucide:x" class="w-5 h-5" />
@@ -1074,9 +1082,9 @@ onMounted(() => {
       </div>
       
       <!-- Modal Body -->
-      <div class="p-6 space-y-4 max-h-[calc(100vh-200px)] overflow-y-auto">
+      <div class="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
         <!-- ID Fields - 2 columns -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Id Parent</label>
             <input 
@@ -1136,7 +1144,7 @@ onMounted(() => {
         </div>
 
         <!-- Date Range -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Start</label>
             <div class="relative">
@@ -1189,7 +1197,7 @@ onMounted(() => {
                 class="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
               >
                 <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                 </svg>
               </button>
             </div>
@@ -1198,16 +1206,16 @@ onMounted(() => {
       </div>
       
       <!-- Modal Footer -->
-      <div class="flex justify-end gap-3 px-6 py-4 border-t border-gray-200">
+      <div class="flex flex-col sm:flex-row justify-end gap-3 px-4 sm:px-6 py-4 border-t border-gray-200 flex-shrink-0">
         <button 
           @click="closeCreateModal" 
-          class="px-6 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors border border-blue-300 rounded-lg hover:bg-blue-50"
+          class="w-full sm:w-auto px-6 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors border border-blue-300 rounded-lg hover:bg-blue-50"
         >
           Cancel
         </button>
         <button 
           @click="saveCreate" 
-          class="px-6 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
+          class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg hover:bg-blue-600 transition-colors"
         >
           Save
         </button>
