@@ -19,7 +19,7 @@ const infoSdmData = ref([])
           <div class="flex items-center justify-between">
             <h1 class="text-xl md:text-2xl font-bold text-gray-900">Info SDM</h1>
             <div class="hidden md:flex items-center text-sm text-gray-500">
-              <span>Personal Information</span>
+              <span>Administrasi Personal</span>
               <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
               <span class="text-gray-900 font-medium">Info SDM</span>
             </div>
@@ -30,7 +30,7 @@ const infoSdmData = ref([])
         <div class="flex-1 overflow-y-auto bg-white relative">
           <div class="p-4 md:p-6">
             <!-- Content - Info SDM Table -->
-            <TablesPersonalInformationTable :data="infoSdmData" />
+            <TablesInfoSDMTable :data="infoSdmData" />
           </div>
         </div>
       </main>

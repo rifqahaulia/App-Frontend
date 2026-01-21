@@ -1,9 +1,9 @@
 <script setup lang="ts">
 useHead({
-  title: 'Input Data - Data Kodal - Administrasi Personal'
+  title: 'Input Data - Data Kodal'
 })
 
-const inputDataData = ref([])
+const inputDataKodalData = ref([])
 </script>
 
 <template>
@@ -17,8 +17,10 @@ const inputDataData = ref([])
         <!-- Header -->
         <div class="px-4 md:px-6 py-4 border-b bg-white flex-shrink-0">
           <div class="flex items-center justify-between">
-            <h1 class="text-xl md:text-2xl font-bold text-gray-900">Input Data</h1>
+            <h1 class="text-xl md:text-2xl font-bold text-gray-900">Input Data Kodal</h1>
             <div class="hidden md:flex items-center text-sm text-gray-500">
+              <span>Administrasi Personal</span>
+              <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
               <span>Data Kodal</span>
               <Icon name="lucide:chevron-right" class="w-4 h-4 mx-1" />
               <span class="text-gray-900 font-medium">Input Data</span>
@@ -29,14 +31,8 @@ const inputDataData = ref([])
         <!-- Content Container - Scrollable area -->
         <div class="flex-1 overflow-y-auto bg-white relative">
           <div class="p-4 md:p-6">
-            <!-- Content Placeholder -->
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-200/60 p-6">
-              <div class="text-center py-12">
-                <Icon name="lucide:file-plus" class="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Input Data</h3>
-                <p class="text-gray-600">Halaman input data sedang dalam pengembangan</p>
-              </div>
-            </div>
+            <!-- Content - Input Data Kodal Table -->
+            <TablesInputDataKodalTable :data="inputDataKodalData" />
           </div>
         </div>
       </main>
