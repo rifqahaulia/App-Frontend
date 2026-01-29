@@ -1,5 +1,6 @@
 <script setup lang="ts">
 interface PersonalInfo {
+  id?: number | string
   employee: string
   persnum: string
   gender: string
@@ -90,7 +91,7 @@ const dummyData: PersonalInfo[] = [
 
 // Use props data if available, otherwise use dummy data
 const personalInfoData = computed(() => 
-  props.data && props.data.length > 0 ? props.data : dummyData
+  props.data ? props.data : dummyData
 )
 
 // Filter data based on search
@@ -154,17 +155,12 @@ const getAvatarColor = (name: string) => {
 }
 
 // Navigation function
-const navigateToDetail = async (persnum: string, employeeName: string) => {
-  console.log('🔥 BUTTON CLICKED! Navigating to detail for:', employeeName, 'ID:', persnum)
-  console.log('🔥 About to navigate to:', `/employee-detail?id=${persnum}`)
-  
-  try {
-    // Force navigation using window.location
-    window.location.href = `/employee-detail?id=${persnum}`
-  } catch (error) {
-    console.error('🔥 Navigation error:', error)
-    alert('Navigation error: ' + error)
-  }
+const navigateToDetail = (item: PersonalInfo) => {
+  const id = item.id || item.persnum
+  navigateTo({
+    path: '/administrasi-personal/detail-employee',
+    query: { id: id }
+  })
 }
 </script>
 
@@ -247,7 +243,7 @@ const navigateToDetail = async (persnum: string, employeeName: string) => {
               <td class="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
                 <div class="flex justify-center">
                   <button
-                    @click="navigateToDetail(item.persnum, item.employee)"
+                    @click="navigateToDetail(item)"
                     class="px-3 sm:px-4 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-600 border border-blue-300 hover:border-blue-400 text-xs font-medium rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1 flex items-center gap-1.5 cursor-pointer"
                   >
                     {{ item.action }}
