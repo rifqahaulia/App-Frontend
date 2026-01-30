@@ -28,6 +28,7 @@ const objectLoanList = ref<any[]>([])
 const externalOrgList = ref<any[]>([])
 const instructionList = ref<any[]>([])
 const taxDataList = ref<any[]>([])
+const previousEmployerList = ref<any[]>([])
 
 // Tabs
 const tabs = [
@@ -37,6 +38,13 @@ const tabs = [
 ]
 const activeTab = ref('Personal Info')
 const isEditModalOpen = ref(false)
+const isCommModalOpen = ref(false)
+const editingComm = ref<any>(null)
+
+const openCommModal = (comm?: any) => {
+  editingComm.value = comm || null
+  isCommModalOpen.value = true
+}
 
 const loadAllData = async () => {
   if (!employeeId) return
@@ -54,6 +62,7 @@ const loadAllData = async () => {
         paStore.fetchModuleData('pa-object-loan', personal.persnum).then(d => objectLoanList.value = d),
         paStore.fetchModuleData('pa/external-organization', personal.persnum).then(d => externalOrgList.value = d),
         paStore.fetchModuleData('pa/company-instruction', personal.persnum).then(d => instructionList.value = d),
+        paStore.fetchModuleData('pa-previous-employer', personal.persnum).then(d => previousEmployerList.value = d),
         paStore.fetchModuleData('pa-tax-data', personal.persnum).then(d => taxDataList.value = d),
         refStore.fetchMultipleReferences([
           { field: 'gender', type: 'lookup' },
@@ -66,7 +75,10 @@ const loadAllData = async () => {
           { field: 'communication', type: 'subtype' },
           { field: 'object_loan', type: 'subtype' },
           { field: 'external_organization', type: 'subtype' },
-          { field: 'company_instruction', type: 'subtype' }
+          { field: 'company_instruction', type: 'subtype' },
+          { field: 'industry', type: 'lookup' },
+          { field: 'work_contract', type: 'lookup' },
+          { field: 'job', type: 'lookup' }
         ])
       ])
     }
@@ -93,6 +105,36 @@ const formatDate = (dateStr?: string | Date) => {
     month: 'short',
     year: 'numeric'
   }).replace(/\./g, ' ')
+}
+
+const getCommIcon = (subType: string) => {
+  const icons: Record<string, string> = {
+    '0001': 'lucide:user-cog',    // System user name
+    '0002': 'lucide:smartphone',  // Mobile
+    '0003': 'lucide:phone',       // Home
+    '0004': 'lucide:phone-forwarded', // Office
+    '0005': 'lucide:mail',        // Private Email
+    '0006': 'lucide:mail-plus',   // Office Email
+    '0007': 'lucide:facebook',    // Facebook
+    '0008': 'lucide:twitter',     // Twitter
+    '0009': 'lucide:instagram'    // Instagram
+  }
+  return icons[subType] || 'lucide:message-square'
+}
+
+const getCommColor = (subType: string) => {
+  const colors: Record<string, string> = {
+    '0001': 'bg-slate-100 text-slate-600',
+    '0002': 'bg-emerald-100 text-emerald-600',
+    '0003': 'bg-blue-100 text-blue-600',
+    '0004': 'bg-indigo-100 text-indigo-600',
+    '0005': 'bg-rose-100 text-rose-600',
+    '0006': 'bg-amber-100 text-amber-600',
+    '0007': 'bg-blue-50 text-[#1877F2]',
+    '0008': 'bg-sky-50 text-[#1DA1F2]',
+    '0009': 'bg-pink-50 text-[#E4405F]'
+  }
+  return colors[subType] || 'bg-gray-100 text-gray-600'
 }
 
 onMounted(() => {
@@ -428,6 +470,65 @@ onMounted(() => {
                 <div v-else class="text-center py-20 text-gray-400 italic">Data pinjaman belum tersedia.</div>
               </div>
 
+              <div v-else-if="activeTab === 'Jabatan'" class="space-y-8">
+                 <div>
+                    <h3 class="text-lg font-bold text-[#1E293B] mb-6">Jabatan Saat Ini</h3>
+                    <div class="grid grid-cols-2 gap-8">
+                       <div class="space-y-4">
+                          <div class="p-4 bg-blue-50/50 rounded-xl border border-blue-100">
+                             <label class="block text-[10px] font-bold text-blue-400 uppercase mb-1">Jabatan Utama</label>
+                             <p class="text-sm font-bold text-[#1E293B]">{{ personalData.title || '-' }}</p>
+                          </div>
+                          <div class="p-4 bg-gray-50 rounded-xl">
+                             <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Unit Kerja</label>
+                             <p class="text-sm font-bold text-[#1E293B]">Teknologi Informasi</p>
+                          </div>
+                       </div>
+                       <div class="space-y-4">
+                          <div class="p-4 bg-gray-50 rounded-xl">
+                             <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Status Karyawan</label>
+                             <p class="text-sm font-bold text-[#1E293B]">Tetap / Full-Time</p>
+                          </div>
+                          <div class="p-4 bg-gray-50 rounded-xl">
+                             <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Lokasi Kantor</label>
+                             <p class="text-sm font-bold text-[#1E293B]">Kantor Pusat - Jakarta</p>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+
+                 <div class="border-t pt-8">
+                    <h3 class="text-lg font-bold text-[#1E293B] mb-6">Riwayat Jabatan / Pengalaman Kerja</h3>
+                    <div v-if="previousEmployerList.length > 0" class="space-y-4">
+                       <div v-for="exp in previousEmployerList" :key="exp.id" class="p-5 border border-gray-100 rounded-2xl flex items-start gap-5 hover:bg-gray-50 transition-colors shadow-sm">
+                          <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shrink-0">
+                             <Icon name="lucide:briefcase" class="w-6 h-6" />
+                          </div>
+                          <div class="flex-1 min-w-0">
+                             <div class="flex justify-between items-start mb-1">
+                                <h4 class="font-bold text-[#1E293B]">{{ exp.position || exp.employer }}</h4>
+                                <span class="bg-indigo-100 text-indigo-700 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-widest">{{ getLabel('work_contract', exp.workContract) }}</span>
+                             </div>
+                             <p class="text-xs font-bold text-indigo-600 mb-2">{{ exp.employer }} ({{ exp.city || 'Internal' }})</p>
+                             <div class="grid grid-cols-3 gap-4 text-[10px]">
+                                <div><span class="text-gray-400">Industri:</span> {{ getLabel('industry', exp.industry) }}</div>
+                                <div><span class="text-gray-400">Job Type:</span> {{ getLabel('job', exp.job) }}</div>
+                                <div><span class="text-gray-400">Periode:</span> {{ formatDate(exp.startDate) }} - {{ formatDate(exp.endDate) }}</div>
+                             </div>
+                             <div v-if="exp.certificateNumber" class="mt-3 pt-3 border-t border-dashed border-gray-200 flex items-center gap-2 text-[10px] text-gray-500">
+                                <Icon name="lucide:award" class="w-3.5 h-3.5" />
+                                <span>Cert: {{ exp.certificateNumber }} ({{ formatDate(exp.certificateDate) }})</span>
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                    <div v-else class="text-center py-12 text-gray-400 italic">
+                       <Icon name="lucide:history" class="w-12 h-12 mx-auto mb-3 opacity-20" />
+                       <p>Belum ada riwayat jabatan atau pengalaman kerja luar.</p>
+                    </div>
+                 </div>
+              </div>
+
               <div v-else-if="activeTab === 'Pendidikan'" class="space-y-6">
                 <h3 class="text-lg font-bold text-[#1E293B]">Riwayat Pendidikan</h3>
                 <div v-if="educationList.length > 0" class="space-y-4">
@@ -472,17 +573,30 @@ onMounted(() => {
               </div>
 
               <div v-else-if="activeTab === 'Komunikasi'" class="space-y-6">
-                <h3 class="text-lg font-bold text-[#1E293B]">Kontak Komunikasi</h3>
-                <div v-if="commList.length > 0" class="grid grid-cols-3 gap-4">
-                    <div v-for="comm in commList" :key="comm.id" class="p-4 border border-gray-200 rounded-2xl flex items-center gap-4 shadow-sm">
-                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-gray-600">
-                             <Icon :name="comm.subType?.toLowerCase().includes('email') ? 'lucide:mail' : 'lucide:phone'" class="w-5 h-5" />
+                <div class="flex justify-between items-center mb-2">
+                   <h3 class="text-lg font-bold text-[#1E293B]">Kontak Komunikasi</h3>
+                   <button @click="openCommModal()" class="px-4 py-1.5 border border-[#3B82F6] text-[#3B82F6] rounded-md text-[11px] font-bold flex items-center gap-1.5 hover:bg-blue-50 transition-colors">
+                      <Icon name="lucide:plus" class="w-3.5 h-3.5" />
+                      Create
+                   </button>
+                </div>
+                <div v-if="commList.length > 0" class="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div v-for="comm in commList" :key="comm.id" class="p-4 bg-white border border-gray-200 rounded-2xl flex items-center gap-4 shadow-sm hover:border-blue-300 transition-all group">
+                        <div :class="['w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110', getCommColor(comm.subType)]">
+                             <Icon :name="getCommIcon(comm.subType)" class="w-6 h-6" />
                         </div>
-                        <div>
+                        <div class="flex-1 min-w-0">
                             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">{{ getLabel('communication', comm.subType, 'subtype') }}</p>
-                            <p class="text-xs font-bold text-[#1E293B]">{{ comm.number }}</p>
+                            <p class="text-xs font-bold text-[#1E293B] truncate">{{ comm.number }}</p>
                         </div>
+                        <button @click="openCommModal(comm)" class="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-gray-50 rounded-lg text-gray-400 transition-all">
+                           <Icon name="lucide:edit-3" class="w-4 h-4" />
+                        </button>
                     </div>
+                </div>
+                <div v-else class="text-center py-20 text-gray-400 italic">
+                   <Icon name="lucide:message-square" class="w-12 h-12 mx-auto mb-3 opacity-20" />
+                   <p>Belum ada data kontak komunikasi.</p>
                 </div>
               </div>
 
@@ -519,6 +633,35 @@ onMounted(() => {
                   :is-edit="true" 
                   @success="loadAllData(); isEditModalOpen = false"
                   @cancel="isEditModalOpen = false"
+                />
+             </div>
+          </div>
+       </div>
+    </Teleport>
+
+    <!-- Communication Modal -->
+    <Teleport to="body">
+       <div v-if="isCommModalOpen" class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[100] flex items-center justify-center p-4" @click="isCommModalOpen = false">
+          <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden" @click.stop>
+             <div class="bg-blue-600 p-4 flex justify-between items-center shadow-md">
+                <div class="flex items-center gap-3">
+                   <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-white">
+                      <Icon :name="editingComm ? getCommIcon(editingComm.subType) : 'lucide:message-square'" class="w-6 h-6" />
+                   </div>
+                   <div>
+                      <h2 class="text-white font-bold leading-none">{{ editingComm ? 'Edit' : 'Tambah' }} Kontak Komunikasi</h2>
+                      <p class="text-[10px] text-white/70 mt-1">Kelola informasi kontak karyawan</p>
+                   </div>
+                </div>
+                <button @click="isCommModalOpen = false" class="text-white hover:bg-white/10 p-2 rounded-lg transition-colors"><Icon name="lucide:x" class="w-5 h-5" /></button>
+             </div>
+             <div class="p-6">
+                <FormsCommunicationForm 
+                  :persnum="personalData.persnum"
+                  :initial-data="editingComm" 
+                  :is-edit="!!editingComm" 
+                  @success="loadAllData(); isCommModalOpen = false"
+                  @cancel="isCommModalOpen = false"
                 />
              </div>
           </div>
