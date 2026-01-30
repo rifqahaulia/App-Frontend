@@ -40,17 +40,69 @@ const activeTab = ref('Personal Info')
 const isEditModalOpen = ref(false)
 const isCommModalOpen = ref(false)
 const isFamilyModalOpen = ref(false)
+const isEducationModalOpen = ref(false)
 const editingComm = ref<any>(null)
 const editingFamily = ref<any>(null)
+const editingEducation = ref<any>(null)
+
+// Education Search & Pagination
+const eduSearchQuery = ref('')
+const eduItemsPerPage = ref(10)
+const eduCurrentPage = ref(1)
 
 const openCommModal = (comm?: any) => {
   editingComm.value = comm || null
   isCommModalOpen.value = true
 }
 
+// Computed for dynamic data extraction
+const primaryPhone = computed(() => commList.value.find(c => c.subType === '0002')?.number || '-')
+const officeEmail = computed(() => commList.value.find(c => c.subType === '0006')?.number || '-')
+const akteNumber = computed(() => idList.value.find(i => i.subType === '01')?.number || '-')
+const npwpNumber = computed(() => idList.value.find(i => i.subType === '05')?.number || '-')
+const bpjsKetNumber = computed(() => idList.value.find(i => i.subType === '06')?.number || '-') // Assuming 06 for BPJS Ket
+const bpjsKesNumber = computed(() => idList.value.find(i => i.subType === '07')?.number || '-') // Assuming 07 for BPJS Kes
+
+// Education Computed
+const filteredEducationList = computed(() => {
+  let list = educationList.value
+  if (eduSearchQuery.value) {
+    const q = eduSearchQuery.value.toLowerCase()
+    list = list.filter(edu => 
+      (edu.institute?.toLowerCase().includes(q)) || 
+      (edu.branchStudy?.toLowerCase().includes(q)) ||
+      (edu.certificateNumber?.toLowerCase().includes(q)) ||
+      (getLabel('pa_education', edu.subType, 'subtype').toLowerCase().includes(q))
+    )
+  }
+  return list
+})
+
+const totalEduPages = computed(() => Math.ceil(filteredEducationList.value.length / eduItemsPerPage.value) || 1)
+const paginatedEducation = computed(() => {
+  const start = (eduCurrentPage.value - 1) * eduItemsPerPage.value
+  const end = start + eduItemsPerPage.value
+  return filteredEducationList.value.slice(start, end)
+})
+
 const openFamilyModal = (fam?: any) => {
   editingFamily.value = fam || null
   isFamilyModalOpen.value = true
+}
+
+const openEducationModal = (edu?: any) => {
+  editingEducation.value = edu || null
+  isEducationModalOpen.value = true
+}
+
+const deleteEducation = async (id: number) => {
+  if (!confirm('Apakah Anda yakin ingin menghapus data pendidikan ini?')) return
+  try {
+    await paStore.deleteModuleData('pa-education', id)
+    educationList.value = educationList.value.filter(e => e.id !== id)
+  } catch (error) {
+    console.error('Failed to delete education:', error)
+  }
 }
 
 const loadAllData = async () => {
@@ -77,8 +129,10 @@ const loadAllData = async () => {
           { field: 'religion', type: 'lookup' },
           { field: 'address', type: 'subtype' },
           { field: 'pa_family_member', type: 'subtype' },
-          { field: 'education', type: 'subtype' },
+          { field: 'pa_education', type: 'subtype' },
+          { field: 'branch_study', type: 'branch' },
           { field: 'blood_type', type: 'lookup' },
+          { field: 'status', type: 'lookup' },
           { field: 'personal_ids', type: 'subtype' },
           { field: 'communication', type: 'subtype' },
           { field: 'object_loan', type: 'subtype' },
@@ -98,7 +152,7 @@ const loadAllData = async () => {
 }
 
 // Helpers
-const getLabel = (field: string, code?: string, type: 'lookup' | 'subtype' = 'lookup') => {
+const getLabel = (field: string, code?: string, type: 'lookup' | 'subtype' | 'branch' = 'lookup') => {
   if (!code) return '-'
   const cacheKey = `${type}-${field}`
   const refs = refStore.references[cacheKey] || []
@@ -115,6 +169,25 @@ const formatDate = (dateStr?: string | Date) => {
   }).replace(/\./g, ' ')
 }
 
+const formatDotDate = (dateStr?: string | Date) => {
+  if (!dateStr) return '-'
+  const d = new Date(dateStr)
+  return `${d.getDate().toString().padStart(2, '0')}.${(d.getMonth() + 1).toString().padStart(2, '0')}.${d.getFullYear()}`
+}
+
+const getTingkatan = (subType: string) => {
+  const map: any = {
+    '08': 'Sarjana',
+    '03': 'SMA',
+    '02': 'SMP',
+    '01': 'SD',
+    '09': 'Pascasarjana (S2)',
+    '10': 'Doktor (S3)',
+    '99': 'Pelatihan'
+  }
+  return map[subType] || getLabel('pa_education', subType, 'subtype')
+}
+
 const getCommIcon = (subType: string) => {
   const icons: Record<string, string> = {
     '0001': 'lucide:user-cog',    // System user name
@@ -128,6 +201,18 @@ const getCommIcon = (subType: string) => {
     '0009': 'lucide:instagram'    // Instagram
   }
   return icons[subType] || 'lucide:message-square'
+}
+
+const calculateAge = (birthDate: string | Date) => {
+  if (!birthDate) return '-'
+  const today = new Date()
+  const birth = new Date(birthDate)
+  let age = today.getFullYear() - birth.getFullYear()
+  const m = today.getMonth() - birth.getMonth()
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) {
+    age--
+  }
+  return age
 }
 
 const getCommColor = (subType: string) => {
@@ -182,7 +267,7 @@ onMounted(() => {
               </div>
               <div>
                 <h2 class="font-bold text-[#1E293B] text-lg leading-tight">{{ personalData.name }}</h2>
-                <p class="text-sm text-gray-500">{{ personalData.title || 'Senior Manager' }}</p>
+                <p class="text-sm text-gray-500">{{ personalData.title || '-' }}</p>
               </div>
             </div>
 
@@ -210,7 +295,7 @@ onMounted(() => {
               </div>
               <div class="flex justify-between text-[11px]">
                 <span class="text-gray-500 font-medium">Negara</span>
-                <span class="text-[#1E293B] font-bold font-semibold">Indonesia</span>
+                <span class="text-[#1E293B] font-bold font-semibold">{{ personalData.country || 'Indonesia' }}</span>
               </div>
               <div class="flex justify-between text-[11px]">
                 <span class="text-gray-500 font-medium">Status/Tgl. Status</span>
@@ -218,7 +303,7 @@ onMounted(() => {
               </div>
               <div class="flex justify-between text-[11px]">
                 <span class="text-gray-500 font-medium">No. HP</span>
-                <span class="text-[#1E293B] font-bold">08961425309</span>
+                <span class="text-[#1E293B] font-bold">{{ primaryPhone }}</span>
               </div>
             </div>
 
@@ -226,19 +311,19 @@ onMounted(() => {
             <div class="bg-white border border-gray-200 rounded-xl p-4 space-y-2.5 shadow-sm">
               <div class="flex justify-between text-[11px]">
                 <span class="text-gray-500 font-medium">Status</span>
-                <span class="text-[#1E293B] font-bold">Karyawan</span>
+                <span class="text-[#1E293B] font-bold">-</span>
               </div>
               <div class="flex justify-between text-[11px]">
                 <span class="text-gray-500 font-medium">Unit</span>
-                <span class="text-[#1E293B] font-bold text-right font-semibold">Teknologi Informasi</span>
+                <span class="text-[#1E293B] font-bold text-right font-semibold">-</span>
               </div>
               <div class="flex justify-between text-[11px]">
                 <span class="text-gray-500 font-medium">Lokasi</span>
-                <span class="text-[#1E293B] font-bold">Kantor Pusat</span>
+                <span class="text-[#1E293B] font-bold">-</span>
               </div>
               <div class="flex justify-between text-[11px]">
                 <span class="text-gray-500 font-medium">Office Email</span>
-                <span class="text-[#1E293B] font-bold text-right break-all ml-4">bagas.wicak@airnav.co.id</span>
+                <span class="text-[#1E293B] font-bold text-right break-all ml-4">{{ officeEmail }}</span>
               </div>
             </div>
           </div>
@@ -282,7 +367,7 @@ onMounted(() => {
                   </div>
                   <div>
                     <label class="block text-[11px] font-bold text-[#1E293B] mb-1">Negara</label>
-                    <p class="text-[11px] text-[#475569]">Indonesia</p>
+                    <p class="text-[11px] text-[#475569]">{{ personalData.country || 'Indonesia' }}</p>
                   </div>
                   <div>
                     <label class="block text-[11px] font-bold text-[#1E293B] mb-1">NIK / e-NIK</label>
@@ -290,7 +375,7 @@ onMounted(() => {
                   </div>
                   <div>
                     <label class="block text-[11px] font-bold text-[#1E293B] mb-1">Unit</label>
-                    <p class="text-[11px] text-[#475569]">Teknologi Informasi</p>
+                    <p class="text-[11px] text-[#475569]">-</p>
                   </div>
 
                   <div>
@@ -307,7 +392,7 @@ onMounted(() => {
                   </div>
                   <div>
                     <label class="block text-[11px] font-bold text-[#1E293B] mb-1">Lokasi</label>
-                    <p class="text-[11px] text-[#475569]">Kantor Pusat</p>
+                    <p class="text-[11px] text-[#475569]">-</p>
                   </div>
 
                   <div>
@@ -320,7 +405,7 @@ onMounted(() => {
                   </div>
                   <div>
                     <label class="block text-[11px] font-bold text-[#1E293B] mb-1">Office Email</label>
-                    <p class="text-[11px] text-[#475569]">BagasWick@airnav.co.id</p>
+                    <p class="text-[11px] text-[#475569]">{{ officeEmail }}</p>
                   </div>
 
                   <div>
@@ -329,11 +414,11 @@ onMounted(() => {
                   </div>
                   <div>
                     <label class="block text-[11px] font-bold text-[#1E293B] mb-1">No. Handphone</label>
-                    <p class="text-[11px] text-[#475569]">08612312312</p>
+                    <p class="text-[11px] text-[#475569]">{{ primaryPhone }}</p>
                   </div>
                   <div>
                     <label class="block text-[11px] font-bold text-[#1E293B] mb-1">Jabatan</label>
-                    <p class="text-[11px] text-[#475569]">Senior Manager</p>
+                    <p class="text-[11px] text-[#475569]">{{ personalData.title || '-' }}</p>
                   </div>
                 </div>
 
@@ -342,45 +427,45 @@ onMounted(() => {
                 <div class="grid grid-cols-4 gap-y-6 mb-12">
                   <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-0.5">Status</label>
-                    <p class="text-[10px] text-[#1E293B] font-semibold">Karyawan</p>
+                    <p class="text-[10px] text-[#1E293B] font-semibold">-</p>
                   </div>
                   <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-0.5">Lokasi Kerja</label>
-                    <p class="text-[10px] text-[#1E293B] font-semibold">Kantor Pusat</p>
+                    <p class="text-[10px] text-[#1E293B] font-semibold">-</p>
                   </div>
                   <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-0.5">TMT Jabatan</label>
-                    <p class="text-[10px] text-[#1E293B] font-semibold">01-07-2023</p>
+                    <p class="text-[10px] text-[#1E293B] font-semibold">-</p>
                   </div>
                   <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-0.5">Job Center</label>
-                    <p class="text-[10px] text-[#1E293B] font-semibold uppercase font-bold tracking-tight">A1231321231 - Administrasi</p>
+                    <p class="text-[10px] text-[#1E293B] font-semibold uppercase font-bold tracking-tight">-</p>
                   </div>
 
                   <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-0.5">Jabatan</label>
-                    <p class="text-[10px] text-[#1E293B] font-semibold">Senior Manager</p>
+                    <p class="text-[10px] text-[#1E293B] font-semibold">{{ personalData.title || '-' }}</p>
                   </div>
                   <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-0.5">Lokasi kedudukan</label>
-                    <p class="text-[10px] text-[#1E293B] font-semibold">Kantor Pusat</p>
+                    <p class="text-[10px] text-[#1E293B] font-semibold">-</p>
                   </div>
                   <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-0.5">TMT kedudukan</label>
-                    <p class="text-[10px] text-[#1E293B] font-semibold">01-08-2024</p>
+                    <p class="text-[10px] text-[#1E293B] font-semibold">-</p>
                   </div>
 
                   <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-0.5">Unit</label>
-                    <p class="text-[10px] text-[#1E293B] font-semibold font-bold">Teknologi Informasi</p>
+                    <p class="text-[10px] text-[#1E293B] font-semibold font-bold">-</p>
                   </div>
                   <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-0.5">Lokasi Induk</label>
-                    <p class="text-[10px] text-[#1E293B] font-semibold font-bold">Kantor Pusat</p>
+                    <p class="text-[10px] text-[#1E293B] font-semibold font-bold">-</p>
                   </div>
                   <div>
                     <label class="block text-[10px] font-bold text-gray-500 mb-0.5">Cost Center</label>
-                    <p class="text-[10px] text-[#1E293B] font-semibold uppercase font-bold tracking-tight">A1231231 - Teknologi Informasi</p>
+                    <p class="text-[10px] text-[#1E293B] font-semibold uppercase font-bold tracking-tight">-</p>
                   </div>
                 </div>
 
@@ -417,7 +502,7 @@ onMounted(() => {
                       <Icon name="lucide:file-text" class="w-7 h-7 text-yellow-500" />
                     </div>
                     <h4 class="text-[12px] font-bold text-[#1E293B] mb-1">Akte Kelahiran</h4>
-                    <p class="text-[11px] text-gray-400 mb-4">{{ idList.find(i => i.subType === '01')?.number || '1230410231231212' }}</p>
+                    <p class="text-[11px] text-gray-400 mb-4">{{ akteNumber }}</p>
                     <button class="text-[#3B82F6] text-[11px] font-bold hover:underline">Download File</button>
                   </div>
                   <!-- Case: NPWP -->
@@ -426,7 +511,7 @@ onMounted(() => {
                       <Icon name="lucide:file-text" class="w-7 h-7 text-yellow-500" />
                     </div>
                     <h4 class="text-[12px] font-bold text-[#1E293B] mb-1">NPWP</h4>
-                    <p class="text-[11px] text-gray-400 mb-4">{{ idList.find(i => i.subType === '05')?.number || '1230410231231212' }}</p>
+                    <p class="text-[11px] text-gray-400 mb-4">{{ npwpNumber }}</p>
                     <button class="text-[#3B82F6] text-[11px] font-bold hover:underline">Download File</button>
                   </div>
                   <!-- Case: BPJS Ketenagakerjaan -->
@@ -435,7 +520,7 @@ onMounted(() => {
                       <Icon name="lucide:file-text" class="w-7 h-7 text-yellow-500" />
                     </div>
                     <h4 class="text-[12px] font-bold text-[#1E293B] mb-1">BPJS Ketenagakerjaan</h4>
-                    <p class="text-[11px] text-gray-400 mb-4">1230410231231212</p>
+                    <p class="text-[11px] text-gray-400 mb-4">{{ bpjsKetNumber }}</p>
                     <button class="text-[#3B82F6] text-[11px] font-bold hover:underline">Download File</button>
                   </div>
                   <!-- Case: BPJS Kesehatan -->
@@ -444,7 +529,7 @@ onMounted(() => {
                       <Icon name="lucide:file-text" class="w-7 h-7 text-yellow-500" />
                     </div>
                     <h4 class="text-[12px] font-bold text-[#1E293B] mb-1">BPJS Kesehatan</h4>
-                    <p class="text-[11px] text-gray-400 mb-4">1230410231231212</p>
+                    <p class="text-[11px] text-gray-400 mb-4">{{ bpjsKesNumber }}</p>
                     <button class="text-[#3B82F6] text-[11px] font-bold hover:underline">Download File</button>
                   </div>
                 </div>
@@ -537,21 +622,124 @@ onMounted(() => {
                  </div>
               </div>
 
-              <div v-else-if="activeTab === 'Pendidikan'" class="space-y-6">
-                <h3 class="text-lg font-bold text-[#1E293B]">Riwayat Pendidikan</h3>
-                <div v-if="educationList.length > 0" class="space-y-4">
-                  <div v-for="edu in educationList" :key="edu.id" class="p-5 border border-gray-200 rounded-xl flex gap-4 shadow-sm">
-                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Icon name="lucide:graduation-cap" class="w-7 h-7" />
+              <div v-else-if="activeTab === 'Pendidikan'" class="space-y-4">
+                <!-- Toolbar -->
+                <div class="flex justify-between items-center mb-2">
+                  <div class="relative">
+                    <Icon name="lucide:search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <input 
+                      v-model="eduSearchQuery"
+                      type="text" 
+                      placeholder="Search..." 
+                      class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-64 text-xs outline-none focus:ring-2 focus:ring-blue-100"
+                    />
+                  </div>
+                  <button @click="openEducationModal()" class="px-4 py-2 border border-[#3B82F6] text-[#3B82F6] rounded-md text-xs font-bold flex items-center gap-2 hover:bg-blue-50 transition-colors">
+                    <Icon name="lucide:plus" class="w-4 h-4" />
+                    Create
+                  </button>
+                </div>
+
+                <!-- Table Container -->
+                <div class="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm">
+                  <table class="w-full text-left border-collapse">
+                    <thead>
+                      <tr class="bg-[#E0F2FE]">
+                        <th class="px-4 py-3 text-[11px] font-bold text-[#1E293B] uppercase tracking-wider">Tingkatan</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-[#1E293B] uppercase tracking-wider">Sekolah</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-[#1E293B] uppercase tracking-wider">Jurusan</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-[#1E293B] uppercase tracking-wider">No Ijazah</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-[#1E293B] uppercase tracking-wider">Tgl. Ijazah</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-[#1E293B] uppercase tracking-wider text-center">Ijazah</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-[#1E293B] uppercase tracking-wider text-center">Nilai</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-[#1E293B] uppercase tracking-wider">Status</th>
+                        <th class="px-4 py-3 text-[11px] font-bold text-[#1E293B] uppercase tracking-wider text-center">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                      <tr v-for="edu in paginatedEducation" :key="edu.id" class="hover:bg-gray-50/50 transition-colors">
+                        <td class="px-4 py-4 text-xs font-medium text-gray-700">{{ getTingkatan(edu.subType) }}</td>
+                        <td class="px-4 py-4 text-xs font-medium text-gray-700">{{ edu.subType === '99' ? edu.trainingName : edu.institute }}</td>
+                        <td class="px-4 py-4 text-xs font-medium text-gray-700">{{ edu.subType === '99' ? '-' : getLabel('branch_study', edu.branchStudy, 'branch') }}</td>
+                        <td class="px-4 py-4 text-xs font-medium text-gray-700 font-mono">{{ edu.certificateNumber || '-' }}</td>
+                        <td class="px-4 py-4 text-xs font-medium text-gray-700">{{ formatDotDate(edu.certificateDate) }}</td>
+                        <td class="px-4 py-4 text-center">
+                          <button v-if="edu.certificateFileName" class="text-blue-500 hover:text-blue-700 inline-flex items-center gap-1">
+                            <Icon name="lucide:file-text" class="w-4 h-4" />
+                            <span class="text-[10px] font-bold">Download</span>
+                          </button>
+                          <span v-else class="text-gray-300">-</span>
+                        </td>
+                        <td class="px-4 py-4 text-center">
+                          <div class="flex flex-col items-center gap-1">
+                             <span v-if="edu.finalGrade || edu.trainingGrade" class="text-xs font-bold text-[#1E293B]">{{ edu.finalGrade || edu.trainingGrade }}</span>
+                             <button v-if="edu.transcriptFileName" class="text-blue-500 hover:text-blue-700 inline-flex items-center gap-1">
+                               <Icon name="lucide:file-text" class="w-4 h-4" />
+                               <span class="text-[10px] font-bold">Download</span>
+                             </button>
+                             <span v-if="!edu.finalGrade && !edu.trainingGrade && !edu.transcriptFileName" class="text-gray-300">-</span>
+                          </div>
+                        </td>
+                        <td class="px-4 py-4">
+                          <span :class="['text-[10px] font-bold', edu.status === 'A' ? 'text-green-600' : 'text-amber-600']">
+                            {{ edu.status === 'A' ? 'Diakui' : 'Dimiliki' }}
+                          </span>
+                        </td>
+                        <td class="px-4 py-4">
+                          <div class="flex items-center justify-center gap-3">
+                            <button @click="openEducationModal(edu)" class="text-blue-500 hover:text-blue-700 transition-colors">
+                              <Icon name="lucide:edit-3" class="w-4 h-4" />
+                            </button>
+                            <button @click="deleteEducation(edu.id)" class="text-blue-500 hover:text-blue-700 transition-colors">
+                              <Icon name="lucide:trash-2" class="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr v-if="paginatedEducation.length === 0">
+                        <td colspan="9" class="px-4 py-12 text-center text-gray-400 italic">
+                          Belum ada riwayat pendidikan yang sesuai.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Pagination UI -->
+                <div class="flex items-center justify-between mt-6 text-[10px] px-2">
+                  <div class="flex items-center gap-2 text-gray-400 font-bold uppercase tracking-tight">
+                    <span>Items per page:</span>
+                    <select v-model="eduItemsPerPage" class="border border-gray-200 rounded px-2 py-1 outline-none text-[#1E293B]">
+                      <option :value="10">10</option>
+                      <option :value="25">25</option>
+                      <option :value="50">50</option>
+                    </select>
+                  </div>
+                  <div class="flex items-center gap-1">
+                    <button 
+                      class="px-2 py-1 rounded border border-gray-100 disabled:opacity-30"
+                      :disabled="eduCurrentPage === 1"
+                      @click="eduCurrentPage--"
+                    >
+                      <Icon name="lucide:chevron-left" class="w-4 h-4" />
+                    </button>
+                    <div class="flex items-center gap-1 mx-2">
+                      <button 
+                        v-for="p in totalEduPages" 
+                        :key="p"
+                        @click="eduCurrentPage = p"
+                        :class="['w-7 h-7 rounded-lg font-bold transition-all', eduCurrentPage === p ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-50']"
+                      >
+                        {{ p }}
+                      </button>
                     </div>
-                    <div>
-                      <h4 class="text-sm font-bold text-[#1E293B]">{{ edu.institute }}</h4>
-                      <p class="text-[11px] text-blue-600 font-bold mb-1 uppercase tracking-tight">{{ getLabel('education', edu.subType, 'subtype') }} - {{ edu.branchStudyText || edu.branchStudy }}</p>
-                      <div class="flex gap-4 text-[10px] text-gray-500">
-                        <span>Lulus: {{ formatDate(edu.endDate) }}</span>
-                        <span>IPK/Nilai: {{ edu.finalGrade }}</span>
-                      </div>
-                    </div>
+                    <button 
+                      class="px-2 py-1 rounded border border-gray-100 disabled:opacity-30"
+                      :disabled="eduCurrentPage === totalEduPages"
+                      @click="eduCurrentPage++"
+                    >
+                      <Icon name="lucide:chevron-right" class="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -565,52 +753,67 @@ onMounted(() => {
                   </button>
                 </div>
 
-                <div v-if="familyList.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div v-for="fam in familyList" :key="fam.id" class="p-5 border border-gray-100 rounded-2xl bg-white shadow-sm hover:border-pink-200 transition-all group">
-                    <div class="flex items-start gap-4">
-                      <div class="w-14 h-14 bg-pink-50 text-pink-500 rounded-2xl flex items-center justify-center shrink-0">
-                         <Icon name="lucide:heart" class="w-7 h-7" />
+                <div v-if="familyList.length > 0" class="flex flex-col gap-3">
+                  <div v-for="fam in familyList" :key="fam.id" class="p-4 border border-gray-100 rounded-xl bg-white flex items-center gap-6 hover:border-blue-200 transition-all group shadow-sm">
+                    <!-- Avatar Section -->
+                    <div class="flex items-center gap-4 min-w-[200px]">
+                      <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden shrink-0 border border-gray-50">
+                        <Icon name="lucide:user" class="w-7 h-7 text-gray-300" />
                       </div>
-                      <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-start mb-1">
-                           <h4 class="text-sm font-bold text-[#1E293B] truncate">{{ fam.name }}</h4>
-                           <button @click="openFamilyModal(fam)" class="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-gray-50 rounded-lg text-gray-400">
-                             <Icon name="lucide:edit-3" class="w-4 h-4" />
-                           </button>
-                        </div>
-                        <p class="text-[10px] text-pink-600 font-bold uppercase mb-3 tracking-widest">{{ getLabel('pa_family_member', fam.subType, 'subtype') }}</p>
-                        
-                        <div class="grid grid-cols-2 gap-y-3 text-[10px]">
-                           <div>
-                              <span class="text-gray-400 block mb-0.5">NIK (KTP)</span>
-                              <span class="text-[#1E293B] font-bold">{{ fam.ktp || '-' }}</span>
-                           </div>
-                           <div>
-                              <span class="text-gray-400 block mb-0.5">BPJS Kesehatan</span>
-                              <span class="text-[#1E293B] font-bold">{{ fam.bpjsKes || '-' }}</span>
-                           </div>
-                           <div>
-                              <span class="text-gray-400 block mb-0.5">Tempat/Tgl Lahir</span>
-                              <span class="text-[#1E293B] font-bold">{{ fam.birthPlace || '-' }}, {{ formatDate(fam.birthDate) }}</span>
-                           </div>
-                           <div>
-                              <span class="text-gray-400 block mb-0.5">Gol. Darah</span>
-                              <span class="text-[#1E293B] font-bold">{{ getLabel('blood_type', fam.bloodType) }}</span>
-                           </div>
-                           <div>
-                              <span class="text-gray-400 block mb-0.5">Ditanggung</span>
-                              <span :class="['font-bold', fam.covered === '1' ? 'text-green-600' : 'text-gray-400']">
-                                {{ fam.covered === '1' ? 'Perusahaan' : 'Bukan Tanggungan' }}
-                              </span>
-                           </div>
-                        </div>
+                      <div class="min-w-0">
+                        <h4 class="text-sm font-bold text-[#1E293B] truncate">{{ fam.name }}</h4>
+                        <p class="text-[11px] text-gray-400 font-medium">
+                          {{ getLabel('pa_family_member', fam.subType, 'subtype') }} &nbsp;•&nbsp; {{ calculateAge(fam.birthDate) }} Tahun
+                        </p>
+                      </div>
+                    </div>
 
-                        <div v-if="fam.jobTitle || fam.employer" class="mt-4 pt-4 border-t border-dashed border-gray-100">
-                           <span class="text-[9px] text-gray-400 uppercase font-bold tracking-tight">Pekerjaan</span>
-                           <p class="text-[10px] text-[#1E293B] font-semibold">{{ fam.jobTitle }} at {{ fam.employer || 'Self' }}</p>
+                    <!-- Details Row -->
+                    <div class="flex-1 grid grid-cols-3 gap-8">
+                      <!-- Col 1 -->
+                      <div class="space-y-2.5">
+                        <div class="space-y-0.5">
+                          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">Jenis Kelamin</span>
+                          <p class="text-xs text-[#1E293B] font-medium">{{ getLabel('gender', fam.gender) }}</p>
+                        </div>
+                        <div class="space-y-0.5">
+                          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">Tempat/Tgl Lahir</span>
+                          <p class="text-xs text-[#1E293B] font-medium">{{ fam.birthPlace || '-' }}, {{ formatDate(fam.birthDate) }}</p>
+                        </div>
+                      </div>
+
+                      <!-- Col 2 -->
+                      <div class="space-y-2.5">
+                        <div class="space-y-0.5">
+                          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">NIK</span>
+                          <p class="text-xs text-[#1E293B] font-medium">{{ fam.ktp || '-' }}</p>
+                        </div>
+                        <div class="space-y-0.5">
+                          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">No. BPJS</span>
+                          <p class="text-xs text-[#1E293B] font-medium">{{ fam.bpjsKes || '-' }}</p>
+                        </div>
+                      </div>
+
+                      <!-- Col 3 -->
+                      <div class="space-y-2.5">
+                        <div class="space-y-0.5">
+                          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">Tanggungan Perusahaan</span>
+                          <p class="text-xs text-[#1E293B] font-bold">{{ fam.covered === '1' ? 'IYA' : 'TIDAK' }}</p>
+                        </div>
+                        <div class="space-y-0.5">
+                          <span class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">File</span>
+                          <button class="text-[11px] text-blue-600 font-bold hover:underline flex items-center gap-1.5">
+                            <Icon name="lucide:file-text" class="w-3.5 h-3.5" />
+                            Download File
+                          </button>
                         </div>
                       </div>
                     </div>
+
+                    <!-- Edit Button -->
+                    <button @click="openFamilyModal(fam)" class="w-9 h-9 bg-blue-500 text-white rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors shrink-0 shadow-sm shadow-blue-100">
+                      <Icon name="lucide:edit-3" class="w-4.5 h-4.5" />
+                    </button>
                   </div>
                 </div>
                 <div v-else class="text-center py-20 text-gray-400 italic bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
@@ -640,7 +843,7 @@ onMounted(() => {
                 </div>
                 <div v-if="commList.length > 0" class="grid grid-cols-2 lg:grid-cols-3 gap-4">
                     <div v-for="comm in commList" :key="comm.id" class="p-4 bg-white border border-gray-200 rounded-2xl flex items-center gap-4 shadow-sm hover:border-blue-300 transition-all group">
-                        <div :class="['w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-110', getCommColor(comm.subType)]">
+                        <div :class="['w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-111', getCommColor(comm.subType)]">
                              <Icon :name="getCommIcon(comm.subType)" class="w-6 h-6" />
                         </div>
                         <div class="flex-1 min-w-0">
