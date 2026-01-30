@@ -39,11 +39,18 @@ const tabs = [
 const activeTab = ref('Personal Info')
 const isEditModalOpen = ref(false)
 const isCommModalOpen = ref(false)
+const isFamilyModalOpen = ref(false)
 const editingComm = ref<any>(null)
+const editingFamily = ref<any>(null)
 
 const openCommModal = (comm?: any) => {
   editingComm.value = comm || null
   isCommModalOpen.value = true
+}
+
+const openFamilyModal = (fam?: any) => {
+  editingFamily.value = fam || null
+  isFamilyModalOpen.value = true
 }
 
 const loadAllData = async () => {
@@ -69,8 +76,9 @@ const loadAllData = async () => {
           { field: 'marital_status', type: 'lookup' },
           { field: 'religion', type: 'lookup' },
           { field: 'address', type: 'subtype' },
-          { field: 'family', type: 'subtype' },
+          { field: 'pa_family_member', type: 'subtype' },
           { field: 'education', type: 'subtype' },
+          { field: 'blood_type', type: 'lookup' },
           { field: 'personal_ids', type: 'subtype' },
           { field: 'communication', type: 'subtype' },
           { field: 'object_loan', type: 'subtype' },
@@ -549,15 +557,65 @@ onMounted(() => {
               </div>
 
               <div v-else-if="activeTab === 'Keluarga'" class="space-y-6">
-                <h3 class="text-lg font-bold text-[#1E293B]">Anggota Keluarga</h3>
-                <div v-if="familyList.length > 0" class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div v-for="fam in familyList" :key="fam.id" class="p-4 border border-gray-200 rounded-xl flex items-center gap-4 shadow-sm">
-                    <div class="w-10 h-10 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center font-bold uppercase">{{ fam.name?.charAt(0) }}</div>
-                    <div>
-                        <h4 class="text-xs font-bold text-[#1E293B]">{{ fam.name }}</h4>
-                        <p class="text-[10px] text-pink-600 font-bold uppercase">{{ getLabel('family', fam.subType, 'subtype') }}</p>
+                <div class="flex justify-between items-center">
+                  <h3 class="text-lg font-bold text-[#1E293B]">Anggota Keluarga</h3>
+                  <button @click="openFamilyModal()" class="px-4 py-1.5 border border-[#3B82F6] text-[#3B82F6] rounded-md text-[11px] font-bold flex items-center gap-1.5 hover:bg-blue-50 transition-colors">
+                      <Icon name="lucide:plus" class="w-3.5 h-3.5" />
+                      Create
+                  </button>
+                </div>
+
+                <div v-if="familyList.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div v-for="fam in familyList" :key="fam.id" class="p-5 border border-gray-100 rounded-2xl bg-white shadow-sm hover:border-pink-200 transition-all group">
+                    <div class="flex items-start gap-4">
+                      <div class="w-14 h-14 bg-pink-50 text-pink-500 rounded-2xl flex items-center justify-center shrink-0">
+                         <Icon name="lucide:heart" class="w-7 h-7" />
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-start mb-1">
+                           <h4 class="text-sm font-bold text-[#1E293B] truncate">{{ fam.name }}</h4>
+                           <button @click="openFamilyModal(fam)" class="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-gray-50 rounded-lg text-gray-400">
+                             <Icon name="lucide:edit-3" class="w-4 h-4" />
+                           </button>
+                        </div>
+                        <p class="text-[10px] text-pink-600 font-bold uppercase mb-3 tracking-widest">{{ getLabel('pa_family_member', fam.subType, 'subtype') }}</p>
+                        
+                        <div class="grid grid-cols-2 gap-y-3 text-[10px]">
+                           <div>
+                              <span class="text-gray-400 block mb-0.5">NIK (KTP)</span>
+                              <span class="text-[#1E293B] font-bold">{{ fam.ktp || '-' }}</span>
+                           </div>
+                           <div>
+                              <span class="text-gray-400 block mb-0.5">BPJS Kesehatan</span>
+                              <span class="text-[#1E293B] font-bold">{{ fam.bpjsKes || '-' }}</span>
+                           </div>
+                           <div>
+                              <span class="text-gray-400 block mb-0.5">Tempat/Tgl Lahir</span>
+                              <span class="text-[#1E293B] font-bold">{{ fam.birthPlace || '-' }}, {{ formatDate(fam.birthDate) }}</span>
+                           </div>
+                           <div>
+                              <span class="text-gray-400 block mb-0.5">Gol. Darah</span>
+                              <span class="text-[#1E293B] font-bold">{{ getLabel('blood_type', fam.bloodType) }}</span>
+                           </div>
+                           <div>
+                              <span class="text-gray-400 block mb-0.5">Ditanggung</span>
+                              <span :class="['font-bold', fam.covered === '1' ? 'text-green-600' : 'text-gray-400']">
+                                {{ fam.covered === '1' ? 'Perusahaan' : 'Bukan Tanggungan' }}
+                              </span>
+                           </div>
+                        </div>
+
+                        <div v-if="fam.jobTitle || fam.employer" class="mt-4 pt-4 border-t border-dashed border-gray-100">
+                           <span class="text-[9px] text-gray-400 uppercase font-bold tracking-tight">Pekerjaan</span>
+                           <p class="text-[10px] text-[#1E293B] font-semibold">{{ fam.jobTitle }} at {{ fam.employer || 'Self' }}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                </div>
+                <div v-else class="text-center py-20 text-gray-400 italic bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
+                   <Icon name="lucide:users" class="w-12 h-12 mx-auto mb-3 opacity-20" />
+                   <p>Data anggota keluarga belum tersedia.</p>
                 </div>
               </div>
 
@@ -662,6 +720,35 @@ onMounted(() => {
                   :is-edit="!!editingComm" 
                   @success="loadAllData(); isCommModalOpen = false"
                   @cancel="isCommModalOpen = false"
+                />
+             </div>
+          </div>
+       </div>
+    </Teleport>
+
+    <!-- Family Modal -->
+    <Teleport to="body">
+       <div v-if="isFamilyModalOpen" class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-[100] flex items-center justify-center p-4" @click="isFamilyModalOpen = false">
+          <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden" @click.stop>
+             <div class="bg-pink-600 p-4 flex justify-between items-center shadow-md">
+                <div class="flex items-center gap-3">
+                   <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center text-white">
+                      <Icon name="lucide:heart" class="w-6 h-6" />
+                   </div>
+                   <div>
+                      <h2 class="text-white font-bold leading-none">{{ editingFamily ? 'Edit' : 'Tambah' }} Anggota Keluarga</h2>
+                      <p class="text-[10px] text-white/70 mt-1">Lengkapi data keluarga karyawan</p>
+                   </div>
+                </div>
+                <button @click="isFamilyModalOpen = false" class="text-white hover:bg-white/10 p-2 rounded-lg transition-colors"><Icon name="lucide:x" class="w-5 h-5" /></button>
+             </div>
+             <div class="p-8">
+                <FormsFamilyMemberForm 
+                  :persnum="personalData.persnum"
+                  :initial-data="editingFamily" 
+                  :is-edit="!!editingFamily" 
+                  @success="loadAllData(); isFamilyModalOpen = false"
+                  @cancel="isFamilyModalOpen = false"
                 />
              </div>
           </div>

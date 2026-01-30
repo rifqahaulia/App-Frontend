@@ -18,7 +18,7 @@ const form = ref<Partial<PaFamilyMember>>({
   persnum: props.persnum,
   startDate: new Date().toISOString().split('T')[0],
   endDate: '9999-12-31',
-  subType: '01',
+  subType: '1',
   number: 1,
   name: '',
   birthPlace: '',
@@ -28,11 +28,18 @@ const form = ref<Partial<PaFamilyMember>>({
   ...props.initialData
 })
 
-const subTypes = [
-  { value: '01', label: 'Istri' },
-  { value: '02', label: 'Suami' },
-  { value: '03', label: 'Anak' }
-]
+// Load references from backend
+onMounted(async () => {
+  await Promise.all([
+    refStore.fetchReference('pa_family_member', 'subtype'),
+    refStore.fetchReference('blood_type', 'lookup')
+  ])
+  
+  // If creating, set default subtype from the first available reference
+  if (!props.isEdit && !form.value.subType && refStore.references['subtype-pa_family_member']?.length > 0) {
+    form.value.subType = refStore.references['subtype-pa_family_member'][0].value
+  }
+})
 
 const genders = [
   { value: '1', label: 'Laki-laki' },
@@ -61,9 +68,11 @@ const getFieldError = (field: string) => {
         <label class="block text-sm font-medium text-gray-700">Hubungan Keluarga</label>
         <select 
           v-model="form.subType"
+          required
           class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none bg-white"
         >
-          <option v-for="opt in subTypes" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+          <option value="" disabled>Pilih Hubungan</option>
+          <option v-for="opt in refStore.references['subtype-pa_family_member']" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
         </select>
       </div>
 
@@ -134,6 +143,24 @@ const getFieldError = (field: string) => {
         >
           <option value="1">Ya</option>
           <option value="0">Tidak</option>
+        </select>
+      </div>
+
+      <!-- Blood Type -->
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-gray-700">Golongan Darah</label>
+        <select 
+          v-model="form.bloodType"
+          class="w-full px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-100 outline-none bg-white font-bold"
+        >
+          <option :value="undefined">Pilih Gol. Darah</option>
+          <option 
+            v-for="opt in refStore.references['lookup-blood_type']" 
+            :key="opt.value" 
+            :value="opt.value"
+          >
+            {{ opt.label }}
+          </option>
         </select>
       </div>
     </div>
